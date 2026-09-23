@@ -16,6 +16,11 @@ class Rectangle : public Object {
 		void onDestruction() override {}
 
 	private:
+		bool drawAsSolid_ = false;
+
+		void drawSolid() const;
+		void drawEdges() const;
+
 		EngineUtil::ColorRGB color_;
 
 		float rotationRadians_ = 0.0f;

@@ -11,30 +11,19 @@ Rectangle::Rectangle(const EngineMath::Transform& transform, const EngineUtil::C
 }
 
 void Rectangle::onStart() {
-    static bool doThis = true;
 
-    if (doThis) {
-        doThis = false;
-        addChild(std::make_unique<Rectangle>(
-            EngineMath::Transform(
-                EngineMath::Vector3(0.0f, 0.0f, -1.0f),
-                EngineMath::Quaternion::identity(),
-                EngineMath::Vector3(0.5f, 0.5f, 0.5f)
-            ),
-            EngineUtil::ColorRGB{ 1.0f, 0.5f, 0.5f }
-        ));
-        addChild(std::make_unique<Rectangle>(
-            EngineMath::Transform(
-                EngineMath::Vector3(0.0f, 0.0f, 1.0f),
-                EngineMath::Quaternion::identity(),
-                EngineMath::Vector3(0.25f, 0.25f, 0.5f)
-            ),
-            EngineUtil::ColorRGB{ 1.0f, 0.5f, 0.5f }
-        ));
-    }
 }
 
 void Rectangle::draw() {
+    if (drawAsSolid_) {
+        drawSolid();
+    }
+    else {
+        drawEdges();
+    }
+}
+
+void Rectangle::drawSolid() const {
     glDisable(GL_TEXTURE_2D);
 
     const float hx = 0.5f;
@@ -43,47 +32,66 @@ void Rectangle::draw() {
 
     glBegin(GL_QUADS);
 
-    // Front face, red
-    glColor3f(1.0f, 0.0f, 0.0f);
+    glColor3f(color_.r_, color_.g_, color_.b_);
+
     glVertex3f(-hx, -hy, hz);
     glVertex3f(hx, -hy, hz);
     glVertex3f(hx, hy, hz);
     glVertex3f(-hx, hy, hz);
 
-    // Back face, green
-    glColor3f(0.0f, 1.0f, 0.0f);
     glVertex3f(hx, -hy, -hz);
     glVertex3f(-hx, -hy, -hz);
     glVertex3f(-hx, hy, -hz);
     glVertex3f(hx, hy, -hz);
 
-    // Left face, blue
-    glColor3f(0.0f, 0.0f, 1.0f);
     glVertex3f(-hx, -hy, -hz);
     glVertex3f(-hx, -hy, hz);
     glVertex3f(-hx, hy, hz);
     glVertex3f(-hx, hy, -hz);
 
-    // Right face, yellow
-    glColor3f(1.0f, 1.0f, 0.0f);
     glVertex3f(hx, -hy, hz);
     glVertex3f(hx, -hy, -hz);
     glVertex3f(hx, hy, -hz);
     glVertex3f(hx, hy, hz);
 
-    // Top face, cyan
-    glColor3f(0.0f, 1.0f, 1.0f);
     glVertex3f(-hx, hy, hz);
     glVertex3f(hx, hy, hz);
     glVertex3f(hx, hy, -hz);
     glVertex3f(-hx, hy, -hz);
 
-    // Bottom face, magenta
-    glColor3f(1.0f, 0.0f, 1.0f);
     glVertex3f(-hx, -hy, -hz);
     glVertex3f(hx, -hy, -hz);
     glVertex3f(hx, -hy, hz);
     glVertex3f(-hx, -hy, hz);
+
+    glEnd();
+}
+
+void Rectangle::drawEdges() const {
+    glDisable(GL_TEXTURE_2D);
+
+    const float hx = 0.5f;
+    const float hy = 0.5f;
+    const float hz = 0.5f;
+
+    glColor3f(color_.r_, color_.g_, color_.b_);
+
+    glBegin(GL_LINES);
+
+    glVertex3f(-hx, -hy, hz); glVertex3f(hx, -hy, hz);
+    glVertex3f(hx, -hy, hz); glVertex3f(hx, hy, hz);
+    glVertex3f(hx, hy, hz); glVertex3f(-hx, hy, hz);
+    glVertex3f(-hx, hy, hz); glVertex3f(-hx, -hy, hz);
+
+    glVertex3f(-hx, -hy, -hz); glVertex3f(hx, -hy, -hz);
+    glVertex3f(hx, -hy, -hz); glVertex3f(hx, hy, -hz);
+    glVertex3f(hx, hy, -hz); glVertex3f(-hx, hy, -hz);
+    glVertex3f(-hx, hy, -hz); glVertex3f(-hx, -hy, -hz);
+
+    glVertex3f(-hx, -hy, hz); glVertex3f(-hx, -hy, -hz);
+    glVertex3f(hx, -hy, hz); glVertex3f(hx, -hy, -hz);
+    glVertex3f(hx, hy, hz); glVertex3f(hx, hy, -hz);
+    glVertex3f(-hx, hy, hz); glVertex3f(-hx, hy, -hz);
 
     glEnd();
 }
