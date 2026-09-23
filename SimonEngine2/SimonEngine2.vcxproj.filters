@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{19147fb0-1acc-4f5d-bf9d-c2078c41be30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{2d424785-0074-4d86-b4d9-eb46e18416ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Library">
+      <UniqueIdentifier>{25543b11-730f-4809-8dfb-0a660e7e66c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Managers">
+      <UniqueIdentifier>{09fd8ea5-79ad-4307-9b5f-e8651c11d9ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{490f2ae8-5e47-4462-8f93-65732a1690fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{86301897-f9c9-465f-9f5a-e993b1c148ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{24b6a324-92a4-40d8-88e7-87ea1c5ed075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Source">
+      <UniqueIdentifier>{8cb62378-5cdc-49a1-a5f5-f96898757aa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Source">
+      <UniqueIdentifier>{d7c42373-58b6-41d7-bcd2-5b865f40cd8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{31925118-c720-4616-9981-d35e9c4e8c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes\Source">
+      <UniqueIdentifier>{044dff25-deb1-4ff9-addd-bd760ebebe67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{c8bec5a3-1cc7-4a3e-9618-2301d6545af3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes\Source">
+      <UniqueIdentifier>{ece43135-907f-4b1d-949d-d8eb30067657}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Objects\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files\Scenes\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowConstants.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineMath.hpp">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.hpp">
+      <Filter>Header Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.hpp">
+      <Filter>Header Files\Objects\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.hpp">
+      <Filter>Header Files\Scenes\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineUtil.hpp">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
