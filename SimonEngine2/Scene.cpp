@@ -36,9 +36,6 @@ void Scene::sceneDeInit() {
 
 void Scene::sceneDraw() const {
 	camera_.apply();
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	draw();
 

@@ -33,7 +33,15 @@ void Camera::setTarget(const EngineMath::Vector3& target) {
 }
 
 void Camera::setZoom(double zoom) {
-	zoom_ = std::max(0.1, zoom);
+	constexpr double maxPerspectiveFovy = 170.0;
+	constexpr double minZoom =
+		60.0 / maxPerspectiveFovy;
+
+	if (zoom < minZoom) {
+		zoom = minZoom;
+	}
+
+	zoom_ = zoom;
 }
 
 void Camera::zoomIn(double amount) {
@@ -70,9 +78,7 @@ void Camera::applyProjection() const {
 
 	if (projectionMode_ == ProjectionMode::Perspective) {
 		double zoomedFovy = perspectiveFovy_ / zoom_;
-		if (zoomedFovy > 170.0) {
-			zoomedFovy = 150;
-		}
+
 
 		gluPerspective(zoomedFovy, aspectRatio, perspectiveNear_, perspectiveFar_);
 	}
