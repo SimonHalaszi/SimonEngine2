@@ -1,14 +1,14 @@
-#ifndef RECTANGLE_HPP
-#define RECTANGLE_HPP
+#ifndef RECTANGLE_OBJECT_HPP
+#define RECTANGLE_OBJECT_HPP
 
 #include "Object.hpp"
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
 
-class Rectangle : public Object {
+class RectangleObject : public Object {
 	public:
-		Rectangle() = default;
-		Rectangle(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color);
+		RectangleObject() = default;
+		RectangleObject(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color);
 
 		void onStart() override;
 		void draw() override;

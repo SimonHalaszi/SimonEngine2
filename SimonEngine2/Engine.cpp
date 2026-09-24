@@ -35,8 +35,6 @@ void Engine::updateTimer(int v) {
 		updatesPerSecond = currentScene_->getUpdateSpeed();
 	}
 
-	InputManager::getInstance().update();
-
 	if (currentScene_ && currentScene_->isUpdating()) {
 		currentScene_->sceneUpdate();
 	}
@@ -82,7 +80,6 @@ void GAMEdraw() {
 
 void Engine::animationTimer(int v) {
 	int animationUpdatesPerSecond = 1;
-	// Wont run in editor mode. Animations arent relevant for that
 	if (currentScene_) {
 		animationUpdatesPerSecond = currentScene_->getAnimationUpdateSpeed();
 		if (currentScene_->isUpdatingAnimations()) {
@@ -98,7 +95,10 @@ void Engine::init() {
 	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
 
 	glutInitWindowSize(ENGINE_WIN_W, ENGINE_WIN_H);
-	glutInitWindowPosition(ENGINE_WIN_X, ENGINE_WIN_Y);
+	const int screenWidth = glutGet(GLUT_SCREEN_WIDTH);
+	const int screenHeight = glutGet(GLUT_SCREEN_HEIGHT);
+	glutInitWindowPosition((screenWidth - ENGINE_WIN_W) / 2, (screenHeight - ENGINE_WIN_H) / 2);
+	
 	glutCreateWindow("(Simon Halaszi) (811196947)");
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

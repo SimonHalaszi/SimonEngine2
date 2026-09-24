@@ -46,6 +46,7 @@ void Object::rootUpdate() {
 
 // Runs once per frame update of the Scene
 void Object::rootDraw() {
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
 	EngineMath::Matrix4 localMatrix = localTransform_.toMatrix();

@@ -148,8 +148,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Rectangle.cpp" />
-    <ClCompile Include="Rectangle.hpp" />
+    <ClCompile Include="RectangleObject.cpp" />
     <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +158,7 @@
     <ClInclude Include="EngineUtil.hpp" />
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="RectangleObject.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="WindowConstants.hpp" />
   </ItemGroup>

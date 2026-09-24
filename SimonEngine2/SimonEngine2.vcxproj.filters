@@ -66,10 +66,7 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Scenes\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Rectangle.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Rectangle.cpp">
+    <ClCompile Include="RectangleObject.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="BasicScene.cpp">
@@ -103,6 +100,9 @@
     </ClInclude>
     <ClInclude Include="BasicScene.hpp">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangleObject.hpp">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

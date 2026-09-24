@@ -5,8 +5,12 @@
 #include <string>
 #include <memory>
 
+#include <iostream>
+
 // Scene Interface
 #include "Scene.hpp"
+
+#include "InputManager.hpp"
 
 class BasicScene : public Scene {
 	public:

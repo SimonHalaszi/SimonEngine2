@@ -1,8 +1,8 @@
-#include "Rectangle.hpp"
+#include "RectangleObject.hpp"
 
 #include "Engine.hpp"
 
-Rectangle::Rectangle(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color) {
+RectangleObject::RectangleObject(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color) {
 	localTransform_ = transform;
 	color_ = color;
 
@@ -10,11 +10,11 @@ Rectangle::Rectangle(const EngineMath::Transform& transform, const EngineUtil::C
     rotationSpeed_ = EngineMath::degreesToRadians(90.0f / updateSpeed);
 }
 
-void Rectangle::onStart() {
+void RectangleObject::onStart() {
 
 }
 
-void Rectangle::draw() {
+void RectangleObject::draw() {
     if (drawAsSolid_) {
         drawSolid();
     }
@@ -23,7 +23,7 @@ void Rectangle::draw() {
     }
 }
 
-void Rectangle::drawSolid() const {
+void RectangleObject::drawSolid() const {
     glDisable(GL_TEXTURE_2D);
 
     const float hx = 0.5f;
@@ -67,7 +67,7 @@ void Rectangle::drawSolid() const {
     glEnd();
 }
 
-void Rectangle::drawEdges() const {
+void RectangleObject::drawEdges() const {
     glDisable(GL_TEXTURE_2D);
 
     const float hx = 0.5f;
@@ -96,7 +96,7 @@ void Rectangle::drawEdges() const {
     glEnd();
 }
 
-void Rectangle::update() {
+void RectangleObject::update() {
     rotationRadians_ += rotationSpeed_;
 
     setRotation(

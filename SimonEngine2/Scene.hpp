@@ -48,6 +48,9 @@ class Scene {
 		void incrementUpdateFrame() { ++updateFrame_; }
 		int getUpdateFrame() const { return updateFrame_; }
 
+		void setProjectionOrtho(double, double, double, double, double, double) const;
+		void setProjectionPerspective(double, double, double) const;
+
 		std::vector<std::unique_ptr<Object>>* getRootObjects() { return &rootObjects_; }
 
 	protected:

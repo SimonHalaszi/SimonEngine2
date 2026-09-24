@@ -18,23 +18,7 @@ void Scene::addRootObject(std::unique_ptr<Object> object) {
 }
 
 void Scene::sceneInit() {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	bool projOrtho = false;
-
-	if (projOrtho) {
-		glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-	}
-	else {
-		double aspectRatio = static_cast<double>(ENGINE_WIN_W) / static_cast<double>(ENGINE_WIN_H);
-
-		gluPerspective(60.0, aspectRatio, 0.1, 100.0);
-	}
-
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	setProjectionPerspective(60.0, 0.1, 100.0);
 
 	init();
 }
@@ -51,7 +35,11 @@ void Scene::sceneDeInit() {
 }
 
 void Scene::sceneDraw() const {
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
 	draw();
+
 	for (auto& rootObject : rootObjects_) {
 		rootObject->rootDraw();
 	}
@@ -100,4 +88,28 @@ void Scene::processPendingRootObjects() {
 	}
 
 	pendingRootObjects_.clear();
+}
+
+void Scene::setProjectionOrtho(double left, double right, double bottom, double top, double zNear, double zFar) const {
+	glViewport(0, 0, ENGINE_WIN_W, ENGINE_WIN_H);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glOrtho(left, right, bottom, top, zNear, zFar);
+
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void Scene::setProjectionPerspective(double fovy, double zNear, double zFar) const {
+	glViewport(0, 0, ENGINE_WIN_W, ENGINE_WIN_H);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	double aspectRatio = static_cast<double>(ENGINE_WIN_W) / static_cast<double>(ENGINE_WIN_H);
+
+	gluPerspective(fovy, aspectRatio, zNear, zFar);
+
+	glMatrixMode(GL_MODELVIEW);
 }
