@@ -6,6 +6,7 @@
 
 #include "WindowConstants.hpp"
 #include "Object.hpp"
+#include "Camera.hpp"
 
 // Scene Class
 
@@ -48,8 +49,8 @@ class Scene {
 		void incrementUpdateFrame() { ++updateFrame_; }
 		int getUpdateFrame() const { return updateFrame_; }
 
-		void setProjectionOrtho(double, double, double, double, double, double) const;
-		void setProjectionPerspective(double, double, double) const;
+		Camera& getCamera() { return camera_; }
+		const Camera& getCamera() const { return camera_; }
 
 		std::vector<std::unique_ptr<Object>>* getRootObjects() { return &rootObjects_; }
 
@@ -59,6 +60,8 @@ class Scene {
 		virtual void deInit() {} // Scene specific deInit (Stuff not attached to GameObjects)
 		virtual void draw() const {} // Scene specific drawing (Stuff not attached to GameObjects)
 		virtual void update() {} // Scene specific updating (Stuff not attached to GameObjects)
+
+		Camera camera_;
 
 		// Scene root GameObjects
 		std::vector<std::unique_ptr<Object>> rootObjects_;

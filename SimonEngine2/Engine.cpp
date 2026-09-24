@@ -55,8 +55,7 @@ void Engine::frameTimer(int v) {
 }
 
 void GAMEdraw() {
-	const Scene* currentScene =
-		Engine::getInstance().getCurrentScene();
+	const Scene* currentScene = Engine::getInstance().getCurrentScene();
 
 	if (!currentScene) {
 		return;

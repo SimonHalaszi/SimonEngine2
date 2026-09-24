@@ -38,11 +38,23 @@ void BasicScene::draw() const {
 void BasicScene::update() {
     if (InputManager::getInstance().isPressed('p')) {
         std::cout << "Going to Perspective" << std::endl;
-        setProjectionPerspective(60.0, 0.1, 100.0);
+        camera_.setProjectionMode(Camera::ProjectionMode::Perspective);
     }
 
     if (InputManager::getInstance().isPressed('o')) {
         std::cout << "Going to Orpho" << std::endl;
-        setProjectionOrtho(-2.0, 2.0, -2.0, 2.0, -1.0, 10.0);
+        camera_.setProjectionMode(Camera::ProjectionMode::Ortho);
+    }
+
+    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_SCROLLUP)) {
+        camera_.zoomIn(0.05);
+    }
+
+    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_SCROLLDOWN)) {
+        camera_.zoomOut(0.05);
+    }
+
+    if (InputManager::getInstance().isPressed('c')) {
+        isDrawing_ = !isDrawing_;
     }
 }

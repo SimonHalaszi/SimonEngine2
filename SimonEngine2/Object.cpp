@@ -46,6 +46,10 @@ void Object::rootUpdate() {
 
 // Runs once per frame update of the Scene
 void Object::rootDraw() {
+	if (!isDrawing_) {
+		return;
+	}
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
@@ -58,6 +62,7 @@ void Object::rootDraw() {
 		child->rootDraw();
 	}
 
+	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
 

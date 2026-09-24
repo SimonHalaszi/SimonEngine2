@@ -48,6 +48,11 @@ class Object {
 		std::string getTag() const { return tag_; }
 		std::string getName() const { return name_; }
 
+		bool isDrawing() const { return isDrawing_; }
+		bool isUpdating() const { return isUpdating_; }
+		void toggleDrawing() { isDrawing_ = !isDrawing_; }
+		void toggleUpdating() { isUpdating_ = !isUpdating_; }
+
 	protected:
 		virtual void onStart() {} // Runs when attached to scene
 		virtual void update() {} // Runs once per update of the Scene
@@ -63,6 +68,8 @@ class Object {
 		std::vector<std::unique_ptr<Object>> children_ = {};
 
 		bool hasStarted_ = false;
+		bool isDrawing_ = true;
+		bool isUpdating_ = true;
 
 	private:
 		std::unique_ptr<Object> extractChild(Object* child);

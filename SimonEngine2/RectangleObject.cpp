@@ -97,6 +97,16 @@ void RectangleObject::drawEdges() const {
 }
 
 void RectangleObject::update() {
+    if (InputManager::getInstance().isPressed('s')) {
+        drawAsSolid_ = true;
+    }
+    if (InputManager::getInstance().isPressed('w')) {
+        drawAsSolid_ = false;
+    }
+    if (InputManager::getInstance().isPressed('m')) {
+        toggleDrawing();
+    }
+    
     rotationRadians_ += rotationSpeed_;
 
     setRotation(
