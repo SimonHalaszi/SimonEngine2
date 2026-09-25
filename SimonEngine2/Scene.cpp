@@ -18,8 +18,6 @@ void Scene::addRootObject(std::unique_ptr<Object> object) {
 }
 
 void Scene::sceneInit() {
-	camera_.setPerspective(60.0, 0.1, 100.0);
-
 	init();
 }
 

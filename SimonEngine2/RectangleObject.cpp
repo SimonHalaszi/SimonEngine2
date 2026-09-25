@@ -5,13 +5,6 @@
 RectangleObject::RectangleObject(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color) {
 	localTransform_ = transform;
 	color_ = color;
-
-    int updateSpeed = Engine::getInstance().getCurrentScene()->getUpdateSpeed();
-    rotationSpeed_ = EngineMath::degreesToRadians(90.0f / updateSpeed);
-}
-
-void RectangleObject::onStart() {
-
 }
 
 void RectangleObject::draw() {
@@ -106,14 +99,4 @@ void RectangleObject::update() {
     if (InputManager::getInstance().isPressed('m')) {
         toggleDrawing();
     }
-    
-    rotationRadians_ += rotationSpeed_;
-
-    setRotation(
-        EngineMath::Quaternion::fromXYZ(
-            rotationRadians_ * 0.75f,
-            rotationRadians_,
-            rotationRadians_ * 0.25f
-        )
-    );
 }

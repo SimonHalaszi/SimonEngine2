@@ -144,9 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicScene.cpp" />
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="MagicCube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="RectangleObject.cpp" />
@@ -159,6 +163,7 @@
     <ClInclude Include="EngineMath.hpp" />
     <ClInclude Include="EngineUtil.hpp" />
     <ClInclude Include="InputManager.hpp" />
+    <ClInclude Include="MagicCube.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="RectangleObject.hpp" />
     <ClInclude Include="Scene.hpp" />

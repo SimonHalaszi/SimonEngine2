@@ -10,7 +10,7 @@ class RectangleObject : public Object {
 		RectangleObject() = default;
 		RectangleObject(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color);
 
-		void onStart() override;
+		void onStart() override {}
 		void draw() override;
 		void update() override;
 		void onDestruction() override {}
@@ -22,9 +22,6 @@ class RectangleObject : public Object {
 		void drawEdges() const;
 
 		EngineUtil::ColorRGB color_;
-
-		float rotationRadians_ = 0.0f;
-		float rotationSpeed_ = 0.02f;
 };
 
 #endif 

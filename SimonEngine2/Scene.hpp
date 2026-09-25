@@ -52,8 +52,6 @@ class Scene {
 		Camera& getCamera() { return camera_; }
 		const Camera& getCamera() const { return camera_; }
 
-		std::vector<std::unique_ptr<Object>>* getRootObjects() { return &rootObjects_; }
-
 	protected:
 		// Scene specific functionalities handled here. GameObjects are updated AUTOMATICALLY based on per GameObject logic
 		virtual void init() {} // Scene specific init (Stuff not attached to GameObjects)
