@@ -143,31 +143,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AxisDisplay.cpp" />
     <ClCompile Include="BasicScene.cpp" />
     <ClCompile Include="Camera.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
     </ClCompile>
+    <ClCompile Include="Cone.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MagicCube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="RectangleObject.cpp" />
+    <ClCompile Include="RectangularPrism.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="Line.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AxisDisplay.hpp" />
     <ClInclude Include="BasicScene.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="Cone.hpp" />
+    <ClInclude Include="Cylinder.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="EngineMath.hpp" />
     <ClInclude Include="EngineUtil.hpp" />
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="MagicCube.hpp" />
     <ClInclude Include="Object.hpp" />
-    <ClInclude Include="RectangleObject.hpp" />
+    <ClInclude Include="RectangularPrism.hpp" />
     <ClInclude Include="Scene.hpp" />
+    <ClInclude Include="Sphere.hpp" />
     <ClInclude Include="WindowConstants.hpp" />
+    <ClInclude Include="Line.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

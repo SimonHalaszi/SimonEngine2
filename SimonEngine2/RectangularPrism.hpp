@@ -1,14 +1,14 @@
 #ifndef RECTANGLE_OBJECT_HPP
-#define RECTANGLE_OBJECT_HPP
+#define RECTANGULAR_PRISM_HPP
 
 #include "Object.hpp"
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
 
-class RectangleObject : public Object {
+class RectangularPrism : public Object {
 	public:
-		RectangleObject() = default;
-		RectangleObject(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color);
+		RectangularPrism() = default;
+		RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color);
 
 		void onStart() override {}
 		void draw() override;

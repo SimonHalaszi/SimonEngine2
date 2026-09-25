@@ -21,6 +21,16 @@ namespace EngineUtil {
 				return static_cast<float>(value) / 255.0f;
 			}
 	};
+
+	struct Vertex {
+		float x_, y_, z_;
+	};
+
+	enum class Axis {
+		X, Y, Z
+	};
 }
+
+
 
 #endif

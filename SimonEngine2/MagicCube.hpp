@@ -6,19 +6,17 @@
 #include "EngineUtil.hpp"
 
 class MagicCube : public Object {
-public:
-	MagicCube() = default;
-	MagicCube(const EngineMath::Transform& transform);
+	public:
+		MagicCube() = default;
+		MagicCube(const EngineMath::Transform& localTransform);
 
-	void onStart() override;
-	void draw() override {}
-	void update() override;
-	void onDestruction() override {}
+		void onStart() override;
+		void update() override;
 
-private:
+	private:
 
-	float rotationRadians_ = 0.0f;
-	float rotationSpeed_ = 0.02f;
+		float rotationRadians_ = 0.0f;
+		float rotationSpeed_ = 0.02f;
 };
 
 #endif 

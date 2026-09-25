@@ -1,13 +1,13 @@
-#include "RectangleObject.hpp"
+#include "RectangularPrism.hpp"
 
 #include "Engine.hpp"
 
-RectangleObject::RectangleObject(const EngineMath::Transform& transform, const EngineUtil::ColorRGB& color) {
-	localTransform_ = transform;
+RectangularPrism::RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) {
+	localTransform_ = localTransform;
 	color_ = color;
 }
 
-void RectangleObject::draw() {
+void RectangularPrism::draw() {
     if (drawAsSolid_) {
         drawSolid();
     }
@@ -16,7 +16,7 @@ void RectangleObject::draw() {
     }
 }
 
-void RectangleObject::drawSolid() const {
+void RectangularPrism::drawSolid() const {
     glDisable(GL_TEXTURE_2D);
 
     const float hx = 0.5f;
@@ -60,7 +60,7 @@ void RectangleObject::drawSolid() const {
     glEnd();
 }
 
-void RectangleObject::drawEdges() const {
+void RectangularPrism::drawEdges() const {
     glDisable(GL_TEXTURE_2D);
 
     const float hx = 0.5f;
@@ -89,14 +89,11 @@ void RectangleObject::drawEdges() const {
     glEnd();
 }
 
-void RectangleObject::update() {
+void RectangularPrism::update() {
     if (InputManager::getInstance().isPressed('s')) {
         drawAsSolid_ = true;
     }
     if (InputManager::getInstance().isPressed('w')) {
         drawAsSolid_ = false;
-    }
-    if (InputManager::getInstance().isPressed('m')) {
-        toggleDrawing();
     }
 }

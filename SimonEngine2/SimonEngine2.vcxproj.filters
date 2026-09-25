@@ -52,6 +52,12 @@
     <Filter Include="Source Files\Scenes\Source">
       <UniqueIdentifier>{ece43135-907f-4b1d-949d-d8eb30067657}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects\Primitives">
+      <UniqueIdentifier>{d5e3f72d-55f2-4528-b553-19df17eac671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Primitives">
+      <UniqueIdentifier>{9439fc43-0f75-4d1b-a93d-444932bca461}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -66,9 +72,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Scenes\Source</Filter>
     </ClCompile>
-    <ClCompile Include="RectangleObject.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="BasicScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
@@ -80,6 +83,24 @@
     </ClCompile>
     <ClCompile Include="MagicCube.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangularPrism.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisDisplay.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Cone.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,14 +128,29 @@
     <ClInclude Include="BasicScene.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="RectangleObject.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="MagicCube.hpp">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisDisplay.hpp">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="RectangularPrism.hpp">
+      <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.hpp">
+      <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.hpp">
+      <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Cylinder.hpp">
+      <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Cone.hpp">
+      <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

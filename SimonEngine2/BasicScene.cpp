@@ -1,11 +1,19 @@
 #include "BasicScene.hpp"
 
 #include "MagicCube.hpp"
+#include "AxisDisplay.hpp"
 
 void BasicScene::init() {
     addRootObject(std::make_unique<MagicCube>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, -5.0f),
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        )
+    ));
+    addRootObject(std::make_unique<AxisDisplay>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         )
@@ -14,6 +22,7 @@ void BasicScene::init() {
     std::unique_ptr<Object>& first = rootObjects_.front();
 
     camera_.setTarget(first->getWorldTransform().position_);
+    camera_.setPosition(EngineMath::Vector3(5.0f, 5.0f, 5.0f));
 }
 
 void BasicScene::draw() const {
