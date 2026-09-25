@@ -10,6 +10,7 @@
 class Sphere : public Object {
 	public:
 		Sphere() = default;
+		// The diameter is localTransform.scale_.x_; Radius is equal to localTransform.scale_.x_ / 2.0f; y_ and z_ values are not taken into consideration
 		Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks);
 
 		void draw() override;

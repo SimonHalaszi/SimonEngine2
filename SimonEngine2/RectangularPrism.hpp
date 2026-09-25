@@ -10,10 +10,8 @@ class RectangularPrism : public Object {
 		RectangularPrism() = default;
 		RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color);
 
-		void onStart() override {}
 		void draw() override;
 		void update() override;
-		void onDestruction() override {}
 
 	private:
 		bool drawAsSolid_ = false;

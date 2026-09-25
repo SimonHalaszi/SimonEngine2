@@ -203,6 +203,33 @@ namespace EngineMath {
 				return result;
 			}
 
+			// Rotate a transform around a pivot position
+			Transform& rotateAround(const Vector3& pivot, const Quaternion& rotation) {
+				Quaternion q = rotation.normalized();
+
+				position_ = pivot + q.rotate(position_ - pivot);
+				rotation_ = (q * rotation_).normalized();
+
+				return *this;
+			}
+
+			// Rotate a transform around a pivot position
+			Transform& rotateAround(const Vector3& pivot, const Vector3& axis, float radians) {
+				return rotateAround(pivot, Quaternion::fromAxisAngle(axis, radians));
+			}
+
+			// Used for drawing, this makes a copy of a transform with the rotateAround operation instead of performing it
+			Transform makeRotatedAround(const Vector3& pivot, const Quaternion& rotation) const {
+				Transform result = *this;
+				result.rotateAround(pivot, rotation);
+				return result;
+			}
+
+			// Used for drawing, this makes a copy of a transform with the rotateAround operation instead of performing it
+			Transform makeRotatedAround(const Vector3& pivot, const Vector3& axis, float radians) const {
+				return makeRotatedAround(pivot, Quaternion::fromAxisAngle(axis, radians));
+			}
+
 			Vector3 forward() const { return rotation_.rotate({ 0.0f, 0.0f, -1.0f }); }
 			Vector3 right() const { return rotation_.rotate({ 1.0f, 0.0f, 0.0f }); }
 			Vector3 up() const { return rotation_.rotate({ 0.0f, 1.0f, 0.0f }); }

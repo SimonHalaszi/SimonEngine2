@@ -1,10 +1,18 @@
 #include "BasicScene.hpp"
 
 #include "MagicCube.hpp"
+#include "Robot.hpp"
 #include "AxisDisplay.hpp"
 
 void BasicScene::init() {
-    addRootObject(std::make_unique<MagicCube>(
+    //addRootObject(std::make_unique<MagicCube>(
+    //    EngineMath::Transform(
+    //        EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+    //        EngineMath::Quaternion::identity(),
+    //        EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    //    )
+    //));
+    addRootObject(std::make_unique<Robot>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),

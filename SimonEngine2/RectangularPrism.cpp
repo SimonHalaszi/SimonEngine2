@@ -67,7 +67,7 @@ void RectangularPrism::drawEdges() const {
     const float hy = 0.5f;
     const float hz = 0.5f;
 
-    glColor3f(color_.r_, color_.g_, color_.b_);
+    glColor3f(1.0f, 1.0f, 1.0f);;
 
     glBegin(GL_LINES);
 

@@ -8,6 +8,15 @@ Line::Line(const EngineMath::Transform& localTransform, const EngineUtil::ColorR
 }
 
 void Line::draw() {
+    if (drawAsSolid_) {
+        drawSolid();
+    }
+    else {
+        drawEdges();
+    }
+}
+
+void Line::drawSolid() const {
     glDisable(GL_TEXTURE_2D);
 
     glColor3f(color_.r_, color_.g_, color_.b_);
@@ -18,4 +27,26 @@ void Line::draw() {
     glVertex3f(1.0f, 0.0f, 0.0f);
 
     glEnd();
+}
+
+void Line::drawEdges() const {
+    glDisable(GL_TEXTURE_2D);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+    glBegin(GL_LINES);
+
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(1.0f, 0.0f, 0.0f);
+
+    glEnd();
+}
+
+void Line::update() {
+    if (InputManager::getInstance().isPressed('s')) {
+        drawAsSolid_ = true;
+    }
+    if (InputManager::getInstance().isPressed('w')) {
+        drawAsSolid_ = false;
+    }
 }

@@ -35,6 +35,7 @@ class Object {
 		void setPosition(EngineMath::Vector3 pos) { localTransform_.position_ = pos; invalidateWorldTransform(); }
 		void setScale(EngineMath::Vector3 scale) { localTransform_.scale_ = scale; invalidateWorldTransform(); }
 		void setRotation(EngineMath::Quaternion rotation) { localTransform_.rotation_ = rotation.normalized(); invalidateWorldTransform(); }
+		void setTransform(EngineMath::Transform transform) { localTransform_ = transform; invalidateWorldTransform(); }
 
 		void invalidateWorldTransform();
 		void updateWorldTransform();

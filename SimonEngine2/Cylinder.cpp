@@ -88,7 +88,8 @@ void Cylinder::drawSolid() const {
 
 void Cylinder::drawEdges() const {
     glDisable(GL_TEXTURE_2D);
-    glColor3f(color_.r_, color_.g_, color_.b_);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     glBegin(GL_LINES);
 

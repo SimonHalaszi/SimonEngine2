@@ -11,8 +11,14 @@ class Line : public Object {
 		Line(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color);
 
 		void draw() override;
+		void update() override;
 
 	private:
+		bool drawAsSolid_ = false;
+
+		void drawSolid() const;
+		void drawEdges() const;
+
 		EngineUtil::ColorRGB color_;
 };
 
