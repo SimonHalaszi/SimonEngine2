@@ -20,6 +20,11 @@ namespace EngineUtil {
 				}
 				return static_cast<float>(value) / 255.0f;
 			}
+
+			static ColorRGB toGrayScale(const ColorRGB& c) {
+				float base = 0.299 * c.r_ + 0.587 * c.g_ + 0.114 * c.b_;
+				return ColorRGB(base, base, base);
+			}
 	};
 
 	struct Vertex {

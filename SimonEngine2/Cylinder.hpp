@@ -16,7 +16,7 @@ class Cylinder : public Object {
         void update() override;
 
     private:
-        bool drawAsSolid_ = false;
+        bool drawAsSolid_ = true;
         float radius_ = 0.5f;
         float halfHeight_ = 0.5f;
         int slices_ = 16;
@@ -29,7 +29,10 @@ class Cylinder : public Object {
         void drawSolid() const;
         void drawEdges() const;
 
+        bool drawColor_ = true;
+        EngineUtil::ColorRGB activeColor_;
         EngineUtil::ColorRGB color_;
+        EngineUtil::ColorRGB grayColor_;
 };
 
 #endif

@@ -23,6 +23,9 @@ class BasicScene : public Scene {
 		virtual void draw() const override final;
 
 		virtual void update() override final;
+		
+		static void mainMenu(int value);
+
 };
 
 #endif

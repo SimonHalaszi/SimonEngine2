@@ -10,7 +10,10 @@ namespace {
 Sphere::Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks) {
     localTransform_ = localTransform;
     radius_ = localTransform_.scale_.x_ / 2.0f;
+
+    activeColor_ = color;
     color_ = color;
+    grayColor_ = EngineUtil::ColorRGB::toGrayScale(color);
 
     slices_ = std::max(minSlices, slices);
     stacks_ = std::max(maxStacks, stacks);
@@ -50,7 +53,8 @@ void Sphere::draw() {
 
 void Sphere::drawSolid() const {
     glDisable(GL_TEXTURE_2D);
-    glColor3f(color_.r_, color_.g_, color_.b_);
+
+    glColor3f(activeColor_.r_, activeColor_.g_, activeColor_.b_);
 
     for (int stack = 0; stack < stacks_; ++stack) {
         glBegin(GL_QUAD_STRIP);
@@ -103,5 +107,14 @@ void Sphere::update() {
     }
     if (InputManager::getInstance().isPressed('w')) {
         drawAsSolid_ = false;
+    }
+    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_LEFT)) {
+        drawColor_ = !drawColor_;
+        if (drawColor_) {
+            activeColor_ = color_;
+        }
+        else {
+            activeColor_ = grayColor_;
+        }
     }
 }

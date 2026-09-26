@@ -4,7 +4,10 @@
 
 RectangularPrism::RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) {
 	localTransform_ = localTransform;
-	color_ = color;
+
+    activeColor_ = color;
+    color_ = color;
+    grayColor_ = EngineUtil::ColorRGB::toGrayScale(color);
 }
 
 void RectangularPrism::draw() {
@@ -25,7 +28,7 @@ void RectangularPrism::drawSolid() const {
 
     glBegin(GL_QUADS);
 
-    glColor3f(color_.r_, color_.g_, color_.b_);
+    glColor3f(activeColor_.r_, activeColor_.g_, activeColor_.b_);
 
     glVertex3f(-hx, -hy, hz);
     glVertex3f(hx, -hy, hz);
@@ -95,5 +98,14 @@ void RectangularPrism::update() {
     }
     if (InputManager::getInstance().isPressed('w')) {
         drawAsSolid_ = false;
+    }
+    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_LEFT)) {
+        drawColor_ = !drawColor_;
+        if (drawColor_) {
+            activeColor_ = color_;
+        }
+        else {
+            activeColor_ = grayColor_;
+        }
     }
 }

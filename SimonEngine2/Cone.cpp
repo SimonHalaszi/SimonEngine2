@@ -10,7 +10,10 @@ Cone::Cone(const EngineMath::Transform& localTransform, const EngineUtil::ColorR
     localTransform_ = localTransform;
     radius_ = localTransform_.scale_.x_ / 2.0f;
     halfHeight_ = localTransform_.scale_.y_ / 2.0f;
+    
+    activeColor_ = color;
     color_ = color;
+    grayColor_ = EngineUtil::ColorRGB::toGrayScale(color);
 
     slices_ = std::max(minSlices, slices);
     buildMesh();
@@ -42,7 +45,7 @@ void Cone::draw() {
 void Cone::drawSolid() const {
     glDisable(GL_TEXTURE_2D);
 
-    glColor3f(color_.r_, color_.g_, color_.b_);
+    glColor3f(activeColor_.r_, activeColor_.g_, activeColor_.b_);
 
     glBegin(GL_TRIANGLES);
 
@@ -102,5 +105,14 @@ void Cone::update() {
     }
     if (InputManager::getInstance().isPressed('w')) {
         drawAsSolid_ = false;
+    }
+    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_LEFT)) {
+        drawColor_ = !drawColor_;
+        if (drawColor_) {
+            activeColor_ = color_;
+        }
+        else {
+            activeColor_ = grayColor_;
+        }
     }
 }
