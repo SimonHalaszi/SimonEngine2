@@ -3,20 +3,16 @@
 
 #include <vector>
 
-#include "Object.hpp"
+#include "Primitive.hpp"
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
 
-class Cone : public Object {
+class Cone : public Primitive {
     public:
         Cone() = default;
         Cone(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices);
 
-        void draw() override;
-        void update() override;
-
     private:
-        bool drawAsSolid_ = true;
         float radius_ = 0.5f;
         float halfHeight_ = 0.5f;
         int slices_ = 16;
@@ -25,13 +21,8 @@ class Cone : public Object {
 
         std::vector<EngineUtil::Vertex> vertices_;
 
-        void drawSolid() const;
-        void drawEdges() const;
-
-        bool drawColor_ = true;
-        EngineUtil::ColorRGB activeColor_;
-        EngineUtil::ColorRGB color_;
-        EngineUtil::ColorRGB grayColor_;
+        void drawSolid() const override;
+        void drawEdges() const override;
 };
 
 #endif

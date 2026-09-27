@@ -1,28 +1,18 @@
 #ifndef RECTANGLE_OBJECT_HPP
 #define RECTANGULAR_PRISM_HPP
 
-#include "Object.hpp"
+#include "Primitive.hpp"
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
 
-class RectangularPrism : public Object {
+class RectangularPrism : public Primitive {
 	public:
 		RectangularPrism() = default;
-		RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color);
-
-		void draw() override;
-		void update() override;
+		RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) : Primitive(localTransform, color) {}
 
 	private:
-		bool drawAsSolid_ = true;
-
-		void drawSolid() const;
-		void drawEdges() const;
-
-		bool drawColor_ = true;
-		EngineUtil::ColorRGB activeColor_;
-		EngineUtil::ColorRGB color_;
-		EngineUtil::ColorRGB grayColor_;
+		void drawSolid() const override;
+		void drawEdges() const override;
 };
 
 #endif 

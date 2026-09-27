@@ -1,28 +1,18 @@
 #ifndef LINE_HPP
 #define LINE_HPP
 
-#include "Object.hpp"
+#include "Primitive.hpp"
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
 
-class Line : public Object {
+class Line : public Primitive {
 	public:
 		Line() = default;
-		Line(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color);
-
-		void draw() override;
-		void update() override;
+		Line(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) : Primitive(localTransform, color) {}
 
 	private:
-		bool drawAsSolid_ = true;
-
-		void drawSolid() const;
-		void drawEdges() const;
-
-		bool drawColor_ = true;
-		EngineUtil::ColorRGB activeColor_;
-		EngineUtil::ColorRGB color_;
-		EngineUtil::ColorRGB grayColor_;
+		void drawSolid() const override;
+		void drawEdges() const override;
 };
 
 #endif 

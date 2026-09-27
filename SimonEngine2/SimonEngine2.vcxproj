@@ -156,6 +156,7 @@
     <ClCompile Include="MagicCube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="RectangularPrism.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="MagicCube.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Primitive.hpp" />
     <ClInclude Include="RectangularPrism.hpp" />
     <ClInclude Include="Robot.hpp" />
     <ClInclude Include="Scene.hpp" />

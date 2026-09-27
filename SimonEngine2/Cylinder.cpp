@@ -6,15 +6,11 @@ namespace {
     constexpr int minSlices = 3;
 }
 
-Cylinder::Cylinder(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices) {
-    localTransform_ = localTransform;
+Cylinder::Cylinder(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices)
+    : Primitive(localTransform, color)
+{
     radius_ = localTransform_.scale_.x_ / 2.0f;
     halfHeight_ = localTransform_.scale_.y_ / 2.0f;
-    
-    activeColor_ = color;
-    color_ = color;
-    grayColor_ = EngineUtil::ColorRGB::toGrayScale(color);
-    
     slices_ = std::max(minSlices, slices);
     buildMesh();
 }
@@ -39,15 +35,6 @@ void Cylinder::buildMesh() {
 
 const EngineUtil::Vertex& Cylinder::vertexAt(int ring, int slice) const {
     return vertices_[ring * (slices_ + 1) + slice];
-}
-
-void Cylinder::draw() {
-    if (drawAsSolid_) {
-        drawSolid();
-    }
-    else {
-        drawEdges();
-    }
 }
 
 void Cylinder::drawSolid() const {
@@ -122,23 +109,4 @@ void Cylinder::drawEdges() const {
     }
 
     glEnd();
-}
-
-
-void Cylinder::update() {
-    if (InputManager::getInstance().isPressed('s')) {
-        drawAsSolid_ = true;
-    }
-    if (InputManager::getInstance().isPressed('w')) {
-        drawAsSolid_ = false;
-    }
-    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_LEFT)) {
-        drawColor_ = !drawColor_;
-        if (drawColor_) {
-            activeColor_ = color_;
-        }
-        else {
-            activeColor_ = grayColor_;
-        }
-    }
 }

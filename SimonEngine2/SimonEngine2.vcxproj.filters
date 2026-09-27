@@ -58,6 +58,12 @@
     <Filter Include="Source Files\Objects\Primitives">
       <UniqueIdentifier>{9439fc43-0f75-4d1b-a93d-444932bca461}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects\Primitives\Source">
+      <UniqueIdentifier>{36d95e8d-f269-4c6d-b25c-b81cd97eaf7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Primitives\Source">
+      <UniqueIdentifier>{011b32e0-962d-4beb-9707-cfd1d18b0e0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -104,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="Robot.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Source Files\Objects\Primitives\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Robot.hpp">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.hpp">
+      <Filter>Header Files\Objects\Primitives\Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

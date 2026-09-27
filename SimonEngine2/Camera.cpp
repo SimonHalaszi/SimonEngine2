@@ -54,6 +54,17 @@ void Camera::setTarget(const EngineMath::Vector3& target) {
 	target_ = target;
 }
 
+void Camera::pivotAroundTarget(const EngineMath::Quaternion& rotation) {
+	EngineMath::Quaternion q = rotation.normalized();
+
+	position_ = target_ + q.rotate(position_ - target_);
+	up_ = q.rotate(up_);
+}
+
+void Camera::pivotAroundTarget(const EngineMath::Vector3& axis, float radians) {
+	pivotAroundTarget(EngineMath::Quaternion::fromAxisAngle(axis, radians));
+}
+
 void Camera::updateZoomFromPosition() {
 	zoomPosition_ = std::clamp(zoomPosition_, -1.0, 1.0);
 

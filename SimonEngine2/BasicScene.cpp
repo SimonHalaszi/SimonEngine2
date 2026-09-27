@@ -17,7 +17,8 @@ void BasicScene::init() {
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
-        )
+        ),
+        EngineUtil::ColorRGB(255, 120, 120)
     ));
     addRootObject(std::make_unique<AxisDisplay>(
         EngineMath::Transform(
@@ -30,29 +31,52 @@ void BasicScene::init() {
     std::unique_ptr<Object>& first = rootObjects_.front();
 
     camera_.setTarget(first->getWorldTransform().position_);
-    camera_.setPosition(EngineMath::Vector3(5.0f, 5.0f, 5.0f));
+    camera_.setPosition(EngineMath::Vector3(0.0f, 0.0f, -5.0f));
 
     // Making menu
-    int rotationMenu = glutCreateMenu(BasicScene::mainMenu);
-    glutAddMenuEntry("30 Degrees", 1);
-    glutAddMenuEntry("60 Degrees", 2);
-    glutAddMenuEntry("90 Degrees", 3);
-    glutAddMenuEntry("120 Degrees", 4);
-    glutAddMenuEntry("180 Degrees", 5);
+    static BasicScene* menuScene = nullptr;
+    menuScene = this;
 
-    int renderMenu = glutCreateMenu(BasicScene::mainMenu);
-    glutAddMenuEntry("Orthographic", 6);
-    glutAddMenuEntry("Perspective", 7);
+    auto callback = [](int value) {
+        if (menuScene) {
+            menuScene->mainMenu(value);
+        }
+        };
 
-    int colorMenu = glutCreateMenu(BasicScene::mainMenu);
-    glutAddMenuEntry("Red", 8);
-    glutAddMenuEntry("Green", 9);
-    glutAddMenuEntry("Blue", 10);
+    rotationXMenu_ = glutCreateMenu(callback);
+    glutAddMenuEntry("45 Degrees", 1);
+    glutAddMenuEntry("90 Degrees", 2);
 
-    glutCreateMenu(BasicScene::mainMenu);
-    glutAddSubMenu("Rotate Camera", rotationMenu);
-    glutAddSubMenu("Render Mode", renderMenu);
-    glutAddSubMenu("Color Body", colorMenu);
+    rotationYMenu_ = glutCreateMenu(callback);
+    glutAddMenuEntry("45 Degrees", 3);
+    glutAddMenuEntry("90 Degrees", 4);
+
+    rotationZMenu_ = glutCreateMenu(callback);
+    glutAddMenuEntry("45 Degrees", 5);
+    glutAddMenuEntry("90 Degrees", 6);
+
+    rotationMenu_ = glutCreateMenu(callback);
+    glutAddSubMenu("X", rotationXMenu_);
+    glutAddSubMenu("Y", rotationYMenu_);
+    glutAddSubMenu("Z", rotationZMenu_);
+
+    perspectiveMenu_ = glutCreateMenu(callback);
+    glutAddMenuEntry("FOV: 60", 7);
+    glutAddMenuEntry("FOV: 120", 8);
+
+    renderMenu_ = glutCreateMenu(callback);
+    glutAddMenuEntry("Orthographic", 9);
+    glutAddSubMenu("Perspective", perspectiveMenu_);
+
+    colorMenu_ = glutCreateMenu(callback);
+    glutAddMenuEntry("Red", 10);
+    glutAddMenuEntry("Green", 11);
+    glutAddMenuEntry("Blue", 12);
+
+    mainMenu_ = glutCreateMenu(callback);
+    glutAddSubMenu("Rotate Camera", rotationMenu_);
+    glutAddSubMenu("Render Mode", renderMenu_);
+    glutAddSubMenu("Color Body", colorMenu_);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -60,34 +84,42 @@ void BasicScene::init() {
 void BasicScene::mainMenu(int value) {
     switch (value) {
         case 1: 
-            std::cout << "30 Degree Rotation to Camera\n"; 
+            camera_.pivotAroundTarget(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
             break;
         case 2:
-            std::cout << "60 Degree Rotation to Camera\n";
+            camera_.pivotAroundTarget(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
             break;
         case 3:
-            std::cout << "90 Degree Rotation to Camera\n";
+            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
             break;
         case 4:
-            std::cout << "120 Degree Rotation to Camera\n";
+            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
             break;
         case 5:
-            std::cout << "180 Degree Rotation to Camera\n";
+            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(45.0f));
             break;
         case 6:
-            std::cout << "Orthographic view\n";
+            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(90.0f));
             break;
         case 7:
-            draw();
+            camera_.setProjectionMode(Camera::ProjectionMode::Perspective);
+            camera_.setFOV(60.0);
             break;
         case 8:
-            std::cout << "Red body\n";
+            camera_.setProjectionMode(Camera::ProjectionMode::Perspective);
+            camera_.setFOV(120.0);
             break;
         case 9:
-            std::cout << "Green body\n";
+            camera_.setProjectionMode(Camera::ProjectionMode::Ortho);
             break;
         case 10:
-            std::cout << "Blue body\n";
+            changeRobotColor(EngineUtil::ColorRGB(255, 120, 120));
+            break;
+        case 11:
+            changeRobotColor(EngineUtil::ColorRGB(120, 255, 120));
+            break;
+        case 12:
+            changeRobotColor(EngineUtil::ColorRGB(120, 120, 255));
             break;
     }
 }
@@ -126,5 +158,44 @@ void BasicScene::update() {
 
     if (InputManager::getInstance().isPressed('l')) {
         camera_.setFOV(60.0);
+    }
+}
+
+void BasicScene::deInit() {
+    if (rotationXMenu_ != 0) {
+        glutDestroyMenu(rotationXMenu_);
+    }
+    if (rotationYMenu_ != 0) {
+        glutDestroyMenu(rotationYMenu_);
+    }
+    if (rotationZMenu_ != 0) {
+        glutDestroyMenu(rotationZMenu_);
+    }
+    if (rotationMenu_ != 0) {
+        glutDestroyMenu(rotationMenu_);
+    }
+
+    if (perspectiveMenu_ != 0) {
+        glutDestroyMenu(perspectiveMenu_);
+    }
+    if (renderMenu_ != 0) {
+        glutDestroyMenu(renderMenu_);
+    }
+
+    if (colorMenu_ != 0) {
+        glutDestroyMenu(colorMenu_);
+    }
+
+    if (mainMenu_ != 0) {
+        glutDestroyMenu(mainMenu_);
+    }
+}
+
+void BasicScene::changeRobotColor(EngineUtil::ColorRGB color) {
+    for (auto& obj : rootObjects_) {
+        Robot* robot = dynamic_cast<Robot*>(obj.get());
+        if (robot) {
+            robot->changeColor(color);
+        }
     }
 }

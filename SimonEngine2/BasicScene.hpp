@@ -10,7 +10,9 @@
 // Scene Interface
 #include "Scene.hpp"
 
+// Other SimonEngine includes
 #include "InputManager.hpp"
+#include "EngineUtil.hpp"
 
 class BasicScene : public Scene {
 	public:
@@ -23,9 +25,25 @@ class BasicScene : public Scene {
 		virtual void draw() const override final;
 
 		virtual void update() override final;
-		
-		static void mainMenu(int value);
 
+		virtual void deInit() override final;
+		
+		void mainMenu(int value);
+
+	private:
+		void changeRobotColor(EngineUtil::ColorRGB color);
+
+		int rotationXMenu_ = 0;
+		int rotationYMenu_ = 0;
+		int rotationZMenu_ = 0;
+		int rotationMenu_ = 0;
+
+		int perspectiveMenu_ = 0;
+		int renderMenu_ = 0;
+
+		int colorMenu_ = 0;
+
+		int mainMenu_ = 0;
 };
 
 #endif

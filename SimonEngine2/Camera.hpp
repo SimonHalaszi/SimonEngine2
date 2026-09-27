@@ -22,6 +22,9 @@ class Camera {
 		void setPosition(const EngineMath::Vector3& position);
 		void setTarget(const EngineMath::Vector3& target);
 
+		void pivotAroundTarget(const EngineMath::Quaternion& rotation);
+		void pivotAroundTarget(const EngineMath::Vector3& axis, float radians);
+
 		void zoomIn(double amount);
 		void zoomOut(double amount);
 

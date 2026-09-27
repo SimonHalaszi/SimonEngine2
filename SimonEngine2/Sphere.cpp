@@ -7,14 +7,10 @@ namespace {
     constexpr int maxStacks = 3;
 }
 
-Sphere::Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks) {
-    localTransform_ = localTransform;
+Sphere::Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks)
+    : Primitive(localTransform, color)
+{
     radius_ = localTransform_.scale_.x_ / 2.0f;
-
-    activeColor_ = color;
-    color_ = color;
-    grayColor_ = EngineUtil::ColorRGB::toGrayScale(color);
-
     slices_ = std::max(minSlices, slices);
     stacks_ = std::max(maxStacks, stacks);
     buildMesh();
@@ -40,15 +36,6 @@ void Sphere::buildMesh() {
 
 const EngineUtil::Vertex& Sphere::vertexAt(int stack, int slice) const {
     return vertices_[stack * (slices_ + 1) + slice];
-}
-
-void Sphere::draw() {
-    if (drawAsSolid_) {
-        drawSolid();
-    }
-    else {
-        drawEdges();
-    }
 }
 
 void Sphere::drawSolid() const {
@@ -99,22 +86,4 @@ void Sphere::drawEdges() const {
     }
 
     glEnd();
-}
-
-void Sphere::update() {
-    if (InputManager::getInstance().isPressed('s')) {
-        drawAsSolid_ = true;
-    }
-    if (InputManager::getInstance().isPressed('w')) {
-        drawAsSolid_ = false;
-    }
-    if (InputManager::getInstance().isMouseButtonPressed(MOUSEBUTTON_LEFT)) {
-        drawColor_ = !drawColor_;
-        if (drawColor_) {
-            activeColor_ = color_;
-        }
-        else {
-            activeColor_ = grayColor_;
-        }
-    }
 }

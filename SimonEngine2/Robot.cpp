@@ -18,8 +18,9 @@ namespace {
     constexpr float headDiameter = torsoWide;
 }
 
-Robot::Robot(const EngineMath::Transform& localTransform) {
+Robot::Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB color) {
     localTransform_ = localTransform;
+    color_ = color;
 }
 
 void Robot::onStart() {
@@ -30,7 +31,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(torsoWide, torsoTall, torsoThick)
         ),
-        EngineUtil::ColorRGB{ 155, 184, 222 }
+        color_
     ));
 
     // Left Arm
@@ -46,7 +47,7 @@ void Robot::onStart() {
 
     addChild(std::make_unique<RectangularPrism>(
         leftArmTransform,
-        EngineUtil::ColorRGB{ 155, 184, 222 }
+        color_
     ));
 
     // Right Arm
@@ -62,7 +63,7 @@ void Robot::onStart() {
 
     addChild(std::make_unique<RectangularPrism>(
         rightArmTransform,
-        EngineUtil::ColorRGB{ 155, 184, 222 }
+        color_
     ));
 
     // Left Leg
@@ -72,7 +73,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(legWideThick, legTall, legWideThick)
         ),
-        EngineUtil::ColorRGB{ 155, 184, 222 }
+        color_
     ));
     // Right Leg
     addChild(std::make_unique<RectangularPrism>(
@@ -81,7 +82,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(legWideThick, legTall, legWideThick)
         ),
-        EngineUtil::ColorRGB{ 155, 184, 222 }
+        color_
     ));
     
     // Head
@@ -91,7 +92,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(headDiameter, headDiameter, headDiameter)
         ),
-        EngineUtil::ColorRGB{ 155, 184, 222 },
+        color_,
         16,
         16
     ));
@@ -100,5 +101,14 @@ void Robot::onStart() {
 void Robot::update() {
     if (InputManager::getInstance().isPressed('m')) {
         toggleDrawing();
+    }
+}
+
+void Robot::changeColor(EngineUtil::ColorRGB color) {
+    for (auto& obj : children_) {
+        Primitive* primitive = dynamic_cast<Primitive*>(obj.get());
+        if (primitive) {
+            primitive->setColor(color);
+        }
     }
 }

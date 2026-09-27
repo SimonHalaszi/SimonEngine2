@@ -22,7 +22,7 @@ namespace EngineUtil {
 			}
 
 			static ColorRGB toGrayScale(const ColorRGB& c) {
-				float base = 0.299 * c.r_ + 0.587 * c.g_ + 0.114 * c.b_;
+				float base = 0.299f * c.r_ + 0.587f * c.g_ + 0.114f * c.b_;
 				return ColorRGB(base, base, base);
 			}
 	};
