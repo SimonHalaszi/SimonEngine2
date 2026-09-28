@@ -18,7 +18,7 @@ void BasicScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineUtil::ColorRGB(255, 120, 120)
+        EngineUtil::ColorRGB(125, 125, 125)
     ));
     addRootObject(std::make_unique<AxisDisplay>(
         EngineMath::Transform(
@@ -41,7 +41,7 @@ void BasicScene::init() {
         if (menuScene) {
             menuScene->mainMenu(value);
         }
-        };
+    };
 
     rotationXMenu_ = glutCreateMenu(callback);
     glutAddMenuEntry("45 Degrees", 1);
