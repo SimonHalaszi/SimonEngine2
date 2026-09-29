@@ -1,6 +1,6 @@
 #include "Sphere.hpp"
 
-#include "Engine.hpp"
+#include "MeshRegistry.hpp"
 
 namespace {
     constexpr int minSlices = 3;
@@ -10,35 +10,20 @@ namespace {
 Sphere::Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks)
     : Primitive(localTransform, color)
 {
-    radius_ = localTransform_.scale_.x_ / 2.0f;
     slices_ = std::max(minSlices, slices);
     stacks_ = std::max(maxStacks, stacks);
-    buildMesh();
-}
-
-void Sphere::buildMesh() {
-    vertices_.clear();
-
-    for (int stack = 0; stack <= stacks_; ++stack) {
-        const float phi = EngineMath::PI * static_cast<float>(stack) / stacks_;
-
-        for (int slice = 0; slice <= slices_; ++slice) {
-            const float theta = 2.0f * EngineMath::PI * static_cast<float>(slice) / slices_;
-
-            const float x = std::sin(phi) * std::cos(theta);
-            const float y = std::cos(phi);
-            const float z = std::sin(phi) * std::sin(theta);
-
-            vertices_.push_back({radius_ * x, radius_ * y, radius_ * z});
-        }
-    }
+    mesh_ = MeshRegistry::getInstance().getSphere(slices_, stacks_);
 }
 
 const EngineUtil::Vertex& Sphere::vertexAt(int stack, int slice) const {
-    return vertices_[stack * (slices_ + 1) + slice];
+    return mesh_->vertices_[stack * (slices_ + 1) + slice];
 }
 
 void Sphere::drawSolid() const {
+    if (!mesh_) {
+        return;
+    }
+
     glDisable(GL_TEXTURE_2D);
 
     glColor3f(activeColor_.r_, activeColor_.g_, activeColor_.b_);
@@ -59,6 +44,10 @@ void Sphere::drawSolid() const {
 }
 
 void Sphere::drawEdges() const {
+    if (!mesh_) {
+        return;
+    }
+
     glDisable(GL_TEXTURE_2D);
 
     glColor3f(1.0f, 1.0f, 1.0f);;

@@ -8,13 +8,22 @@ void BasicScene::init() {
     //        EngineMath::Vector3(1.0f, 1.0f, 1.0f)
     //    )
     //));
-    addRootObject(std::make_unique<Robot>(
+    //addRootObject(std::make_unique<Robot>(
+    //    EngineMath::Transform(
+    //        EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+    //        EngineMath::Quaternion::identity(),
+    //        EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    //    ),
+    //    EngineUtil::ColorRGB(125, 125, 125)
+    //));
+    addRootObject(std::make_unique<ObjMesh>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+            EngineMath::Vector3(0.25f, 0.25f, 0.25f)
         ),
-        EngineUtil::ColorRGB(125, 125, 125)
+        EngineUtil::ColorRGB(125, 125, 125),
+        "../Assets/teapot.obj"
     ));
     addRootObject(std::make_unique<AxisDisplay>(
         EngineMath::Transform(
@@ -27,7 +36,7 @@ void BasicScene::init() {
     std::unique_ptr<Object>& first = rootObjects_.front();
 
     camera_.setTarget(first->getWorldTransform().position_);
-    camera_.setPosition(EngineMath::Vector3(0.0f, 0.0f, -5.0f));
+    camera_.setPosition(EngineMath::Vector3(5.0f, 5.0f, 5.0f));
 
     // Making menu
     static BasicScene* menuScene = nullptr;
@@ -57,8 +66,8 @@ void BasicScene::init() {
     glutAddSubMenu("Z", rotationZMenu_);
 
     perspectiveMenu_ = glutCreateMenu(callback);
-    glutAddMenuEntry("FOV: 60", 7);
-    glutAddMenuEntry("FOV: 120", 8);
+    glutAddMenuEntry("FOV: 30", 7);
+    glutAddMenuEntry("FOV: 75", 8);
 
     renderMenu_ = glutCreateMenu(callback);
     glutAddMenuEntry("Orthographic", 9);
@@ -70,7 +79,7 @@ void BasicScene::init() {
     glutAddMenuEntry("Blue", 12);
 
     mainMenu_ = glutCreateMenu(callback);
-    glutAddSubMenu("Rotate Camera", rotationMenu_);
+    glutAddSubMenu("Rotate Object", rotationMenu_);
     glutAddSubMenu("Render Mode", renderMenu_);
     glutAddSubMenu("Color Body", colorMenu_);
 
@@ -78,53 +87,87 @@ void BasicScene::init() {
 }
 
 void BasicScene::mainMenu(int value) {
+    Object* first = rootObjects_.front().get();
+    EngineMath::Transform wt;
+    if (first) {
+        wt = first->getWorldTransform();
+    }
+
     Robot* robot = getRobot();
-    EngineMath::Transform wt = robot->getWorldTransform();
+
+    Primitive* prim = dynamic_cast<Primitive*>(first);
     
     switch (value) {
         case 1: 
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
-            robot->setTransform(wt);
+            if (first) {
+                first->setTransform(wt);
+            }
             break;
         case 2:
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
-            robot->setTransform(wt);
+            if (first) {
+                first->setTransform(wt);
+            }
             break;
         case 3:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
-            robot->setTransform(wt);
+            if (first) {
+                first->setTransform(wt);
+            }
             break;
         case 4:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
-            robot->setTransform(wt);
+            if (first) {
+                first->setTransform(wt);
+            }
             break;
         case 5:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(45.0f));
-            robot->setTransform(wt);
+            if (first) {
+                first->setTransform(wt);
+            }
             break;
         case 6:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(90.0f));
-            robot->setTransform(wt);
+            if (first) {
+                first->setTransform(wt);
+            }
             break;
         case 7:
             camera_.setProjectionMode(Camera::ProjectionMode::Perspective);
-            camera_.setFOV(60.0);
+            camera_.setFOV(30.0);
             break;
         case 8:
             camera_.setProjectionMode(Camera::ProjectionMode::Perspective);
-            camera_.setFOV(120.0);
+            camera_.setFOV(75.0);
             break;
         case 9:
             camera_.setProjectionMode(Camera::ProjectionMode::Ortho);
             break;
         case 10:
-            robot->changeColor(EngineUtil::ColorRGB(255, 120, 120));
+            if (robot) {
+                robot->changeColor(EngineUtil::ColorRGB(255, 120, 120));
+            }
+            if (prim) {
+                prim->setColor(EngineUtil::ColorRGB(255, 120, 120));
+            }
             break;
         case 11:
-            robot->changeColor(EngineUtil::ColorRGB(120, 255, 120));
+            if (robot) {
+                robot->changeColor(EngineUtil::ColorRGB(120, 255, 120));
+            }
+            if (prim) {
+                prim->setColor(EngineUtil::ColorRGB(120, 255, 120));
+            }
             break;
         case 12:
-            robot->changeColor(EngineUtil::ColorRGB(120, 120, 255));
+            if (robot) {
+                robot->changeColor(EngineUtil::ColorRGB(120, 120, 255));
+            }
+            if (prim) {
+                prim->setColor(EngineUtil::ColorRGB(120, 120, 255));
+            }
             break;
     }
 }

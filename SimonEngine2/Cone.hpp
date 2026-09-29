@@ -1,7 +1,7 @@
 #ifndef CONE_HPP
 #define CONE_HPP
 
-#include <vector>
+#include <algorithm>
 
 #include "Primitive.hpp"
 #include "EngineMath.hpp"
@@ -13,13 +13,8 @@ class Cone : public Primitive {
         Cone(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices);
 
     private:
-        float radius_ = 0.5f;
-        float halfHeight_ = 0.5f;
         int slices_ = 16;
-
-        void buildMesh();
-
-        std::vector<EngineUtil::Vertex> vertices_;
+        const EngineUtil::Mesh* mesh_ = nullptr;
 
         void drawSolid() const override;
         void drawEdges() const override;

@@ -18,6 +18,7 @@
 #include "MagicCube.hpp"
 #include "Robot.hpp"
 #include "AxisDisplay.hpp"
+#include "ObjMesh.hpp"
 
 class BasicScene : public Scene {
 	public:

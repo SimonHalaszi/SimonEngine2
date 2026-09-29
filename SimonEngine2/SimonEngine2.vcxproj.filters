@@ -114,6 +114,12 @@
     <ClCompile Include="Primitive.cpp">
       <Filter>Source Files\Objects\Primitives\Source</Filter>
     </ClCompile>
+    <ClCompile Include="MeshRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjMesh.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -169,6 +175,12 @@
     </ClInclude>
     <ClInclude Include="Primitive.hpp">
       <Filter>Header Files\Objects\Primitives\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRegistry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjMesh.hpp">
+      <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

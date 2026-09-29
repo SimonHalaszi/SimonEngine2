@@ -1,6 +1,6 @@
 #include "Cylinder.hpp"
 
-#include "Engine.hpp"
+#include "MeshRegistry.hpp"
 
 namespace {
     constexpr int minSlices = 3;
@@ -9,35 +9,19 @@ namespace {
 Cylinder::Cylinder(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices)
     : Primitive(localTransform, color)
 {
-    radius_ = localTransform_.scale_.x_ / 2.0f;
-    halfHeight_ = localTransform_.scale_.y_ / 2.0f;
     slices_ = std::max(minSlices, slices);
-    buildMesh();
-}
-
-void Cylinder::buildMesh() {
-    vertices_.clear();
-
-    for (int ring = 0; ring < 2; ++ring) {
-        const float y = (ring == 0) ? -halfHeight_ : halfHeight_;
-
-        for (int slice = 0; slice <= slices_; ++slice) {
-            const float theta =
-                2.0f * EngineMath::PI * static_cast<float>(slice) / slices_;
-
-            const float x = radius_ * std::cos(theta);
-            const float z = radius_ * std::sin(theta);
-
-            vertices_.push_back({ x, y, z });
-        }
-    }
+    mesh_ = MeshRegistry::getInstance().getCylinder(slices_);
 }
 
 const EngineUtil::Vertex& Cylinder::vertexAt(int ring, int slice) const {
-    return vertices_[ring * (slices_ + 1) + slice];
+    return mesh_->vertices_[ring * (slices_ + 1) + slice];
 }
 
 void Cylinder::drawSolid() const {
+    if (!mesh_) {
+        return;
+    }
+
     glDisable(GL_TEXTURE_2D);
 
     glColor3f(activeColor_.r_, activeColor_.g_, activeColor_.b_);
@@ -56,7 +40,7 @@ void Cylinder::drawSolid() const {
 
     glBegin(GL_TRIANGLE_FAN);
 
-    glVertex3f(0.0f, -halfHeight_, 0.0f);
+    glVertex3f(0.0f, -0.5f, 0.0f);
 
     for (int slice = slices_; slice >= 0; --slice) {
         const EngineUtil::Vertex& v = vertexAt(0, slice);
@@ -67,7 +51,7 @@ void Cylinder::drawSolid() const {
 
     glBegin(GL_TRIANGLE_FAN);
 
-    glVertex3f(0.0f, halfHeight_, 0.0f);
+    glVertex3f(0.0f, 0.5f, 0.0f);
 
     for (int slice = 0; slice <= slices_; ++slice) {
         const EngineUtil::Vertex& v = vertexAt(1, slice);
@@ -78,6 +62,10 @@ void Cylinder::drawSolid() const {
 }
 
 void Cylinder::drawEdges() const {
+    if (!mesh_) {
+        return;
+    }
+
     glDisable(GL_TEXTURE_2D);
 
     glColor3f(1.0f, 1.0f, 1.0f);

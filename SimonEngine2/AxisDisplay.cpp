@@ -22,10 +22,10 @@ void AxisDisplay::onStart() {
         EngineMath::Transform(
             EngineMath::Vector3(1.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
-            EngineMath::Vector3(0.25f, 0.25f, 0.25f)
+            EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
         EngineUtil::ColorRGB{ 255, 0, 0 },
-        4
+        8
     ));
 
     addChild(std::make_unique<Line>(
@@ -41,10 +41,10 @@ void AxisDisplay::onStart() {
         EngineMath::Transform(
             EngineMath::Vector3(1.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
-            EngineMath::Vector3(0.25f, 0.25f, 0.25f)
+            EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
         EngineUtil::ColorRGB{ 0, 255, 0 },
-        4
+        8
     ));
 
     addChild(std::make_unique<Line>(
@@ -60,10 +60,10 @@ void AxisDisplay::onStart() {
         EngineMath::Transform(
             EngineMath::Vector3(1.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
-            EngineMath::Vector3(0.25f, 0.25f, 0.25f)
+            EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
         EngineUtil::ColorRGB{ 0, 0, 255 },
-        4
+        8
     ));
 }
 

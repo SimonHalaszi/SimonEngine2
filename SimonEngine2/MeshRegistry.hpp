@@ -5,6 +5,10 @@
 #include <GL/freeglut.h>
 
 #include <unordered_map>
+#include <unordered_set>
+#include <fstream>
+#include <sstream> 
+#include <cstdint>
 #include <iostream>
 #include <string>
 
@@ -25,7 +29,7 @@ class MeshRegistry {
 		const EngineUtil::Mesh* getCylinder(int slices);
 		const EngineUtil::Mesh* getRectangularPrism(); // Kinda useless but for consistent interface
 		const EngineUtil::Mesh* getSphere(int slices, int stacks);
-		const EngineUtil::Mesh* getDotObj(std::string filepath);
+		const EngineUtil::Mesh* getDotObj(const std::string& filepath);
 
 		void clearRegistry() { std::cout << "MeshRegistry::clearRegistry : Cleared MeshRegistry\n"; registry_.clear(); }
 

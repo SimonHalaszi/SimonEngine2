@@ -1,76 +1,50 @@
 #include "RectangularPrism.hpp"
 
-#include "Engine.hpp"
+#include "MeshRegistry.hpp"
+
+RectangularPrism::RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color)
+    : Primitive(localTransform, color), mesh_(MeshRegistry::getInstance().getRectangularPrism()) {
+}
 
 void RectangularPrism::drawSolid() const {
+    if (!mesh_) {
+        return;
+    }
+
     glDisable(GL_TEXTURE_2D);
-
-    const float hx = 0.5f;
-    const float hy = 0.5f;
-    const float hz = 0.5f;
-
-    glBegin(GL_QUADS);
 
     glColor3f(activeColor_.r_, activeColor_.g_, activeColor_.b_);
 
-    glVertex3f(-hx, -hy, hz);
-    glVertex3f(hx, -hy, hz);
-    glVertex3f(hx, hy, hz);
-    glVertex3f(-hx, hy, hz);
+    glBegin(GL_QUADS);
 
-    glVertex3f(hx, -hy, -hz);
-    glVertex3f(-hx, -hy, -hz);
-    glVertex3f(-hx, hy, -hz);
-    glVertex3f(hx, hy, -hz);
-
-    glVertex3f(-hx, -hy, -hz);
-    glVertex3f(-hx, -hy, hz);
-    glVertex3f(-hx, hy, hz);
-    glVertex3f(-hx, hy, -hz);
-
-    glVertex3f(hx, -hy, hz);
-    glVertex3f(hx, -hy, -hz);
-    glVertex3f(hx, hy, -hz);
-    glVertex3f(hx, hy, hz);
-
-    glVertex3f(-hx, hy, hz);
-    glVertex3f(hx, hy, hz);
-    glVertex3f(hx, hy, -hz);
-    glVertex3f(-hx, hy, -hz);
-
-    glVertex3f(-hx, -hy, -hz);
-    glVertex3f(hx, -hy, -hz);
-    glVertex3f(hx, -hy, hz);
-    glVertex3f(-hx, -hy, hz);
+    for (const auto& vertex : mesh_->vertices_) {
+        glVertex3f(vertex.x_, vertex.y_, vertex.z_);
+    }
 
     glEnd();
 }
 
 void RectangularPrism::drawEdges() const {
-    glDisable(GL_TEXTURE_2D);
+    if (!mesh_) {
+        return;
+    }
 
-    const float hx = 0.5f;
-    const float hy = 0.5f;
-    const float hz = 0.5f;
+    glDisable(GL_TEXTURE_2D);
 
     glColor3f(1.0f, 1.0f, 1.0f);;
 
     glBegin(GL_LINES);
 
-    glVertex3f(-hx, -hy, hz); glVertex3f(hx, -hy, hz);
-    glVertex3f(hx, -hy, hz); glVertex3f(hx, hy, hz);
-    glVertex3f(hx, hy, hz); glVertex3f(-hx, hy, hz);
-    glVertex3f(-hx, hy, hz); glVertex3f(-hx, -hy, hz);
+    static constexpr int edgeVertexIndices[] = {
+        0, 1, 1, 2, 2, 3, 3, 0,
+        4, 5, 5, 6, 6, 7, 7, 4,
+        9, 8, 12, 13, 15, 14, 10, 11
+    };
 
-    glVertex3f(-hx, -hy, -hz); glVertex3f(hx, -hy, -hz);
-    glVertex3f(hx, -hy, -hz); glVertex3f(hx, hy, -hz);
-    glVertex3f(hx, hy, -hz); glVertex3f(-hx, hy, -hz);
-    glVertex3f(-hx, hy, -hz); glVertex3f(-hx, -hy, -hz);
-
-    glVertex3f(-hx, -hy, hz); glVertex3f(-hx, -hy, -hz);
-    glVertex3f(hx, -hy, hz); glVertex3f(hx, -hy, -hz);
-    glVertex3f(hx, hy, hz); glVertex3f(hx, hy, -hz);
-    glVertex3f(-hx, hy, hz); glVertex3f(-hx, hy, -hz);
+    for (int index : edgeVertexIndices) {
+        const auto& vertex = mesh_->vertices_[index];
+        glVertex3f(vertex.x_, vertex.y_, vertex.z_);
+    }
 
     glEnd();
 }

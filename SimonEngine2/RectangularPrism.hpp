@@ -8,9 +8,10 @@
 class RectangularPrism : public Primitive {
 	public:
 		RectangularPrism() = default;
-		RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) : Primitive(localTransform, color) {}
+		RectangularPrism(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color);
 
 	private:
+		const EngineUtil::Mesh* mesh_ = nullptr;
 		void drawSolid() const override;
 		void drawEdges() const override;
 };

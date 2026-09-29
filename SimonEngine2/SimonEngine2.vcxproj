@@ -155,7 +155,9 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="MagicCube.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MeshRegistry.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjMesh.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="RectangularPrism.cpp" />
     <ClCompile Include="Robot.cpp" />
@@ -174,7 +176,9 @@
     <ClInclude Include="EngineUtil.hpp" />
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="MagicCube.hpp" />
+    <ClInclude Include="MeshRegistry.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="ObjMesh.hpp" />
     <ClInclude Include="Primitive.hpp" />
     <ClInclude Include="RectangularPrism.hpp" />
     <ClInclude Include="Robot.hpp" />
