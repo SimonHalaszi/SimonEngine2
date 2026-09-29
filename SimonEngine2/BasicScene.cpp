@@ -1,9 +1,5 @@
 #include "BasicScene.hpp"
 
-#include "MagicCube.hpp"
-#include "Robot.hpp"
-#include "AxisDisplay.hpp"
-
 void BasicScene::init() {
     //addRootObject(std::make_unique<MagicCube>(
     //    EngineMath::Transform(
@@ -82,24 +78,33 @@ void BasicScene::init() {
 }
 
 void BasicScene::mainMenu(int value) {
+    Robot* robot = getRobot();
+    EngineMath::Transform wt = robot->getWorldTransform();
+    
     switch (value) {
         case 1: 
-            camera_.pivotAroundTarget(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
+            wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
+            robot->setTransform(wt);
             break;
         case 2:
-            camera_.pivotAroundTarget(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
+            wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
+            robot->setTransform(wt);
             break;
         case 3:
-            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
+            wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
+            robot->setTransform(wt);
             break;
         case 4:
-            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
+            wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
+            robot->setTransform(wt);
             break;
         case 5:
-            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(45.0f));
+            wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(45.0f));
+            robot->setTransform(wt);
             break;
         case 6:
-            camera_.pivotAroundTarget(EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(90.0f));
+            wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(90.0f));
+            robot->setTransform(wt);
             break;
         case 7:
             camera_.setProjectionMode(Camera::ProjectionMode::Perspective);
@@ -113,13 +118,13 @@ void BasicScene::mainMenu(int value) {
             camera_.setProjectionMode(Camera::ProjectionMode::Ortho);
             break;
         case 10:
-            changeRobotColor(EngineUtil::ColorRGB(255, 120, 120));
+            robot->changeColor(EngineUtil::ColorRGB(255, 120, 120));
             break;
         case 11:
-            changeRobotColor(EngineUtil::ColorRGB(120, 255, 120));
+            robot->changeColor(EngineUtil::ColorRGB(120, 255, 120));
             break;
         case 12:
-            changeRobotColor(EngineUtil::ColorRGB(120, 120, 255));
+            robot->changeColor(EngineUtil::ColorRGB(120, 120, 255));
             break;
     }
 }
@@ -191,11 +196,12 @@ void BasicScene::deInit() {
     }
 }
 
-void BasicScene::changeRobotColor(EngineUtil::ColorRGB color) {
+Robot* BasicScene::getRobot() {
     for (auto& obj : rootObjects_) {
         Robot* robot = dynamic_cast<Robot*>(obj.get());
         if (robot) {
-            robot->changeColor(color);
+            return robot;
         }
     }
+    return nullptr;
 }

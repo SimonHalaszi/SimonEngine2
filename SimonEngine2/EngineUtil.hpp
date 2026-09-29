@@ -3,6 +3,8 @@
 
 // My little util library!
 
+#include <vector>
+
 namespace EngineUtil {
 	class ColorRGB {
 		public:
@@ -33,6 +35,14 @@ namespace EngineUtil {
 
 	enum class Axis {
 		X, Y, Z
+	};
+
+	class Mesh {
+		public:
+			Mesh() = default;
+			std::vector<Vertex> vertices_;
+			std::vector<int> faceIndices_;
+			std::vector<int> edgeIndices_;
 	};
 }
 

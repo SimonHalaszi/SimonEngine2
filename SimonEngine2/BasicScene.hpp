@@ -14,6 +14,11 @@
 #include "InputManager.hpp"
 #include "EngineUtil.hpp"
 
+// Objects
+#include "MagicCube.hpp"
+#include "Robot.hpp"
+#include "AxisDisplay.hpp"
+
 class BasicScene : public Scene {
 	public:
 		BasicScene() : Scene(244, 244, 10) {}
@@ -31,7 +36,7 @@ class BasicScene : public Scene {
 		void mainMenu(int value);
 
 	private:
-		void changeRobotColor(EngineUtil::ColorRGB color);
+		Robot* getRobot();
 
 		int rotationXMenu_ = 0;
 		int rotationYMenu_ = 0;
