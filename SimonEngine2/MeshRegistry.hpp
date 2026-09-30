@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <cmath>
 
 #include "EngineUtil.hpp"
 #include "EngineMath.hpp"

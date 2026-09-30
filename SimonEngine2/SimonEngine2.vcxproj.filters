@@ -120,6 +120,9 @@
     <ClCompile Include="ObjMesh.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
+    <ClCompile Include="ObjScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -181,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="ObjMesh.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

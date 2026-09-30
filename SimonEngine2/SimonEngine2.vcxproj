@@ -158,6 +158,7 @@
     <ClCompile Include="MeshRegistry.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjMesh.cpp" />
+    <ClCompile Include="ObjScene.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="RectangularPrism.cpp" />
     <ClCompile Include="Robot.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="MeshRegistry.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjMesh.hpp" />
+    <ClInclude Include="ObjScene.hpp" />
     <ClInclude Include="Primitive.hpp" />
     <ClInclude Include="RectangularPrism.hpp" />
     <ClInclude Include="Robot.hpp" />

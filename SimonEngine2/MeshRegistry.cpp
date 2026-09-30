@@ -1,8 +1,5 @@
 #include "MeshRegistry.hpp"
 
-#include <cmath>
-
-
 namespace {
 	constexpr float unit = 1.0f;
 	constexpr float halfUnit = unit / 2.0f;

@@ -38,6 +38,7 @@ class BasicScene : public Scene {
 
 	private:
 		Robot* getRobot();
+		Robot* robot = nullptr;
 
 		int rotationXMenu_ = 0;
 		int rotationYMenu_ = 0;
