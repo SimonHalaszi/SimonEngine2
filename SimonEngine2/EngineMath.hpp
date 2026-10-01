@@ -56,7 +56,6 @@ namespace EngineMath {
 			static Quaternion fromAxisAngle(const Vector3& axis, float radians) {
 				float axisLengthSquared = axis.lengthSquared();
 
-				// There is no meaningful rotation axis here.
 				if (axisLengthSquared <= 1e-8f) { return Quaternion::identity(); }
 
 				Vector3 n = axis * (1.0f / std::sqrt(axisLengthSquared));
@@ -87,7 +86,7 @@ namespace EngineMath {
 			// Inverse, if normalized
 			Quaternion conjugate() const { return { -x_, -y_, -z_, w_ }; }
 
-			// Rotate a vector by this quaternion
+			// Rotate a vector by this
 			Vector3 rotate(const Vector3& v) const {
 				Quaternion vq(v.x_, v.y_, v.z_, 0.0f);
 				Quaternion result = (*this) * vq * conjugate();

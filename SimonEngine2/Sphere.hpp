@@ -10,7 +10,7 @@
 class Sphere : public Primitive {
 	public:
 		Sphere() = default;
-		// The local transform scale controls sphere size; x, y, and z should stay equal to avoid stretching it into an ellipsoid.
+		// X, Y, Z should be equal in scale
 		Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks);
 
 	private:

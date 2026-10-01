@@ -39,10 +39,10 @@ class InputManager {
 
         void mouseMove(int x, int y);
 
-        int mouseX()        const;
-        int mouseY()        const;
-        int mouseDeltaX()   const;
-        int mouseDeltaY()   const;
+        int mouseX() const;
+        int mouseY() const;
+        int mouseDeltaX() const;
+        int mouseDeltaY() const;
 
         void queueTypedChar(unsigned char key);
         const std::string& getTypedChars() const;
