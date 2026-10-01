@@ -247,6 +247,10 @@ void ObjScene::update() {
         camera_.zoomOut(zoomAmount);
     }
 
+    if (InputManager::getInstance().isPressed('c')) {
+        isDrawing_ = !isDrawing_;
+    }
+
     if (InputManager::getInstance().isPressed('1')) {
         Engine::getInstance().changeScene(std::make_unique<RobotScene>());
     }
