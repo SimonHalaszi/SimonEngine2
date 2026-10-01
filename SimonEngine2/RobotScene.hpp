@@ -1,5 +1,5 @@
-#ifndef BASIC_SCENE_HPP
-#define BASIC_SCENE_HPP
+#ifndef ROBOT_SCENE_HPP
+#define ROBOT_SCENE_HPP
 
 // Needed C++ Includes
 #include <string>
@@ -20,15 +20,15 @@
 #include "AxisDisplay.hpp"
 #include "ObjMesh.hpp"
 
-class BasicScene : public Scene {
+class RobotScene : public Scene {
 	public:
-		BasicScene() : Scene(244, 244, 10) {}
+		RobotScene() : Scene(244, 244, 10) {}
 
-		~BasicScene() {}
+		~RobotScene() {}
 
 		virtual void init() override final;
 
-		virtual void draw() const override final;
+		virtual void draw() const override final {}
 
 		virtual void update() override final;
 
@@ -38,7 +38,7 @@ class BasicScene : public Scene {
 
 	private:
 		Robot* getRobot();
-		Robot* robot = nullptr;
+		Robot* robot_ = nullptr;
 
 		int rotationXMenu_ = 0;
 		int rotationYMenu_ = 0;

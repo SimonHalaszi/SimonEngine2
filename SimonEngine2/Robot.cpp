@@ -104,7 +104,7 @@ void Robot::update() {
     }
 }
 
-void Robot::changeColor(EngineUtil::ColorRGB color) {
+void Robot::setColor(EngineUtil::ColorRGB color) {
     for (auto& obj : children_) {
         Primitive* primitive = dynamic_cast<Primitive*>(obj.get());
         if (primitive) {

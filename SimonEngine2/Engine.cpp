@@ -16,30 +16,32 @@ void Engine::changeScene(std::unique_ptr<Scene> newScene) {
 	pendingScene_ = std::move(newScene);
 }
 
-void Engine::updateTimer(int v) {
-	int updatesPerSecond = 1;
-
-	if (pendingScene_) {
-		if (currentScene_) {
-			currentScene_->sceneDeInit();
-		}
-
-		currentScene_ = std::move(pendingScene_);
-
-		if (currentScene_) {
-			currentScene_->sceneInit();
-		}
+void Engine::applyPendingScene() {
+	if (!pendingScene_) {
+		return;
 	}
 
 	if (currentScene_) {
-		updatesPerSecond = currentScene_->getUpdateSpeed();
+		currentScene_->sceneDeInit();
 	}
+
+	currentScene_ = std::move(pendingScene_);
+	InputManager::getInstance().reset();
+
+	if (currentScene_) {
+		currentScene_->sceneInit();
+	}
+}
+
+void Engine::updateTimer(int v) {
+	applyPendingScene();
+
+	int updatesPerSecond = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
 
 	if (currentScene_ && currentScene_->isUpdating()) {
 		currentScene_->sceneUpdate();
 	}
 
-	// Input manager updates.
 	InputManager::getInstance().update();
 
 	glutTimerFunc(int(1000 / updatesPerSecond), ENGINEupdateTimer, v);
@@ -88,7 +90,7 @@ void Engine::animationTimer(int v) {
 	glutTimerFunc(int(1000 / animationUpdatesPerSecond), ENGINEanimationTimer, v); // Creates a frame delay that is counted in miliseconds
 }
 
-#include "BasicScene.hpp"
+#include "RobotScene.hpp"
 
 void Engine::init() {
 	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
@@ -116,7 +118,7 @@ void Engine::init() {
 	glutPassiveMotionFunc(INPUTMANAGERpassiveMouseMove);
 
 	if (!currentScene_) {
-		currentScene_ = std::make_unique<BasicScene>();
+		currentScene_ = std::make_unique<RobotScene>();
 	}
 
 	if (currentScene_) {
@@ -128,6 +130,9 @@ void Engine::init() {
 	glutTimerFunc(0, ENGINEanimationTimer, 0);
 	glutTimerFunc(0, ENGINEupdateTimer, 0);
 	glutTimerFunc(0, ENGINEframeTimer, 0);
+
+	std::cout << "Due to limitations in gluts menus the window unfocuses on all scene changes. So you have to refocus the window.\n";
+	std::cout << "I dunno why it does this though. I guess it just unfocuses windows when menus are attached to inputs\n";
 }
 
 void Engine::safeExit() {

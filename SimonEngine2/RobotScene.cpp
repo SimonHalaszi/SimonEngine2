@@ -1,14 +1,13 @@
-#include "ObjScene.hpp"
+#include "RobotScene.hpp"
 
-void ObjScene::init() {
-    addRootObject(std::make_unique<ObjMesh>(
+void RobotScene::init() {
+    addRootObject(std::make_unique<Robot>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(0.25f, 0.25f, 0.25f)
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineUtil::ColorRGB(50, 185, 235),
-        "../Assets/teapot.obj"
+        EngineUtil::ColorRGB(50, 185, 235)
     ));
     addRootObject(std::make_unique<AxisDisplay>(
         EngineMath::Transform(
@@ -24,7 +23,7 @@ void ObjScene::init() {
     camera_.setPosition(EngineMath::Vector3(5.0f, 5.0f, 5.0f));
 
     // Making menu
-    static ObjScene* menuScene = nullptr;
+    static RobotScene* menuScene = nullptr;
     menuScene = this;
 
     auto callback = [](int value) {
@@ -82,107 +81,107 @@ void ObjScene::init() {
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-    objMesh_ = getObjMesh();
+    robot_ = getRobot();
 }
 
-void ObjScene::mainMenu(int value) {
+void RobotScene::mainMenu(int value) {
     EngineMath::Transform wt;
-    if (objMesh_) {
-        wt = objMesh_->getWorldTransform();
+    if (robot_) {
+        wt = robot_->getWorldTransform();
     }
-
+    
     switch (value) {
         case 1001:
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(30.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 1002:
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 1003:
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 1004:
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(180.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 1005:
             wt.rotateAround(wt.position_, EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(270.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
 
         case 2001:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(30.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 2002:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 2003:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(90.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 2004:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(180.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 2005:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(270.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
 
 
         case 3001:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(30.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 3002:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(45.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 3003:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(90.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 3004:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(180.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
         case 3005:
             wt.rotateAround(wt.position_, EngineMath::Vector3(0.0f, 0.0f, 1.0f), EngineMath::degreesToRadians(270.0f));
-            if (objMesh_) {
-                objMesh_->setTransform(wt);
+            if (robot_) {
+                robot_->setTransform(wt);
             }
             break;
 
@@ -199,44 +198,43 @@ void ObjScene::mainMenu(int value) {
             break;
 
         case 5001:
-            if (objMesh_) {
-                objMesh_->setColor(EngineUtil::ColorRGB(235, 70, 50));
+            if (robot_) {
+                robot_->setColor(EngineUtil::ColorRGB(235, 70, 50));
             }
             break;
         case 5002:
-            if (objMesh_) {
-                objMesh_->setColor(EngineUtil::ColorRGB(235, 145, 50));
+            if (robot_) {
+                robot_->setColor(EngineUtil::ColorRGB(235, 145, 50));
             }
             break;
         case 5003:
-            if (objMesh_) {
-                objMesh_->setColor(EngineUtil::ColorRGB(235, 230, 50));
+            if (robot_) {
+                robot_->setColor(EngineUtil::ColorRGB(235, 230, 50));
             }
             break;
         case 5004:
-            if (objMesh_) {
-                objMesh_->setColor(EngineUtil::ColorRGB(50, 235, 90));
+            if (robot_) {
+                robot_->setColor(EngineUtil::ColorRGB(50, 235, 90));
             }
             break;
         case 5005:
-            if (objMesh_) {
-                objMesh_->setColor(EngineUtil::ColorRGB(50, 185, 235));
+            if (robot_) {
+                robot_->setColor(EngineUtil::ColorRGB(50, 185, 235));
             }
             break;
         case 5006:
-            if (objMesh_) {
-                objMesh_->setColor(EngineUtil::ColorRGB(170, 50, 235));
+            if (robot_) {
+                robot_->setColor(EngineUtil::ColorRGB(170, 50, 235));
             }
             break;
     }
 }
 
 #include "Engine.hpp"
+#include "ObjScene.hpp"
 #include "MagicCubeScene.hpp"
-#include "RobotScene.hpp"
 
-void ObjScene::update() {
-
+void RobotScene::update() {
     const bool isPerspective = (camera_.getProjectionMode() == Camera::ProjectionMode::Perspective);
     const double zoomAmount = isPerspective ? 2.0 : 0.05;
 
@@ -247,22 +245,22 @@ void ObjScene::update() {
         camera_.zoomOut(zoomAmount);
     }
 
+    if (InputManager::getInstance().isPressed('c')) {
+        isDrawing_ = !isDrawing_;
+    }
+
     if (InputManager::getInstance().isPressed('1')) {
-        Engine::getInstance().changeScene(std::make_unique<RobotScene>());
+        // Already here
     }
     if (InputManager::getInstance().isPressed('2')) {
-        // Already here
+        Engine::getInstance().changeScene(std::make_unique<ObjScene>());
     }
     if (InputManager::getInstance().isPressed('3')) {
         Engine::getInstance().changeScene(std::make_unique<MagicCubeScene>());
     }
-
-    if (InputManager::getInstance().isPressed('m')) {
-        objMesh_->toggleDrawing();
-    }
 }
 
-void ObjScene::deInit() {
+void RobotScene::deInit() {
     glutDetachMenu(GLUT_RIGHT_BUTTON);
     
     if (rotationXMenu_ != 0) {
@@ -294,11 +292,11 @@ void ObjScene::deInit() {
     }
 }
 
-ObjMesh* ObjScene::getObjMesh() {
+Robot* RobotScene::getRobot() {
     for (auto& obj : rootObjects_) {
-        ObjMesh* objectMesh = dynamic_cast<ObjMesh*>(obj.get());
-        if (objectMesh) {
-            return objectMesh;
+        Robot* robot = dynamic_cast<Robot*>(obj.get());
+        if (robot) {
+            return robot;
         }
     }
     return nullptr;

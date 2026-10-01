@@ -119,6 +119,17 @@ void InputManager::update() {
     mouseDeltaX_ = mouseDeltaY_ = 0;
 }
 
+void InputManager::reset() {
+    keyCurrent_.fill(false);        
+    keyPrevious_.fill(false);
+    specialKeyCurrent_.fill(false); 
+    specialKeyPrevious_.fill(false);
+    mouseCurrent_.fill(false);      
+    mousePrevious_.fill(false);
+    typedChars_.clear();
+    scrollUpThisFrame_ = scrollDownThisFrame_ = false;
+}
+
 void INPUTMANAGERprocSpecialKeys(int key, int x, int y) {
     int k = mapSpecialKey(key);
     if (k != -1) {

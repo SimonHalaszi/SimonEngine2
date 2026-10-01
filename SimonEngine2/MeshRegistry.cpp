@@ -34,6 +34,7 @@ namespace {
 
 	// This function exist so that edges are not doubly added
 	// Using a unsigned 64 int to hold two ints in order, the lower int in the first 32 bits, the upper int in the second 32 bits
+	// This is kind of a hacky work around because unorderd_set can not hash pairs. So alas we are using this to make a pair of ints
 	std::uint64_t makeEdgeKey(int first, int second) {
 		const int lower = std::min(first, second);
 		const int upper = std::max(first, second);
@@ -198,6 +199,7 @@ const EngineUtil::Mesh* MeshRegistry::getSphere(int slices, int stacks) {
 	return &inserted.first->second;
 }
 
+// This took some googling ngl, had no idea how these files needed parsed
 const EngineUtil::Mesh* MeshRegistry::getDotObj(const std::string& filepath) {
 	const std::string key = "SE2_MR_OBJ_" + filepath;
 

@@ -37,6 +37,8 @@ class Engine {
 		Engine& operator=(const Engine&&) = delete;
 
 	private:
+		void applyPendingScene();
+
 		Engine() : currentScene_(nullptr), pendingScene_(nullptr) {}
 
 		~Engine() {}

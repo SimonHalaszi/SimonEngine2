@@ -36,7 +36,7 @@ class Camera {
 		void applyProjection() const;
 		void applyView() const;
 
-		ProjectionMode projectionMode_ = ProjectionMode::Perspective;
+		ProjectionMode projectionMode_ = ProjectionMode::Ortho;
 
 		double perspectiveFovy_ = 120.0;
 		double perspectiveNear_ = 0.1;

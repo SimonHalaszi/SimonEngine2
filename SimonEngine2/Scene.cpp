@@ -30,6 +30,8 @@ void Scene::sceneDeInit() {
 	pendingRootObjects_.clear();
 
 	deInit();
+
+	MeshRegistry::getInstance().clearRegistry();
 }
 
 void Scene::sceneDraw() const {

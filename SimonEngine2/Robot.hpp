@@ -13,7 +13,7 @@ class Robot : public Object {
 		void onStart() override;
 		void update() override;
 
-		void changeColor(EngineUtil::ColorRGB);
+		void setColor(EngineUtil::ColorRGB);
 
 	private:
 		EngineMath::Vector3 leftArmPivot_;

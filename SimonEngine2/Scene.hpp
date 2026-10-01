@@ -8,6 +8,8 @@
 #include "Object.hpp"
 #include "Camera.hpp"
 
+#include "MeshRegistry.hpp"
+
 // Scene Class
 
 class Scene {

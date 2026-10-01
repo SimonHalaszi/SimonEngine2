@@ -1,5 +1,5 @@
-#ifndef OBJ_SCENE_HPP
-#define OBJ_SCENE_HPP
+#ifndef MAGIC_CUBE_SCENE_HPP
+#define MAGIC_CUBE_SCENE_HPP
 
 // Needed C++ Includes
 #include <string>
@@ -15,14 +15,14 @@
 #include "EngineUtil.hpp"
 
 // Objects
+#include "MagicCube.hpp"
 #include "AxisDisplay.hpp"
-#include "ObjMesh.hpp"
 
-class ObjScene : public Scene {
+class MagicCubeScene : public Scene {
 public:
-	ObjScene() : Scene(244, 244, 10) {}
+	MagicCubeScene() : Scene(244, 244, 10) {}
 
-	~ObjScene() {}
+	~MagicCubeScene() {}
 
 	virtual void init() override final;
 
@@ -35,18 +35,11 @@ public:
 	void mainMenu(int value);
 
 private:
-	ObjMesh* getObjMesh();
-	ObjMesh* objMesh_ = nullptr;
-
-	int rotationXMenu_ = 0;
-	int rotationYMenu_ = 0;
-	int rotationZMenu_ = 0;
-	int rotationMenu_ = 0;
+	MagicCube* getMagicCube();
+	MagicCube* magicCube_ = nullptr;
 
 	int perspectiveMenu_ = 0;
 	int renderMenu_ = 0;
-
-	int colorMenu_ = 0;
 
 	int mainMenu_ = 0;
 };
