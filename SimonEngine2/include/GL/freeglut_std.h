@@ -65,7 +65,16 @@
 /* Windows static library */
 #   ifdef FREEGLUT_STATIC
 
-#error Static linking is not supported with this build. Please remove the FREEGLUT_STATIC preprocessor directive, or download the source code from http://freeglut.sf.net/ and build against that.
+#       define FGAPI extern
+#       define FGAPIENTRY __stdcall
+
+#       if FREEGLUT_LIB_PRAGMAS
+#           ifdef _DEBUG
+#               pragma comment (lib, "freeglut_staticd.lib")
+#           else
+#               pragma comment (lib, "freeglut_static.lib")
+#           endif
+#       endif
 
 /* Windows shared library (DLL) */
 #   else
