@@ -398,3 +398,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# SimonEngine2: Chuck Special Edition screenshots (F9)
+SE2_CHUCK_CLIP_*.bmp

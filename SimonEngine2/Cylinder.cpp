@@ -32,6 +32,8 @@ void Cylinder::drawSolid() const {
         const EngineUtil::Vertex& bottom = vertexAt(0, slice);
         const EngineUtil::Vertex& top = vertexAt(1, slice);
 
+        // Side wall normals point straight out from the axis (radius 0.5, so scale by 2)
+        glNormal3f(bottom.x_ * 2.0f, 0.0f, bottom.z_ * 2.0f);
         glVertex3f(bottom.x_, bottom.y_, bottom.z_);
         glVertex3f(top.x_, top.y_, top.z_);
     }
@@ -40,6 +42,8 @@ void Cylinder::drawSolid() const {
 
     glBegin(GL_TRIANGLE_FAN);
 
+    // Bottom cap faces down
+    glNormal3f(0.0f, -1.0f, 0.0f);
     glVertex3f(0.0f, -0.5f, 0.0f);
 
     for (int slice = slices_; slice >= 0; --slice) {
@@ -51,6 +55,8 @@ void Cylinder::drawSolid() const {
 
     glBegin(GL_TRIANGLE_FAN);
 
+    // Top cap faces up
+    glNormal3f(0.0f, 1.0f, 0.0f);
     glVertex3f(0.0f, 0.5f, 0.0f);
 
     for (int slice = 0; slice <= slices_; ++slice) {

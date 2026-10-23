@@ -4,14 +4,14 @@
 
 namespace {
     constexpr int minSlices = 3;
-    constexpr int maxStacks = 3;
+    constexpr int minStacks = 3; // (was called maxStacks, but it is very much a minimum)
 }
 
 Sphere::Sphere(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices, int stacks)
     : Primitive(localTransform, color)
 {
     slices_ = std::max(minSlices, slices);
-    stacks_ = std::max(maxStacks, stacks);
+    stacks_ = std::max(minStacks, stacks);
     mesh_ = MeshRegistry::getInstance().getSphere(slices_, stacks_);
 }
 
@@ -35,7 +35,11 @@ void Sphere::drawSolid() const {
             const EngineUtil::Vertex& top = vertexAt(stack, slice);
             const EngineUtil::Vertex& bottom = vertexAt(stack + 1, slice);
 
+            // On a sphere centered at the origin the normal is just the position, pointed
+            // outward. The unit sphere has radius 0.5 here so scale by 2 to keep it unit length.
+            glNormal3f(top.x_ * 2.0f, top.y_ * 2.0f, top.z_ * 2.0f);
             glVertex3f(top.x_, top.y_, top.z_);
+            glNormal3f(bottom.x_ * 2.0f, bottom.y_ * 2.0f, bottom.z_ * 2.0f);
             glVertex3f(bottom.x_, bottom.y_, bottom.z_);
         }
 

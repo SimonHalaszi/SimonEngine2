@@ -54,6 +54,9 @@ class Scene {
 		Camera& getCamera() { return camera_; }
 		const Camera& getCamera() const { return camera_; }
 
+		// Every object in the scene, children included (the HUD shows this as OBJECTS)
+		std::size_t countObjects() const;
+
 	protected:
 		// Scene specific functionalities handled here. GameObjects are updated AUTOMATICALLY based on per GameObject logic
 		virtual void init() {} // Scene specific init (Stuff not attached to GameObjects)
@@ -78,6 +81,10 @@ class Scene {
 
 		void adoptRootObject(std::unique_ptr<Object> object);
 		void processPendingRootObjects();
+
+		// Draws every root object (and so the whole hierarchy). sceneDraw() calls this once
+		// for the real render and again for each Chuck Edition neon outline pass.
+		void drawRootObjects() const;
 };
 
 #endif // !GAME_HPP

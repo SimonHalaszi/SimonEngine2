@@ -1,0 +1,27 @@
+# SimonEngine2 :: CHUCK SPECIAL EDITION :: editor settings that every IDE understands
+# (VS, VS Code, CLion, Rider, Vim... https://editorconfig.org)
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+
+# The engine is mostly tab-indented C++ (a few of Simon's files use 4 spaces; leave those be)
+[*.{c,cpp,h,hpp}]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[{CMakeLists.txt,*.cmake}]
+indent_style = tab
+indent_size = 4
+
+[*.{yml,yaml,json,md}]
+indent_style = space
+indent_size = 2
+
+# Visual Studio project files are XML with CRLF; don't fight it
+[*.{sln,vcxproj,filters}]
+end_of_line = crlf
+indent_style = space
+indent_size = 2

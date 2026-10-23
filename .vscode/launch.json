@@ -1,0 +1,24 @@
+{
+  // F5 = build + debug. cwd is the engine folder so ../Assets/teapot.obj resolves.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SE2: debug (Linux / gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/SimonEngine2",
+      "cwd": "${workspaceFolder}/SimonEngine2",
+      "MIMode": "gdb",
+      "preLaunchTask": "SE2: build"
+    },
+    {
+      "name": "SE2: debug (Windows / MSVC)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Debug/SimonEngine2.exe",
+      "cwd": "${workspaceFolder}/SimonEngine2",
+      "console": "integratedTerminal",
+      "preLaunchTask": "SE2: build"
+    }
+  ]
+}

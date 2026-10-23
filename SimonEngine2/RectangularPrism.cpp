@@ -17,8 +17,23 @@ void RectangularPrism::drawSolid() const {
 
     glBegin(GL_QUADS);
 
-    for (const auto& vertex : mesh_->vertices_) {
-        glVertex3f(vertex.x_, vertex.y_, vertex.z_);
+    // 24 vertices = 6 faces x 4 corners. The prism is centered on the origin, so the
+    // average of a face's four corners IS that face's center, and the direction from
+    // the origin to a face center is exactly its outward normal. No winding-order
+    // assumptions, no cross products, can't get it backwards. Big brain.
+    const auto& v = mesh_->vertices_;
+    for (std::size_t face = 0; face + 3 < v.size(); face += 4) {
+        const EngineMath::Vector3 normal = EngineMath::Vector3(
+            v[face].x_ + v[face + 1].x_ + v[face + 2].x_ + v[face + 3].x_,
+            v[face].y_ + v[face + 1].y_ + v[face + 2].y_ + v[face + 3].y_,
+            v[face].z_ + v[face + 1].z_ + v[face + 2].z_ + v[face + 3].z_
+        ).normalized();
+
+        glNormal3f(normal.x_, normal.y_, normal.z_);
+
+        for (std::size_t corner = face; corner < face + 4; ++corner) {
+            glVertex3f(v[corner].x_, v[corner].y_, v[corner].z_);
+        }
     }
 
     glEnd();

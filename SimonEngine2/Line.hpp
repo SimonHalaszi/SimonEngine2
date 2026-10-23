@@ -13,6 +13,9 @@ class Line : public Primitive {
 	private:
 		void drawSolid() const override;
 		void drawEdges() const override;
+
+		// Lines are neon tubes, not surfaces. No lighting.
+		bool receivesLighting() const override { return false; }
 };
 
 #endif 

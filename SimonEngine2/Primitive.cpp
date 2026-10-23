@@ -9,11 +9,25 @@ Primitive::Primitive(const EngineMath::Transform& localTransform, const EngineUt
 }
 
 void Primitive::draw() {
+    // Wireframe edges and Lines are pure emissive neon: they skip the lighting rig.
+    // glPushAttrib(GL_ENABLE_BIT) snapshots every glEnable/glDisable flag, so we can turn
+    // lighting off for just this primitive and get the exact previous state back after.
+    const bool unlit = !drawAsSolid_ || !receivesLighting();
+
+    if (unlit) {
+        glPushAttrib(GL_ENABLE_BIT);
+        glDisable(GL_LIGHTING);
+    }
+
     if (drawAsSolid_) {
         drawSolid();
     }
     else {
         drawEdges();
+    }
+
+    if (unlit) {
+        glPopAttrib();
     }
 }
 

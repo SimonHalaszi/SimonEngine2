@@ -25,9 +25,10 @@ class InputManager {
         void specialKeyDown(int key);
         void specialKeyUp(int key);
     
-        bool isSpecialKeyDown(int key) const;
-        bool isSpecialKeyPressed(int key) const;
-        bool isSpecialKeyReleased(int key)  const;
+        // These take a real GLUT_KEY_* code (GLUT_KEY_F4, GLUT_KEY_LEFT, ...), NOT a remapped slot
+        bool isSpecialKeyDown(int glutKey) const;
+        bool isSpecialKeyPressed(int glutKey) const;
+        bool isSpecialKeyReleased(int glutKey)  const;
     
         void mouseButtonDown(int button, int x, int y);
         void mouseButtonUp(int button, int x, int y);
@@ -70,8 +71,20 @@ class InputManager {
         std::array<bool, 8> mouseCurrent_ = {};
         std::array<bool, 8> mousePrevious_ = {};
 
-        std::array<bool, 16> specialKeyCurrent_ = {};
-        std::array<bool, 16> specialKeyPrevious_ = {};
+        // 12 F-keys + 4 arrows + PgUp/PgDn/Home/End/Insert, with headroom for future DLC
+        std::array<bool, 32> specialKeyCurrent_ = {};
+        std::array<bool, 32> specialKeyPrevious_ = {};
+
+        // "Did it go down / up at ANY point since the last update?" latches.
+        // Without these, a quick tap whose press AND release both land between two update
+        // ticks is never seen (current == previous == false). Happens on slow frames, with
+        // macro keyboards, and with automated input tools. Cleared every update().
+        std::array<bool, 256> keyPressLatch_ = {};
+        std::array<bool, 256> keyReleaseLatch_ = {};
+        std::array<bool, 8> mousePressLatch_ = {};
+        std::array<bool, 8> mouseReleaseLatch_ = {};
+        std::array<bool, 32> specialKeyPressLatch_ = {};
+        std::array<bool, 32> specialKeyReleaseLatch_ = {};
 
         int mouseX_, mouseY_;
         int mouseDeltaX_, mouseDeltaY_;

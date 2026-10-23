@@ -1,0 +1,16 @@
+# SimonEngine2 :: CHUCK SPECIAL EDITION :: clang-format
+# Roughly matches the existing style (tabs, attached braces, indented access modifiers).
+# Not enforced anywhere; it's here so "Format Document" doesn't scramble a file.
+BasedOnStyle: LLVM
+UseTab: ForIndentation
+IndentWidth: 4
+TabWidth: 4
+ColumnLimit: 0
+BreakBeforeBraces: Attach
+AccessModifierOffset: 0
+IndentAccessModifiers: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+NamespaceIndentation: All
+PointerAlignment: Left
+SortIncludes: Never

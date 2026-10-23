@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 #include "WindowConstants.hpp"
+#include "ChuckEdition.hpp" // the drip
 
 // Function wrappers needed because OpenGL expects a certain function signature for these
 void ENGINEanimationTimer(int v) {
@@ -38,6 +39,10 @@ void Engine::updateTimer(int v) {
 
 	int updatesPerSecond = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
 
+	// Chuck Edition reads input BEFORE the scene does, so the splash screen can swallow
+	// the key you hit to skip it (instead of that key also toggling wireframe or whatever)
+	ChuckEdition::getInstance().update(currentScene_.get());
+
 	if (currentScene_ && currentScene_->isUpdating()) {
 		currentScene_->sceneUpdate();
 	}
@@ -63,7 +68,14 @@ void GAMEdraw() {
 		return;
 	}
 
+	ChuckEdition& chuck = ChuckEdition::getInstance();
+	chuck.beginFrame();
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Sky, synthwave sun, stars... painted straight onto the cleared screen, no depth,
+	// so the actual 3D scene always lands on top of it
+	chuck.drawBackdrop();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -74,6 +86,9 @@ void GAMEdraw() {
 		glViewport(0, 0, ENGINE_WIN_W, ENGINE_WIN_H);
 		currentScene->sceneDraw();
 	}
+
+	// HUD, notifications and post effects ride on top of everything
+	chuck.drawOverlay(*currentScene);
 
 	glFlush();
 	glutSwapBuffers();
@@ -109,6 +124,11 @@ void Engine::init() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// Games want "held" to mean held. Without this, X11 auto-repeat delivers a release +
+	// press pair ~30 times a second while a key is held, so WASD flickers and the input
+	// latches would see fresh presses. (Windows never re-fired isPressed on repeat anyway.)
+	glutIgnoreKeyRepeat(1);
+
 	glutSpecialFunc(INPUTMANAGERprocSpecialKeys);
 	glutSpecialUpFunc(INPUTMANAGERprocSpecialKeysUp);
 	glutKeyboardFunc(INPUTMANAGERprocKeys);
@@ -131,6 +151,9 @@ void Engine::init() {
 	glutTimerFunc(0, ENGINEupdateTimer, 0);
 	glutTimerFunc(0, ENGINEframeTimer, 0);
 
+	// Window + GL context exist now, so the special edition can boot up
+	ChuckEdition::getInstance().init();
+
 }
 
 void Engine::safeExit() {
@@ -140,5 +163,6 @@ void Engine::safeExit() {
 		currentScene_->sceneDeInit();
 	}
 	std::cout << "Engine::safeEngineExit : Exited game\n";
+	std::cout << "GG WP. Thanks for playing SimonEngine2: CHUCK SPECIAL EDITION\n";
 	exit(0);
 }

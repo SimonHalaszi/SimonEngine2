@@ -24,12 +24,28 @@ void Cone::drawSolid() const {
 
     glBegin(GL_TRIANGLES);
 
+    // Side normals for a cone with radius 0.5 and height 1: the surface leans inward by
+    // radius/height, so the outward normal at angle theta is (cos, 0.5, sin) before
+    // normalizing. Base ring vertices are (0.5cos, -0.5, 0.5sin), so 2*x == cos.
+    // The apex gets the normal halfway between its two base corners, which makes
+    // the shading smooth instead of looking like a disco ball.
+    const auto sideNormal = [](float x, float z) {
+        return EngineMath::Vector3(2.0f * x, 0.5f, 2.0f * z).normalized();
+    };
+
     for (int slice = 0; slice < slices_; ++slice) {
         const auto& current = mesh_->vertices_[slice];
         const auto& next = mesh_->vertices_[slice + 1];
 
+        const EngineMath::Vector3 nCurrent = sideNormal(current.x_, current.z_);
+        const EngineMath::Vector3 nNext = sideNormal(next.x_, next.z_);
+        const EngineMath::Vector3 nApex = (nCurrent + nNext).normalized();
+
+        glNormal3f(nApex.x_, nApex.y_, nApex.z_);
         glVertex3f(0.0f, 0.5f, 0.0f);
+        glNormal3f(nCurrent.x_, nCurrent.y_, nCurrent.z_);
         glVertex3f(current.x_, current.y_, current.z_);
+        glNormal3f(nNext.x_, nNext.y_, nNext.z_);
         glVertex3f(next.x_, next.y_, next.z_);
     }
 
@@ -37,6 +53,8 @@ void Cone::drawSolid() const {
 
     glBegin(GL_TRIANGLE_FAN);
 
+    // The base is a flat disk facing straight down
+    glNormal3f(0.0f, -1.0f, 0.0f);
     glVertex3f(0.0f, -0.5f, 0.0f);
 
     for (int slice = slices_; slice >= 0; --slice) {

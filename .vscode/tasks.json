@@ -1,0 +1,29 @@
+{
+  // Ctrl+Shift+B builds the engine with CMake (Debug, so breakpoints work)
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SE2: configure",
+      "type": "shell",
+      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug",
+      "problemMatcher": []
+    },
+    {
+      "label": "SE2: build",
+      "type": "shell",
+      "command": "cmake --build build -j",
+      "dependsOn": "SE2: configure",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc", "$msCompile"]
+    },
+    {
+      "label": "SE2: run",
+      "type": "shell",
+      "command": "../build/SimonEngine2",
+      "windows": { "command": "..\\build\\Debug\\SimonEngine2.exe" },
+      "options": { "cwd": "${workspaceFolder}/SimonEngine2" },
+      "dependsOn": "SE2: build",
+      "problemMatcher": []
+    }
+  ]
+}

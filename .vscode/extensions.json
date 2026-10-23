@@ -1,0 +1,12 @@
+{
+  // SimonEngine2 :: CHUCK SPECIAL EDITION :: the loadout
+  "recommendations": [
+    "ms-vscode.cpptools",
+    "ms-vscode.cmake-tools",
+    "editorconfig.editorconfig",
+    "xaver.clang-format",
+    "github.vscode-github-actions",
+    "slevesque.shader",
+    "bierner.markdown-mermaid"
+  ]
+}

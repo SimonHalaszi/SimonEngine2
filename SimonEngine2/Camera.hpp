@@ -21,6 +21,10 @@ class Camera {
 		void setPosition(const EngineMath::Vector3& position);
 		void setTarget(const EngineMath::Vector3& target);
 
+		const EngineMath::Vector3& getPosition() const { return position_; }
+		const EngineMath::Vector3& getTarget() const { return target_; }
+		const EngineMath::Vector3& getUp() const { return up_; }
+
 		void pivotAroundTarget(const EngineMath::Quaternion& rotation);
 		void pivotAroundTarget(const EngineMath::Vector3& axis, float radians);
 

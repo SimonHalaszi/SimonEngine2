@@ -118,10 +118,21 @@ void Robot::update() {
 }
 
 void Robot::setColor(EngineUtil::ColorRGB color) {
+    color_ = color;
+
+    // Since the Homework 2 refactor the arms and legs are Limbs (an Object holding two
+    // prisms), not Primitives, so the old Primitive-only loop silently skipped all four
+    // of them and you got a red torso with blue noodle arms. Paint the limbs too.
     for (auto& obj : children_) {
         Primitive* primitive = dynamic_cast<Primitive*>(obj.get());
         if (primitive) {
             primitive->setColor(color);
+            continue;
+        }
+
+        Limb* limb = dynamic_cast<Limb*>(obj.get());
+        if (limb) {
+            limb->setColor(color);
         }
     }
 }

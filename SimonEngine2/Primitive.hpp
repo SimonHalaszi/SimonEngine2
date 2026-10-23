@@ -22,6 +22,10 @@ class Primitive : public Object {
 		virtual void drawSolid() const = 0;
 		virtual void drawEdges() const = 0;
 
+		// Should drawSolid() be shaded by the scene lights? Lines say no (a 1px line has no
+		// surface to light, so it would just turn into a random shade of gray).
+		virtual bool receivesLighting() const { return true; }
+
 		bool drawColor_ = true;
 		EngineUtil::ColorRGB activeColor_;
 		EngineUtil::ColorRGB color_;

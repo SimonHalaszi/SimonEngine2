@@ -17,9 +17,18 @@ void ObjMesh::drawSolid() const {
 
     glBegin(GL_TRIANGLES);
 
+    // Smooth normals come precomputed from the MeshRegistry (one per vertex, same index),
+    // which is why the teapot now looks like porcelain instead of a blue paper cutout.
+    const bool hasNormals = mesh_->normals_.size() == mesh_->vertices_.size();
+
     for (std::size_t i = 0; i < mesh_->faceIndices_.size(); ++i) {
         const int index = mesh_->faceIndices_[i];
         const auto& vertex = mesh_->vertices_[index];
+
+        if (hasNormals) {
+            const auto& normal = mesh_->normals_[index];
+            glNormal3f(normal.x_, normal.y_, normal.z_);
+        }
 
         glVertex3f(vertex.x_, vertex.y_, vertex.z_);
     }

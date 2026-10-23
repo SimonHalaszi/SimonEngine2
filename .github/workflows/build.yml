@@ -1,0 +1,66 @@
+# ==================================================================================
+#   SimonEngine2 :: CHUCK SPECIAL EDITION :: CI
+#   Every push gets built on Linux (CMake + system freeglut) and Windows (the real
+#   Visual Studio solution), and the Linux build gets booted headless under Xvfb for a
+#   few seconds to prove it doesn't instantly explode. The screenshot it takes is
+#   uploaded as a build artifact, so you can literally see every commit's drip.
+# ==================================================================================
+
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linux:
+    name: Linux (CMake + freeglut) + headless smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install freeglut, GLU, Xvfb, ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y freeglut3-dev libglu1-mesa-dev xvfb imagemagick
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build -j
+
+      - name: Smoke test (boot headless for 8 seconds, grab a screenshot)
+        run: |
+          Xvfb :99 -screen 0 1280x900x24 &
+          sleep 2
+          cd SimonEngine2
+          DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 ../build/SimonEngine2 > ../smoke.log 2>&1 &
+          APP=$!
+          sleep 8
+          # Still alive after 8 seconds = it booted, rendered and didn't crash
+          kill -0 $APP
+          DISPLAY=:99 import -window root ../smoke.png
+          kill $APP
+          cat ../smoke.log
+
+      - name: Upload smoke test screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-screenshot
+          path: |
+            smoke.png
+            smoke.log
+
+  windows:
+    name: Windows (Visual Studio solution, x64 Release)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build SimonEngine2.sln
+        run: msbuild SimonEngine2.sln /m /p:Configuration=Release /p:Platform=x64

@@ -2,25 +2,51 @@
 #include <iostream>
 #include <cctype>
 
-void InputManager::keyDown(unsigned char key) { keyCurrent_[key] = true; }
-void InputManager::keyUp(unsigned char key) { keyCurrent_[key] = false; }
+// Latches only fire on real transitions, so OS key-repeat (more keyDowns while the key is
+// already held) does not count as a fresh press
+void InputManager::keyDown(unsigned char key) {
+    if (!keyCurrent_[key]) {
+        keyPressLatch_[key] = true;
+    }
+    keyCurrent_[key] = true;
+}
+void InputManager::keyUp(unsigned char key) {
+    if (keyCurrent_[key]) {
+        keyReleaseLatch_[key] = true;
+    }
+    keyCurrent_[key] = false;
+}
 
 bool InputManager::isDown(unsigned char key)      const { return keyCurrent_[key]; }
-bool InputManager::isPressed(unsigned char key)   const { return keyCurrent_[key] && !keyPrevious_[key]; }
-bool InputManager::isReleased(unsigned char key)  const { return !keyCurrent_[key] && keyPrevious_[key]; }
+bool InputManager::isPressed(unsigned char key)   const { return keyPressLatch_[key] || (keyCurrent_[key] && !keyPrevious_[key]); }
+bool InputManager::isReleased(unsigned char key)  const { return keyReleaseLatch_[key] || (!keyCurrent_[key] && keyPrevious_[key]); }
 
 void InputManager::specialKeyDown(int key) {
     if (key >= 0 && key < int(specialKeyCurrent_.size())) {
+        if (!specialKeyCurrent_[key]) {
+            specialKeyPressLatch_[key] = true;
+        }
         specialKeyCurrent_[key] = true;
     }
 }
 void InputManager::specialKeyUp(int key) {
     if (key >= 0 && key < int(specialKeyCurrent_.size())) {
+        if (specialKeyCurrent_[key]) {
+            specialKeyReleaseLatch_[key] = true;
+        }
         specialKeyCurrent_[key] = false;
     }
 }
 
-bool InputManager::isSpecialKeyDown(int key) const {
+// ---------------------------------------------------------------------------------
+//  CHUCK EDITION BUGFIX: "Why does F1 toggle the robot???"
+//  The query functions used to index the state arrays with the RAW GLUT key code,
+//  but the arrays are filled with the REMAPPED slot from mapSpecialKey().
+//  GLUT_KEY_F4 == 4, and slot 4 is... F1. So F4 was secretly F1. Spooky.
+//  Now every query takes a real GLUT_KEY_* code and remaps it, same as the callbacks.
+// ---------------------------------------------------------------------------------
+bool InputManager::isSpecialKeyDown(int glutKey) const {
+    const int key = mapSpecialKey(glutKey);
     if (key >= 0 && key < int(specialKeyCurrent_.size())) {
         return specialKeyCurrent_[key];
     }
@@ -28,17 +54,19 @@ bool InputManager::isSpecialKeyDown(int key) const {
         return false;
     }
 }
-bool InputManager::isSpecialKeyPressed(int key) const {
+bool InputManager::isSpecialKeyPressed(int glutKey) const {
+    const int key = mapSpecialKey(glutKey);
     if (key >= 0 && key < int(specialKeyCurrent_.size())) {
-        return (specialKeyCurrent_[key] && !specialKeyPrevious_[key]);
+        return specialKeyPressLatch_[key] || (specialKeyCurrent_[key] && !specialKeyPrevious_[key]);
     }
     else {
         return false;
     }
 }
-bool InputManager::isSpecialKeyReleased(int key)  const {
+bool InputManager::isSpecialKeyReleased(int glutKey)  const {
+    const int key = mapSpecialKey(glutKey);
     if (key >= 0 && key < int(specialKeyCurrent_.size())) {
-        return (!specialKeyCurrent_[key] && specialKeyPrevious_[key]);
+        return specialKeyReleaseLatch_[key] || (!specialKeyCurrent_[key] && specialKeyPrevious_[key]);
     }
     else {
         return false;
@@ -47,11 +75,17 @@ bool InputManager::isSpecialKeyReleased(int key)  const {
 
 void InputManager::mouseButtonDown(int button, int x, int y) {
     if (button >= 0 && button < int(mouseCurrent_.size())) {
+        if (!mouseCurrent_[button]) {
+            mousePressLatch_[button] = true;
+        }
         mouseCurrent_[button] = true;
     }
 }
 void InputManager::mouseButtonUp(int button, int x, int y) {
     if (button >= 0 && button < int(mouseCurrent_.size())) {
+        if (mouseCurrent_[button]) {
+            mouseReleaseLatch_[button] = true;
+        }
         mouseCurrent_[button] = false;
     }
 }
@@ -73,14 +107,14 @@ bool InputManager::isMouseButtonPressed(MouseButton button) const {
     if (button == MOUSEBUTTON_SCROLLDOWN) {
         return scrollDownThisFrame_;
     }
-    return mouseCurrent_[button] && !mousePrevious_[button];
+    return mousePressLatch_[button] || (mouseCurrent_[button] && !mousePrevious_[button]);
 }
 
 bool InputManager::isMouseButtonReleased(MouseButton button) const {
     if (button == MOUSEBUTTON_SCROLLUP || button == MOUSEBUTTON_SCROLLDOWN) {
         return false;
     }
-    return !mouseCurrent_[button] && mousePrevious_[button];
+    return mouseReleaseLatch_[button] || (!mouseCurrent_[button] && mousePrevious_[button]);
 }
 
 void InputManager::mouseMove(int x, int y) {
@@ -116,6 +150,13 @@ void InputManager::update() {
     mousePrevious_ = mouseCurrent_;
     specialKeyPrevious_ = specialKeyCurrent_;
 
+    keyPressLatch_.fill(false);
+    keyReleaseLatch_.fill(false);
+    mousePressLatch_.fill(false);
+    mouseReleaseLatch_.fill(false);
+    specialKeyPressLatch_.fill(false);
+    specialKeyReleaseLatch_.fill(false);
+
     mouseDeltaX_ = mouseDeltaY_ = 0;
 }
 
@@ -128,6 +169,13 @@ void InputManager::reset() {
     mousePrevious_.fill(false);
     typedChars_.clear();
     scrollUpThisFrame_ = scrollDownThisFrame_ = false;
+
+    keyPressLatch_.fill(false);
+    keyReleaseLatch_.fill(false);
+    mousePressLatch_.fill(false);
+    mouseReleaseLatch_.fill(false);
+    specialKeyPressLatch_.fill(false);
+    specialKeyReleaseLatch_.fill(false);
 }
 
 void INPUTMANAGERprocSpecialKeys(int key, int x, int y) {
@@ -145,21 +193,16 @@ void INPUTMANAGERprocSpecialKeysUp(int key, int x, int y) {
 }
 
 void INPUTMANAGERprocKeys(unsigned char key, int x, int y) {
-    int code = static_cast<int>(key);
-    char ch = std::isprint(static_cast<unsigned char>(key)) ? static_cast<char>(key) : '?';
     InputManager::getInstance().keyDown(key);
     InputManager::getInstance().queueTypedChar(key);
 }
 
 void INPUTMANAGERprocKeysUp(unsigned char key, int x, int y) {
-    int code = static_cast<int>(key);
-    char ch = std::isprint(static_cast<unsigned char>(key)) ? static_cast<char>(key) : '?';
     InputManager::getInstance().keyUp(key);
 }
 
 void INPUTMANAGERprocMouse(int button, int state, int x, int y) {
     if (button == 3 || button == 4) {
-        bool up = (button == 3);
         InputManager::getInstance().registerScroll(button);
         return;
     }
@@ -198,6 +241,12 @@ int mapSpecialKey(int key) {
     case GLUT_KEY_F10:    return 13;
     case GLUT_KEY_F11:    return 14;
     case GLUT_KEY_F12:    return 15;
+    // Extra keys unlocked in the Chuck Special Edition DLC (free, no microtransactions)
+    case GLUT_KEY_PAGE_UP:   return 16;
+    case GLUT_KEY_PAGE_DOWN: return 17;
+    case GLUT_KEY_HOME:      return 18;
+    case GLUT_KEY_END:       return 19;
+    case GLUT_KEY_INSERT:    return 20;
     default: return -1;
     }
 }

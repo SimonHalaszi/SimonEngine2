@@ -43,6 +43,12 @@ namespace EngineUtil {
 			std::vector<Vertex> vertices_;
 			std::vector<int> faceIndices_;
 			std::vector<int> edgeIndices_;
+
+			// One smooth normal per vertex (same indexing as vertices_). Only filled for
+			// meshes that need it (.obj files); analytic primitives compute theirs on the fly.
+			// This is what lets the studio lights actually *shade* things instead of
+			// rendering every mesh as a flat cardboard cutout.
+			std::vector<Vertex> normals_;
 	};
 }
 

@@ -54,6 +54,48 @@ namespace {
 		mesh.edgeIndices_.push_back(first);
 		mesh.edgeIndices_.push_back(second);
 	}
+
+	// Smooth (Gouraud-ready) vertex normals.
+	// Every triangle adds its UN-normalized face normal to its three corners. The cross
+	// product's length is twice the triangle's area, so big triangles get more say in the
+	// final direction than tiny slivers do (area weighting, for free, no extra math).
+	// Then every accumulated normal is normalized once at the end.
+	void computeSmoothNormals(EngineUtil::Mesh& mesh) {
+		mesh.normals_.assign(mesh.vertices_.size(), EngineUtil::Vertex{ 0.0f, 0.0f, 0.0f });
+
+		for (std::size_t i = 0; i + 2 < mesh.faceIndices_.size(); i += 3) {
+			const int ia = mesh.faceIndices_[i];
+			const int ib = mesh.faceIndices_[i + 1];
+			const int ic = mesh.faceIndices_[i + 2];
+
+			const EngineUtil::Vertex& a = mesh.vertices_[ia];
+			const EngineUtil::Vertex& b = mesh.vertices_[ib];
+			const EngineUtil::Vertex& c = mesh.vertices_[ic];
+
+			const EngineMath::Vector3 ab(b.x_ - a.x_, b.y_ - a.y_, b.z_ - a.z_);
+			const EngineMath::Vector3 ac(c.x_ - a.x_, c.y_ - a.y_, c.z_ - a.z_);
+			const EngineMath::Vector3 faceNormal = ab.cross(ac);
+
+			for (int corner : { ia, ib, ic }) {
+				mesh.normals_[corner].x_ += faceNormal.x_;
+				mesh.normals_[corner].y_ += faceNormal.y_;
+				mesh.normals_[corner].z_ += faceNormal.z_;
+			}
+		}
+
+		for (EngineUtil::Vertex& n : mesh.normals_) {
+			const EngineMath::Vector3 unit = EngineMath::Vector3(n.x_, n.y_, n.z_).normalized();
+
+			// A vertex that no face uses ends up with a zero normal; point it up so the
+			// lighting math never sees NaNs.
+			if (unit.lengthSquared() < 0.5f) {
+				n = EngineUtil::Vertex{ 0.0f, 1.0f, 0.0f };
+			}
+			else {
+				n = EngineUtil::Vertex{ unit.x_, unit.y_, unit.z_ };
+			}
+		}
+	}
 }
 
 const EngineUtil::Mesh* MeshRegistry::getCone(int slices) {
@@ -281,6 +323,8 @@ const EngineUtil::Mesh* MeshRegistry::getDotObj(const std::string& filepath) {
 	if (mesh.vertices_.empty() || mesh.faceIndices_.empty()) {
 		return nullptr;
 	}
+
+	computeSmoothNormals(mesh);
 
 	auto inserted = registry_.insert({ key, std::move(mesh) });
 	return &inserted.first->second;

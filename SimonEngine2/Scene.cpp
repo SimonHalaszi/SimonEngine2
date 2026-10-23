@@ -1,4 +1,5 @@
 #include "Scene.hpp"
+#include "ChuckEdition.hpp"
 
 void Scene::addRootObject(std::unique_ptr<Object> object) {
 	if (!object) {
@@ -37,8 +38,45 @@ void Scene::sceneDeInit() {
 void Scene::sceneDraw() const {
 	camera_.apply();
 
+	// Studio lights + anything else that has to live in world space with the camera applied
+	ChuckEdition::getInstance().beginWorld(*this);
+
 	draw();
 
+	drawRootObjects();
+
+	// Neon edge glow: the same objects again, drawn as glowing outlines.
+	// (0 passes when F6 turned the outlines off)
+	ChuckEdition& chuck = ChuckEdition::getInstance();
+	for (int pass = 0; pass < chuck.outlinePassCount(); ++pass) {
+		chuck.beginOutlinePass(pass);
+		drawRootObjects();
+		chuck.endOutlinePass();
+	}
+
+	// Neon floor under everything, then all world state gets rolled back
+	chuck.endWorld(*this);
+}
+
+namespace {
+	std::size_t countHierarchy(Object& object) {
+		std::size_t count = 1;
+		for (auto& child : object.getChildren()) {
+			count += countHierarchy(*child);
+		}
+		return count;
+	}
+}
+
+std::size_t Scene::countObjects() const {
+	std::size_t count = 0;
+	for (auto& rootObject : rootObjects_) {
+		count += countHierarchy(*rootObject);
+	}
+	return count;
+}
+
+void Scene::drawRootObjects() const {
 	for (auto& rootObject : rootObjects_) {
 		rootObject->rootDraw();
 	}
