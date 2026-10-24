@@ -5,27 +5,39 @@
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
 #include "Primitive.hpp"
-#include "RectangularPrism.hpp"
 
 class Limb : public Object {
-	public:
-		Limb() = default;
-		Limb(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB color);
+public:
+    Limb() = default;
+    Limb(
+        const EngineMath::Transform& localTransform,
+        EngineUtil::ColorRGB color,
+        const EngineMath::Vector3& size
+    );
 
-		void onStart() override final;
-		void update() override final {}
+    void onStart() override final;
+    void update() override final {}
 
-		void setColor(EngineUtil::ColorRGB color);
+    void setColor(EngineUtil::ColorRGB color);
 
-		void pivotHigh(float radians);
-		void pivotMiddle(float radians);
+    // Shoulder / Pelvis joint
+    void pivotHigh(float radians);
 
-	private:
-		Primitive* lowerHalf_ = nullptr; // Forearm / Calf
-		Primitive* upperHalf_ = nullptr; // Bicep / Thigh
-		EngineMath::Vector3 middlePivot_; // Elbow / Knee
-		EngineMath::Vector3 highPivot_;	// Shoulder / Pelvis
-		EngineUtil::ColorRGB color_;
+    // Elbow / Knee joint
+    void pivotMiddle(float radians);
+
+private:
+    Object* highJoint_ = nullptr;
+    Object* middleJoint_ = nullptr;
+
+    Primitive* upperHalf_ = nullptr;
+    Primitive* lowerHalf_ = nullptr;
+
+    EngineMath::Vector3 size_ = { 1.0f, 1.0f, 1.0f };
+    EngineUtil::ColorRGB color_;
+
+    float highAngle_ = 0.0f;
+    float middleAngle_ = 0.0f;
 };
 
-#endif 
+#endif

@@ -27,8 +27,6 @@ void ObjScene::init() {
 }
 
 #include "Engine.hpp"
-#include "MagicCubeScene.hpp"
-#include "RobotScene.hpp"
 
 void ObjScene::update() {
     if (InputManager::getInstance().isPressed(27)) {

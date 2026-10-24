@@ -50,7 +50,7 @@ void AxisDisplay::onStart() {
     addChild(std::make_unique<Line>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::fromXYZ(0.0f, EngineMath::degreesToRadians(90.0f), 0.0f),
+            EngineMath::Quaternion::fromXYZ(0.0f, EngineMath::degreesToRadians(-90.0f), 0.0f),
             EngineMath::Vector3(1.5f, 1.5f, 1.5f)
         ),
         EngineUtil::ColorRGB{ 0, 0, 255 }

@@ -14,7 +14,7 @@
 
 class Scene {
 	public:
-		Scene(int updatesPerSecond = 244, int framesPerSeconds = 244, int animationUpdatesPerSecond = 10) : 
+		Scene(int updatesPerSecond = 20, int framesPerSeconds = 244, int animationUpdatesPerSecond = 10) : 
 			updatesPerSecond_(updatesPerSecond),
 			framesPerSeconds_(framesPerSeconds),
 			animationUpdatesPerSecond_(animationUpdatesPerSecond) 

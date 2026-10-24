@@ -20,8 +20,8 @@ class Sphere : public Primitive {
 		const EngineUtil::Vertex& vertexAt(int stack, int slice) const;
 		const EngineUtil::Mesh* mesh_ = nullptr;
 
-		void drawSolid() const override;
-		void drawEdges() const override;
+		void drawSolid() const override final;
+		void drawEdges() const override final;
 };
 
 #endif 

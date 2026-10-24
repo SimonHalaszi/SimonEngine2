@@ -3,9 +3,8 @@
 
 #include <GL/freeglut.h>
 
-#include <string>
+#include <chrono>
 #include <memory>
-#include <iostream>
 
 #include "Scene.hpp"
 #include "InputManager.hpp"
@@ -20,7 +19,8 @@ class Engine {
 
 		void init();
 
-		const Scene* getCurrentScene() { return currentScene_.get(); }
+		const Scene* getCurrentScene() const { return currentScene_.get(); }
+		Scene* getCurrentScene() { return currentScene_.get(); }
 		void changeScene(std::unique_ptr<Scene> newScene);
 
 		void safeExit();
@@ -29,6 +29,10 @@ class Engine {
 		void frameTimer(int v);
 		void updateTimer(int v);
 		void animationTimer(int v);
+
+		float getDeltaTime() const { return deltaTime_; }
+		float getFPS() const { return fps_; }
+		void recordDrawnFrame();
 
 		Engine(const Engine&) = delete;
 		Engine& operator=(const Engine&) = delete;
@@ -44,6 +48,14 @@ class Engine {
 
 		std::unique_ptr<Scene> currentScene_;
 		std::unique_ptr<Scene> pendingScene_;
+
+		std::chrono::steady_clock::time_point lastUpdateTime_{};
+		bool hasPreviousUpdate_ = false;
+		float deltaTime_ = 0.0f;
+
+		std::chrono::steady_clock::time_point fpsMeasurementStart_ = std::chrono::steady_clock::now();
+		unsigned int framesDrawn_ = 0;
+		float fps_ = 0.0f;
 };
 
 #endif

@@ -10,8 +10,8 @@ class Camera {
 	public:
 		enum class ProjectionMode { Ortho, Perspective };
 
-		void setPerspective(double, double, double);
-		void setOrthographic(double, double, double);
+		void setPerspective(double fovy, double zNear, double zFar);
+		void setOrthographic(double halfHeight, double zNear, double zFar);
 		
 		void setProjectionMode(ProjectionMode mode);
 		ProjectionMode getProjectionMode() const;
@@ -20,6 +20,7 @@ class Camera {
 
 		void setPosition(const EngineMath::Vector3& position);
 		void setTarget(const EngineMath::Vector3& target);
+		void setTransform(const EngineMath::Transform& transform);
 
 		void pivotAroundTarget(const EngineMath::Quaternion& rotation);
 		void pivotAroundTarget(const EngineMath::Vector3& axis, float radians);
@@ -35,7 +36,7 @@ class Camera {
 		void applyProjection() const;
 		void applyView() const;
 
-		ProjectionMode projectionMode_ = ProjectionMode::Ortho;
+		ProjectionMode projectionMode_ = ProjectionMode::Perspective;
 
 		double perspectiveFovy_ = 120.0;
 		double perspectiveNear_ = 0.1;

@@ -54,6 +54,17 @@ void Camera::setTarget(const EngineMath::Vector3& target) {
 	target_ = target;
 }
 
+void Camera::setTransform(const EngineMath::Transform& worldTransform) {
+	position_ = worldTransform.position_;
+
+	const EngineMath::Vector3 forward =
+		worldTransform.rotation_.rotate(EngineMath::Vector3(0.0f, 0.0f, -1.0f));
+
+	target_ = position_ + forward;
+
+	up_ = worldTransform.rotation_.rotate(EngineMath::Vector3(0.0f, 1.0f, 0.0f));
+}
+
 void Camera::pivotAroundTarget(const EngineMath::Quaternion& rotation) {
 	EngineMath::Quaternion q = rotation.normalized();
 

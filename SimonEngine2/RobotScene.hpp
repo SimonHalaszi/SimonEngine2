@@ -4,7 +4,6 @@
 // Needed C++ Includes
 #include <string>
 #include <memory>
-
 #include <iostream>
 
 // Scene Interface
@@ -14,11 +13,8 @@
 #include "InputManager.hpp"
 #include "EngineUtil.hpp"
 
-// Objects
-#include "MagicCube.hpp"
-#include "Robot.hpp"
-#include "AxisDisplay.hpp"
-#include "ObjMesh.hpp"
+// Scene Specific C++
+#include <random>
 
 class RobotScene : public Scene {
 	public:
@@ -28,14 +24,11 @@ class RobotScene : public Scene {
 
 		virtual void init() override final;
 
-		virtual void draw() const override final {}
+		virtual void draw() const override final;
 
 		virtual void update() override final;
 
 		virtual void deInit() override final;
-	private:
-		Robot* getRobot();
-		Robot* robot_ = nullptr;
 };
 
 #endif

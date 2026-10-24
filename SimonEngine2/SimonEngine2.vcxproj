@@ -153,9 +153,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AxisDisplay.cpp" />
+    <ClCompile Include="CameraMan.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Limb.cpp" />
     <ClCompile Include="MagicCubeScene.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RobotScene.cpp" />
     <ClCompile Include="Camera.cpp">
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
@@ -180,8 +182,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AxisDisplay.hpp" />
+    <ClInclude Include="CameraMan.hpp" />
     <ClInclude Include="Limb.hpp" />
     <ClInclude Include="MagicCubeScene.hpp" />
+    <ClInclude Include="Plane.hpp" />
     <ClInclude Include="RobotScene.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Cone.hpp" />

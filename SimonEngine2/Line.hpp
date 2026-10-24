@@ -11,8 +11,8 @@ class Line : public Primitive {
 		Line(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) : Primitive(localTransform, color) {}
 
 	private:
-		void drawSolid() const override;
-		void drawEdges() const override;
+		void drawSolid() const override final;
+		void drawEdges() const override final;
 };
 
 #endif 

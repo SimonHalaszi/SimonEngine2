@@ -24,6 +24,8 @@ class Robot : public Object {
 		Limb* leftLeg_ = nullptr;
 		Limb* rightLeg_ = nullptr;
 		EngineUtil::ColorRGB color_;
+
+		float rotationStep;
 };
 
 #endif 

@@ -36,6 +36,18 @@ void Engine::applyPendingScene() {
 void Engine::updateTimer(int v) {
 	applyPendingScene();
 
+	const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+	if (hasPreviousUpdate_) {
+		deltaTime_ = std::chrono::duration<float>(now - lastUpdateTime_).count();
+	}
+	else {
+		deltaTime_ = 0.0f;
+		hasPreviousUpdate_ = true;
+	}
+
+	lastUpdateTime_ = now;
+
 	int updatesPerSecond = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
 
 	if (currentScene_ && currentScene_->isUpdating()) {
@@ -45,6 +57,21 @@ void Engine::updateTimer(int v) {
 	InputManager::getInstance().update();
 
 	glutTimerFunc(int(1000 / updatesPerSecond), ENGINEupdateTimer, v);
+}
+
+void Engine::recordDrawnFrame() {
+	++framesDrawn_;
+
+	const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+	const float secondsPassed = std::chrono::duration<float>(now - fpsMeasurementStart_).count();
+
+	if (secondsPassed >= 1.0f) {
+		fps_ = static_cast<float>(framesDrawn_) / secondsPassed;
+
+		framesDrawn_ = 0;
+		fpsMeasurementStart_ = now;
+	}
 }
 
 void Engine::frameTimer(int v) {
@@ -77,6 +104,8 @@ void GAMEdraw() {
 
 	glFlush();
 	glutSwapBuffers();
+
+	Engine::getInstance().recordDrawnFrame();
 }
 
 void Engine::animationTimer(int v) {
@@ -126,6 +155,12 @@ void Engine::init() {
 	}
 
 	glutDisplayFunc(GAMEdraw);
+
+	hasPreviousUpdate_ = false;
+	deltaTime_ = 0.0f;
+	fpsMeasurementStart_ = std::chrono::steady_clock::now();
+	framesDrawn_ = 0;
+	fps_ = 0.0f;
 
 	glutTimerFunc(0, ENGINEanimationTimer, 0);
 	glutTimerFunc(0, ENGINEupdateTimer, 0);

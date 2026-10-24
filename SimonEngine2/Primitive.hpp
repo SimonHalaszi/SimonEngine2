@@ -14,18 +14,14 @@ class Primitive : public Object {
 		void draw() override;
 		void update() override;
 
-		void setColor(EngineUtil::ColorRGB);
+		void setColor(const EngineUtil::ColorRGB& color) { color_ = color; }
 
 	protected:
 		bool drawAsSolid_ = true;
+		EngineUtil::ColorRGB color_;
 
 		virtual void drawSolid() const = 0;
 		virtual void drawEdges() const = 0;
-
-		bool drawColor_ = true;
-		EngineUtil::ColorRGB activeColor_;
-		EngineUtil::ColorRGB color_;
-		EngineUtil::ColorRGB grayColor_;
 };
 
 #endif 

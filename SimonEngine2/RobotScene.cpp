@@ -1,14 +1,39 @@
 #include "RobotScene.hpp"
 
+// Objects
+#include "Robot.hpp"
+#include "AxisDisplay.hpp"
+#include "CameraMan.hpp"
+#include "Plane.hpp"
+
 void RobotScene::init() {
-    addRootObject(std::make_unique<Robot>(
+    addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.0f, -2.5f, 0.0f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+            EngineMath::Vector3(50.0f, 0.0f, 50.0f)
         ),
-        EngineUtil::ColorRGB(50, 185, 235)
+        EngineUtil::ColorRGB(50, 235, 185)
     ));
+
+    // I wanted to learn the non srand, rand, time way
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> randomPos(-25.0f, 25.0f);
+    std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
+    std::uniform_int_distribution<int> randomColor(0, 255);
+
+    for (int i = 0; i < 100; ++i) {
+        addRootObject(std::make_unique<Robot>(
+            EngineMath::Transform(
+                EngineMath::Vector3(randomPos(gen), 0.0f, randomPos(gen)),
+                EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(randomRotation(gen))),
+                EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+            ),
+            EngineUtil::ColorRGB(randomColor(gen), randomColor(gen), randomColor(gen))
+        ));
+    }
+
     addRootObject(std::make_unique<AxisDisplay>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
@@ -16,18 +41,16 @@ void RobotScene::init() {
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         )
     ));
-
-    std::unique_ptr<Object>& first = rootObjects_.front();
-
-    camera_.setTarget(first->getWorldTransform().position_);
-    camera_.setPosition(EngineMath::Vector3(5.0f, 5.0f, 5.0f));
-
-    robot_ = getRobot();
+    addRootObject(std::make_unique<CameraMan>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 1.0f, 5.0f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        )
+    ));
 }
 
 #include "Engine.hpp"
-#include "ObjScene.hpp"
-#include "MagicCubeScene.hpp"
 
 void RobotScene::update() {
     if (InputManager::getInstance().isPressed(27)) {
@@ -35,16 +58,10 @@ void RobotScene::update() {
     }
 }
 
-void RobotScene::deInit() {
-    robot_ = nullptr;
+void RobotScene::draw() const {
+    std::cout << "FPS: " << Engine::getInstance().getFPS() << "\n";
 }
 
-Robot* RobotScene::getRobot() {
-    for (auto& obj : rootObjects_) {
-        Robot* robot = dynamic_cast<Robot*>(obj.get());
-        if (robot) {
-            return robot;
-        }
-    }
-    return nullptr;
+void RobotScene::deInit() {
+
 }

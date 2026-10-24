@@ -16,8 +16,8 @@ class Cone : public Primitive {
         int slices_ = 16;
         const EngineUtil::Mesh* mesh_ = nullptr;
 
-        void drawSolid() const override;
-        void drawEdges() const override;
+        void drawSolid() const override final;
+        void drawEdges() const override final;
 };
 
 #endif
