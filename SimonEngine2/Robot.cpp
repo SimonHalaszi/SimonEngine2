@@ -109,8 +109,8 @@ void Robot::onStart() {
             EngineMath::Vector3(headDiameter, headDiameter, headDiameter)
         ),
         color_,
-        16,
-        16
+        12,
+        12
     ));
 }
 

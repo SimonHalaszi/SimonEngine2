@@ -32,10 +32,10 @@ class Object {
 		const EngineMath::Transform& getLocalTransform() const { return localTransform_; }
 		const EngineMath::Transform& getWorldTransform() const { return worldTransform_; }
 
-		void setPosition(EngineMath::Vector3 pos) { localTransform_.position_ = pos; invalidateWorldTransform(); }
-		void setScale(EngineMath::Vector3 scale) { localTransform_.scale_ = scale; invalidateWorldTransform(); }
-		void setRotation(EngineMath::Quaternion rotation) { localTransform_.rotation_ = rotation.normalized(); invalidateWorldTransform(); }
-		void setLocalTransform(EngineMath::Transform transform) { localTransform_ = transform; invalidateWorldTransform(); }
+		void setPosition(EngineMath::Vector3 pos) { localTransform_.position_ = pos; onLocalTransformChanged(); }
+		void setScale(EngineMath::Vector3 scale) { localTransform_.scale_ = scale; onLocalTransformChanged(); }
+		void setRotation(EngineMath::Quaternion rotation) { localTransform_.rotation_ = rotation.normalized(); onLocalTransformChanged(); }
+		void setLocalTransform(EngineMath::Transform transform) { localTransform_ = transform; onLocalTransformChanged(); }
 
 		void invalidateWorldTransform();
 		void updateWorldTransform();
@@ -66,6 +66,8 @@ class Object {
 		std::string name_ = "Object";
 		EngineMath::Transform localTransform_;
 
+		void onLocalTransformChanged() { isLocalMatrixOutDated_ = true; invalidateWorldTransform(); }
+
 		std::vector<std::unique_ptr<Object>> children_ = {};
 
 		bool hasStarted_ = false;
@@ -74,8 +76,13 @@ class Object {
 
 	private:
 		std::unique_ptr<Object> extractChild(Object* child);
+
 		bool isWorldTransformOutDated_ = true;
 		EngineMath::Transform worldTransform_;
+
+		EngineMath::Matrix4 localMatrix_;
+		bool isLocalMatrixOutDated_ = true;
+
 		bool isAlive_ = true;
 };
 

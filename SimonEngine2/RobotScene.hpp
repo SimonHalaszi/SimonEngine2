@@ -18,7 +18,7 @@
 
 class RobotScene : public Scene {
 	public:
-		RobotScene() : Scene(244, 244, 10) {}
+		RobotScene() : Scene(244, 100000, 10) {}
 
 		~RobotScene() {}
 

@@ -53,8 +53,11 @@ void Object::rootDraw() {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 
-	EngineMath::Matrix4 localMatrix = localTransform_.toMatrix();
-	glMultMatrixf(localMatrix.data());
+	if (isLocalMatrixOutDated_) {
+		localMatrix_ = localTransform_.toMatrix();
+		isLocalMatrixOutDated_ = false;
+	}
+	glMultMatrixf(localMatrix_.data());
 
 	draw();
 

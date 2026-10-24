@@ -23,7 +23,7 @@ void RobotScene::init() {
     std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
     std::uniform_int_distribution<int> randomColor(0, 255);
 
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 25; ++i) {
         addRootObject(std::make_unique<Robot>(
             EngineMath::Transform(
                 EngineMath::Vector3(randomPos(gen), 0.0f, randomPos(gen)),
@@ -59,7 +59,7 @@ void RobotScene::update() {
 }
 
 void RobotScene::draw() const {
-    std::cout << "FPS: " << Engine::getInstance().getFPS() << "\n";
+
 }
 
 void RobotScene::deInit() {

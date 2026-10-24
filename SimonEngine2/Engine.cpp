@@ -69,6 +69,8 @@ void Engine::recordDrawnFrame() {
 	if (secondsPassed >= 1.0f) {
 		fps_ = static_cast<float>(framesDrawn_) / secondsPassed;
 
+		std::cout << "FPS: " << fps_ << "\n";
+
 		framesDrawn_ = 0;
 		fpsMeasurementStart_ = now;
 	}
@@ -130,6 +132,8 @@ void Engine::init() {
 	glutInitWindowPosition((screenWidth - ENGINE_WIN_W) / 2, (screenHeight - ENGINE_WIN_H) / 2);
 	
 	glutCreateWindow("(Simon Halaszi) (811196947)");
+
+	glutSwapInterval(0); // Disable VSync for performance testing.
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
