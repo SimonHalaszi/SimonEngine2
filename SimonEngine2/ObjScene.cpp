@@ -10,13 +10,7 @@ void ObjScene::init() {
         EngineUtil::ColorRGB(50, 185, 235),
         "../Assets/teapot.obj"
     ));
-    addRootObject(std::make_unique<AxisDisplay>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
-        )
-    ));
+    addRootObject(std::make_unique<AxisDisplay>());
 
     std::unique_ptr<Object>& first = rootObjects_.front();
 

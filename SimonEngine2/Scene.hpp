@@ -9,6 +9,7 @@
 #include "Camera.hpp"
 
 #include "MeshRegistry.hpp"
+#include "Renderer.hpp"
 
 // Scene Class
 

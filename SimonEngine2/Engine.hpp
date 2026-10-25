@@ -1,13 +1,19 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include <GL/freeglut.h>
+#include "GraphicsAPI.hpp"
 
 #include <chrono>
 #include <memory>
+#include <stdexcept>
+#include <iostream>
 
 #include "Scene.hpp"
 #include "InputManager.hpp"
+#include "EngineShader.hpp"
+#include "Renderer.hpp"
+
+#include "WindowConstants.hpp"
 
 // Engine Class
 class Engine {
@@ -41,6 +47,14 @@ class Engine {
 
 	private:
 		void applyPendingScene();
+
+		// init functions
+		void createWindow();
+		void initOpenGL();
+		void printGraphicsInfo() const;
+		void registerInputFuncs();
+		void registerTimeFuncs();
+		void validateShaders();
 
 		Engine() : currentScene_(nullptr), pendingScene_(nullptr) {}
 

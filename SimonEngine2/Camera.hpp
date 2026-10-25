@@ -1,7 +1,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include <GL/freeglut.h>
+#include "GraphicsAPI.hpp"
 
 #include "WindowConstants.hpp"
 #include "EngineMath.hpp"
@@ -21,6 +21,10 @@ class Camera {
 		void setPosition(const EngineMath::Vector3& position);
 		void setTarget(const EngineMath::Vector3& target);
 		void setTransform(const EngineMath::Transform& transform);
+
+		EngineMath::Matrix4 getViewMatrix() const;
+		EngineMath::Matrix4 getProjectionMatrix(float aspectRatio) const;
+		EngineMath::Matrix4 getViewProjectionMatrix(float aspectRatio) const;
 
 		void pivotAroundTarget(const EngineMath::Quaternion& rotation);
 		void pivotAroundTarget(const EngineMath::Vector3& axis, float radians);
@@ -56,7 +60,7 @@ class Camera {
 		void setZoomFromOrthoScale(double scale);
 
 		EngineMath::Vector3 position_ = { 0.0f, 0.0f, 0.0f };
-		EngineMath::Vector3 target_ = { 0.0f, 0.0f, 0.0f };
+		EngineMath::Vector3 target_ = { 0.0f, 0.0f, -1.0f };
 		EngineMath::Vector3 up_ = { 0.0f, 1.0f, 0.0f };
 };
 

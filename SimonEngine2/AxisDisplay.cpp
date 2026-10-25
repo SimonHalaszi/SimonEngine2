@@ -4,8 +4,12 @@
 #include "Line.hpp"
 #include "Cone.hpp"
 
-AxisDisplay::AxisDisplay(const EngineMath::Transform& localTransform) {
-    localTransform_ = localTransform;
+AxisDisplay::AxisDisplay() {
+    localTransform_ = EngineMath::Transform(
+        EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+        EngineMath::Quaternion::identity(),
+        EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    );
 }
 
 void AxisDisplay::onStart() {

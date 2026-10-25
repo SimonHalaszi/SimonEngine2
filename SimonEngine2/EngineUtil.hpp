@@ -4,6 +4,7 @@
 // My little util library!
 
 #include <vector>
+#include <string>
 
 namespace EngineUtil {
 	class ColorRGB {
@@ -22,11 +23,6 @@ namespace EngineUtil {
 				}
 				return static_cast<float>(value) / 255.0f;
 			}
-
-			static ColorRGB toGrayScale(const ColorRGB& c) {
-				float base = 0.299f * c.r_ + 0.587f * c.g_ + 0.114f * c.b_;
-				return ColorRGB(base, base, base);
-			}
 	};
 
 	struct Vertex {
@@ -41,8 +37,13 @@ namespace EngineUtil {
 		public:
 			Mesh() = default;
 			std::vector<Vertex> vertices_;
-			std::vector<int> faceIndices_;
-			std::vector<int> edgeIndices_;
+			std::vector<unsigned int> faceIndices_;
+			std::vector<unsigned int> edgeIndices_;
+	};
+
+	struct Material {
+		std::string shader_ = "color";
+		EngineUtil::ColorRGB color_;
 	};
 }
 

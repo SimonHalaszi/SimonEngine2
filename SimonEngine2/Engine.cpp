@@ -1,5 +1,4 @@
 #include "Engine.hpp"
-#include "WindowConstants.hpp"
 
 // Function wrappers needed because OpenGL expects a certain function signature for these
 void ENGINEanimationTimer(int v) {
@@ -121,19 +120,30 @@ void Engine::animationTimer(int v) {
 	glutTimerFunc(int(1000 / animationUpdatesPerSecond), ENGINEanimationTimer, v); // Creates a frame delay that is counted in miliseconds
 }
 
-#include "RobotScene.hpp"
-
-void Engine::init() {
-	glutInitDisplayMode( GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH );
-
+void Engine::createWindow() {
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(ENGINE_WIN_W, ENGINE_WIN_H);
+
 	const int screenWidth = glutGet(GLUT_SCREEN_WIDTH);
 	const int screenHeight = glutGet(GLUT_SCREEN_HEIGHT);
-	glutInitWindowPosition((screenWidth - ENGINE_WIN_W) / 2, (screenHeight - ENGINE_WIN_H) / 2);
-	
-	glutCreateWindow("(Simon Halaszi) (811196947)");
 
-	glutSwapInterval(0); // Disable VSync for performance testing.
+	glutInitWindowPosition(
+		(screenWidth - ENGINE_WIN_W) / 2,
+		(screenHeight - ENGINE_WIN_H) / 2
+	);
+
+	glutInitContextVersion(3, 3);
+	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
+
+	glutCreateWindow("(Simon Halaszi) (811196947)");
+}
+
+void Engine::initOpenGL() {
+	if (!gladLoadGL()) {
+		throw std::runtime_error("Failed to initialize GLAD");
+	}
+
+	glutSwapInterval(0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -141,27 +151,55 @@ void Engine::init() {
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
 
+void Engine::printGraphicsInfo() const {
+	auto glStr = [](GLenum name) -> const char* {
+		const GLubyte* value = glGetString(name);
+		return value ? reinterpret_cast<const char*>(value) : "null";
+	};
+
+	std::cout << "GL_VENDOR   : " << glStr(GL_VENDOR) << "\n";
+	std::cout << "GL_RENDERER : " << glStr(GL_RENDERER) << "\n";
+	std::cout << "GL_VERSION  : " << glStr(GL_VERSION) << "\n";
+	std::cout << "GLSL_VERSION: " << glStr(GL_SHADING_LANGUAGE_VERSION) << "\n";
+
+	GLint major = 0;
+	GLint minor = 0;
+	GLint profileMask = 0;
+
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+	glGetIntegerv(GL_MINOR_VERSION, &minor);
+	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profileMask);
+
+	const char* profile = "unknown profile";
+
+	if (profileMask & GL_CONTEXT_CORE_PROFILE_BIT) {
+		profile = "core";
+	}
+	else if (profileMask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT) {
+		profile = "compat";
+	}
+
+	std::cout << "GL Context  : " << major << "." << minor << " (" << profile << ")\n";
+}
+
+void Engine::registerInputFuncs() {
 	glutSpecialFunc(INPUTMANAGERprocSpecialKeys);
 	glutSpecialUpFunc(INPUTMANAGERprocSpecialKeysUp);
+
 	glutKeyboardFunc(INPUTMANAGERprocKeys);
 	glutKeyboardUpFunc(INPUTMANAGERprocKeysUp);
+
 	glutMouseFunc(INPUTMANAGERprocMouse);
 	glutMotionFunc(INPUTMANAGERmouseMove);
 	glutPassiveMotionFunc(INPUTMANAGERpassiveMouseMove);
+}
 
-	if (!currentScene_) {
-		currentScene_ = std::make_unique<RobotScene>();
-	}
-
-	if (currentScene_) {
-		currentScene_->sceneInit();
-	}
-
-	glutDisplayFunc(GAMEdraw);
-
+void Engine::registerTimeFuncs() {
 	hasPreviousUpdate_ = false;
 	deltaTime_ = 0.0f;
+
 	fpsMeasurementStart_ = std::chrono::steady_clock::now();
 	framesDrawn_ = 0;
 	fps_ = 0.0f;
@@ -169,7 +207,36 @@ void Engine::init() {
 	glutTimerFunc(0, ENGINEanimationTimer, 0);
 	glutTimerFunc(0, ENGINEupdateTimer, 0);
 	glutTimerFunc(0, ENGINEframeTimer, 0);
+}
 
+void Engine::validateShaders() {
+	GLuint colorProgram = EngineShader::loadProgram("../Shaders/Basic.vert", "../Shaders/Color.frag");
+
+	glDeleteProgram(colorProgram);
+
+	GLuint grayscaleProgram = EngineShader::loadProgram("../Shaders/Basic.vert", "../Shaders/Grayscale.frag");
+
+	glDeleteProgram(grayscaleProgram);
+
+	std::cout << "Shaders successfully compiled and linked.\n";
+}
+
+#include "TestScene.hpp"
+
+void Engine::init() {
+	createWindow();
+	initOpenGL();
+	printGraphicsInfo();
+	registerInputFuncs();
+
+	if (!currentScene_) {
+		currentScene_ = std::make_unique<TestScene>();
+	}
+
+	currentScene_->sceneInit();
+
+	glutDisplayFunc(GAMEdraw);
+	registerTimeFuncs();
 }
 
 void Engine::safeExit() {
@@ -178,6 +245,7 @@ void Engine::safeExit() {
 	if (currentScene_) {
 		currentScene_->sceneDeInit();
 	}
+
 	std::cout << "Engine::safeEngineExit : Exited game\n";
 	exit(0);
 }

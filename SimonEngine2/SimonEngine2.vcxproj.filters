@@ -73,6 +73,9 @@
     <Filter Include="Source Files\glad">
       <UniqueIdentifier>{0ce84d9d-5caf-4085-8985-9b5db1e1e500}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Library">
+      <UniqueIdentifier>{060d438b-55ce-4490-bddf-461bfd81e65b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -146,6 +149,24 @@
     </ClCompile>
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="StressTestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineShader.cpp">
+      <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="GPUMeshUpload.cpp">
+      <Filter>Source Files\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="ProperPrim.cpp">
+      <Filter>Source Files\Objects\Primitives\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +244,30 @@
     </ClInclude>
     <ClInclude Include="Plane.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="StressTestScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineShader.hpp">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="GPUMesh.hpp">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="GPUMeshUpload.hpp">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.hpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsAPI.hpp">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="ProperPrim.hpp">
+      <Filter>Header Files\Objects\Primitives\Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

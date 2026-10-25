@@ -1,8 +1,7 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include <GL/glut.h>
-#include <GL/freeglut.h>
+#include "GraphicsAPI.hpp"
 
 #include <vector>
 #include <memory>

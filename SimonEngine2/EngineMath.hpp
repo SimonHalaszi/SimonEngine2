@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <array>
+#include <stdexcept>
 
 // My little 3D math library!
 
@@ -116,7 +117,7 @@ namespace EngineMath {
 
 			static Matrix4 identity() {
 				Matrix4 r;
-				r.m_[0] = r.m_[5] = r.m_[10] = r.m_[15] = 1.0f;;
+				r.m_[0] = r.m_[5] = r.m_[10] = r.m_[15] = 1.0f;
 				return r;
 			}
 
@@ -155,6 +156,72 @@ namespace EngineMath {
 				r.m_[10] = 1.0f - 2.0f * (x * x + y * y);
 
 				return r;
+			}
+
+			static Matrix4 lookAt(const Vector3& eye, const Vector3& target, const Vector3& up) {
+				Vector3 direction = target - eye;
+
+				if (direction.lengthSquared() <= 1e-8f) {
+					throw std::invalid_argument("Matrix4::lookAt: eye and target must be different");
+				}
+
+				Vector3 forward = direction.normalized();
+				Vector3 side = forward.cross(up);
+
+				if (direction.lengthSquared() <= 1e-8f) {
+					throw std::invalid_argument("Matrix4::lookAt: up must be nonzero and non parallel to view direction");
+				}
+
+				Vector3 right = side.normalized();
+				Vector3 cameraUp = right.cross(forward);
+
+				Matrix4 result = Matrix4::identity();
+
+				result.m_[0] = right.x_;
+				result.m_[4] = right.y_;
+				result.m_[8] = right.z_;
+
+				result.m_[1] = cameraUp.x_;
+				result.m_[5] = cameraUp.y_;
+				result.m_[9] = cameraUp.z_;
+
+				result.m_[2] = -forward.x_;
+				result.m_[6] = -forward.y_;
+				result.m_[10] = -forward.z_;
+
+				result.m_[12] = -right.dot(eye);
+				result.m_[13] = -cameraUp.dot(eye);
+				result.m_[14] = forward.dot(eye);
+
+				return result;
+			}
+
+			static Matrix4 perspective(float verticalFovRadians, float aspectRatio, float nearPlane, float farPlane) {
+				if (!(verticalFovRadians > 0.0f && verticalFovRadians < PI)) {
+					throw std::invalid_argument("Matrix4::perspective: vertical FOV must be between 0 and PI");
+				}
+
+				if (!(aspectRatio > 0.0f)) {
+					throw std::invalid_argument("Matrix4::perspective: aspect ratio must be positive");
+				}
+
+				if (!(nearPlane > 0.0f && farPlane > nearPlane)) {
+					throw std::invalid_argument("Matrix4::perspective: expect 0 < nearPlane < farPlane");
+				}
+
+				const float focalScale = 1.0f / std::tan(verticalFovRadians * 0.5f);
+				const float depthRange = farPlane - nearPlane;
+
+				Matrix4 result;
+
+				result.m_[0] = focalScale / aspectRatio;
+				result.m_[5] = focalScale;
+
+				result.m_[10] = -(farPlane + nearPlane) / depthRange;
+				result.m_[11] = -1.0f;
+				result.m_[14] = -(2.0f * farPlane * nearPlane) / depthRange;
+				
+				return result;
 			}
 
 			Matrix4 operator*(const Matrix4& b) const {

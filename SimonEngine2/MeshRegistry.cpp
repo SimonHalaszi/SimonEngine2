@@ -195,6 +195,32 @@ const EngineUtil::Mesh* MeshRegistry::getSphere(int slices, int stacks) {
 		}
 	}
 
+	const unsigned int rowSize = static_cast<unsigned int>(slices + 1);
+
+	for (int stack = 0; stack < stacks; ++stack) {
+		for (int slice = 0; slice < slices; ++slice) {
+			const unsigned int a =
+				static_cast<unsigned int>(stack) * rowSize
+				+ static_cast<unsigned int>(slice);
+
+			const unsigned int b = a + rowSize;
+			const unsigned int c = a + 1;
+			const unsigned int d = b + 1;
+
+			if (stack > 0) {
+				mesh.faceIndices_.push_back(a);
+				mesh.faceIndices_.push_back(c);
+				mesh.faceIndices_.push_back(b);
+			}
+
+			if (stack < stacks - 1) {
+				mesh.faceIndices_.push_back(c);
+				mesh.faceIndices_.push_back(d);
+				mesh.faceIndices_.push_back(b);
+			}
+		}
+	}
+
 	auto inserted = registry_.insert({ key, std::move(mesh) });
 	return &inserted.first->second;
 }
@@ -284,4 +310,45 @@ const EngineUtil::Mesh* MeshRegistry::getDotObj(const std::string& filepath) {
 
 	auto inserted = registry_.insert({ key, std::move(mesh) });
 	return &inserted.first->second;
+}
+
+const GPUMesh* MeshRegistry::getGPUSphere(int slices, int stacks) {
+	slices = std::max(slices, minSlices);
+	stacks = std::max(stacks, minStacks);
+
+	const std::string key = "SE2_MR_SPHERE_" + std::to_string(slices) + "_" + std::to_string(stacks);
+
+	const EngineUtil::Mesh* cpuMesh = getSphere(slices, stacks);
+
+	return getOrCreateGPUMesh(key, *cpuMesh);
+}
+
+const GPUMesh* MeshRegistry::getGPUMesh(const std::string& key) {
+	auto found = GPURegistry_.find(key);
+	if (found == GPURegistry_.end()) {
+		return nullptr;
+	}
+	return found->second.get();
+}
+
+const GPUMesh* MeshRegistry::getOrCreateGPUMesh(const std::string& key, const EngineUtil::Mesh& cpuMesh) {
+	auto found = GPURegistry_.find(key);
+	if (found != GPURegistry_.end()) {
+		return found->second.get();
+	}
+
+	auto gpuMesh = std::make_unique<GPUMesh>();
+	GPUMeshUpload::upload(cpuMesh, *gpuMesh);
+
+	GPUMesh* rawPtr = gpuMesh.get();
+	GPURegistry_.emplace(key, std::move(gpuMesh));
+	return rawPtr;
+}
+
+void MeshRegistry::clearRegistry() {
+	for (auto& kv : GPURegistry_) {
+		kv.second->release();
+	}
+	GPURegistry_.clear();
+	registry_.clear();
 }

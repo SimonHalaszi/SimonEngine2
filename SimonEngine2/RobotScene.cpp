@@ -13,7 +13,7 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(50.0f, 0.0f, 50.0f)
         ),
-        EngineUtil::ColorRGB(50, 235, 185)
+        EngineUtil::ColorRGB(255, 255, 255)
     ));
 
     // I wanted to learn the non srand, rand, time way
@@ -34,13 +34,8 @@ void RobotScene::init() {
         ));
     }
 
-    addRootObject(std::make_unique<AxisDisplay>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
-        )
-    ));
+    addRootObject(std::make_unique<AxisDisplay>());
+
     addRootObject(std::make_unique<CameraMan>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 1.0f, 5.0f),

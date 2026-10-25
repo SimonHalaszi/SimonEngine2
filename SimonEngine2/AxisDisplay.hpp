@@ -7,8 +7,7 @@
 
 class AxisDisplay : public Object {
 	public:
-		AxisDisplay() = default;
-		AxisDisplay(const EngineMath::Transform& localTransform);
+		AxisDisplay();
 
 		void onStart() override final;
 		void update() override final;

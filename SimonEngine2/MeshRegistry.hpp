@@ -1,7 +1,7 @@
 #ifndef MESH_REGISTRY_HPP
 #define MESH_REGISTRY_HPP
 
-#include <GL/freeglut.h>
+#include "GraphicsAPI.hpp"
 
 #include <unordered_map>
 #include <unordered_set>
@@ -14,6 +14,9 @@
 
 #include "EngineUtil.hpp"
 #include "EngineMath.hpp"
+
+#include "GPUMesh.hpp"
+#include "GPUMeshUpload.hpp"
 
 // Registry for Meshes
 class MeshRegistry {
@@ -31,7 +34,11 @@ class MeshRegistry {
 		const EngineUtil::Mesh* getSphere(int slices, int stacks);
 		const EngineUtil::Mesh* getDotObj(const std::string& filepath);
 
-		void clearRegistry() { std::cout << "MeshRegistry::clearRegistry : Cleared MeshRegistry\n"; registry_.clear(); }
+		const GPUMesh* getGPUSphere(int slices, int stacks);
+		const GPUMesh* getGPUMesh(const std::string& key);
+		const GPUMesh* getOrCreateGPUMesh(const std::string& key, const EngineUtil::Mesh& CPUMesh);
+
+		void clearRegistry();
 
 		MeshRegistry(const MeshRegistry&) = delete;
 		MeshRegistry& operator=(const MeshRegistry&) = delete;
@@ -45,6 +52,8 @@ class MeshRegistry {
 
 		// Registry
 		std::unordered_map<std::string, EngineUtil::Mesh> registry_;
+		std::unordered_map<std::string, std::unique_ptr<GPUMesh>> GPURegistry_;
+
 };
 
 #endif

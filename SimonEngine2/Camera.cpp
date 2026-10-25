@@ -9,7 +9,6 @@ namespace {
 	constexpr double maxOrthoScale = 100.0;
 }
 
-
 void Camera::setPerspective(double fovy, double zNear, double zFar) {
 	projectionMode_ = ProjectionMode::Perspective;
 
@@ -57,8 +56,7 @@ void Camera::setTarget(const EngineMath::Vector3& target) {
 void Camera::setTransform(const EngineMath::Transform& worldTransform) {
 	position_ = worldTransform.position_;
 
-	const EngineMath::Vector3 forward =
-		worldTransform.rotation_.rotate(EngineMath::Vector3(0.0f, 0.0f, -1.0f));
+	const EngineMath::Vector3 forward = worldTransform.rotation_.rotate(EngineMath::Vector3(0.0f, 0.0f, -1.0f));
 
 	target_ = position_ + forward;
 
@@ -89,9 +87,9 @@ void Camera::updateZoomFromPosition() {
 
 	perspectiveZoomFov_ = std::clamp(perspectiveZoomFov_, minPerspectiveFov, maxPerspectiveFov);
 
-	const float baseTan = std::tan(EngineMath::degreesToRadians(perspectiveFovy_ * 0.5));
+	const float baseTan = std::tan(EngineMath::degreesToRadians(static_cast<float>(perspectiveFovy_) * 0.5f));
 
-	const float zoomedTan = std::tan(EngineMath::degreesToRadians(perspectiveZoomFov_ * 0.5));
+	const float zoomedTan = std::tan(EngineMath::degreesToRadians(static_cast<float>(perspectiveZoomFov_) * 0.5f));
 
 	orthoZoomScale_ = baseTan > 0.0 ? zoomedTan / baseTan : 1.0;
 
@@ -160,32 +158,40 @@ void Camera::applyProjection() const {
 	const int width = glutGet(GLUT_WINDOW_WIDTH);
 	const int height = glutGet(GLUT_WINDOW_HEIGHT);
 
-	if (width <= 0 || height <= 0) return;
+	if (width <= 0 || height <= 0) {
+		return;
+	}
 
-	const double aspectRatio = static_cast<double>(width) / static_cast<double>(height);
+	const float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+
+	const EngineMath::Matrix4 projection = getProjectionMatrix(aspectRatio);
 
 	glViewport(0, 0, width, height);
+
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	if (projectionMode_ == ProjectionMode::Perspective) {
-		gluPerspective(perspectiveZoomFov_, aspectRatio, perspectiveNear_, perspectiveFar_);
-	}
-	else {
-		const double halfHeight = orthoHalfHeight_ * orthoZoomScale_;
-		const double halfWidth = halfHeight * aspectRatio;
-
-		glOrtho(-halfWidth, halfWidth, -halfHeight, halfHeight, orthoNear_, orthoFar_);
-	}
+	glLoadMatrixf(projection.data());
 }
 
 void Camera::applyView() const {
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	const EngineMath::Matrix4 view = getViewMatrix();
 
-	gluLookAt(
-		position_.x_, position_.y_, position_.z_,
-		target_.x_, target_.y_, target_.z_,
-		up_.x_, up_.y_, up_.z_
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(view.data());
+}
+
+EngineMath::Matrix4 Camera::getViewMatrix() const {
+	return EngineMath::Matrix4::lookAt(position_, target_, up_);
+}
+
+EngineMath::Matrix4 Camera::getProjectionMatrix(float aspectRatio) const {
+	return EngineMath::Matrix4::perspective(
+		EngineMath::degreesToRadians(static_cast<float>(perspectiveFovy_)), 
+		aspectRatio, 
+		static_cast<float>(perspectiveNear_), 
+		static_cast<float>(perspectiveFar_)
 	);
+}
+
+EngineMath::Matrix4 Camera::getViewProjectionMatrix(float aspectRatio) const {
+	return getProjectionMatrix(aspectRatio) * getViewMatrix();
 }
