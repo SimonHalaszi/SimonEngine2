@@ -6,12 +6,14 @@
 #include <stdexcept>
 
 #include "EngineMath.hpp"
-#include "GPUMesh.hpp"
 #include "EngineUtil.hpp"
 #include "EngineShader.hpp"
+#include "EngineRender.hpp"
 
 class Renderer {
 	public:
+		enum class DrawMode { Solid, Edges };
+
 		static Renderer& getInstance() {
 			static Renderer instance;
 			return instance;
@@ -20,14 +22,21 @@ class Renderer {
 		void loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath);
 		std::string getOrLoadShader(const std::string& vertPath, const std::string& fragPath);
 		
-		void drawMesh(const GPUMesh& mesh, const EngineUtil::Material& material, const EngineMath::Matrix4& model, const EngineMath::Matrix4& viewProjection) const;
+		bool beginPass(const class Camera& camera,
+			int x, int y,
+			int width, int height
+		);
+
+		void endPass();
+
+		void drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode = DrawMode::Solid) const;
 
 		void shutdown();
 
 		Renderer(const Renderer&) = delete;
 		Renderer& operator=(const Renderer&) = delete;
-		Renderer(const Renderer&&) = delete;
-		Renderer& operator=(const Renderer&&) = delete;
+		Renderer(Renderer&&) = delete;
+		Renderer& operator=(Renderer&&) = delete;
 	private:
 		Renderer() = default;
 
@@ -37,6 +46,9 @@ class Renderer {
 			GLint modelLocation_ = -1;
 			GLint colorLocation_ = -1;
 		};
+
+		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
+		bool passActive_ = false;
 
 		std::unordered_map<std::string, ShaderProgram> programRegistry_;
 

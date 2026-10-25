@@ -1,23 +1,21 @@
 #ifndef CONE_HPP
 #define CONE_HPP
 
-#include <algorithm>
-
 #include "Primitive.hpp"
-#include "EngineMath.hpp"
-#include "EngineUtil.hpp"
 
 class Cone : public Primitive {
     public:
-        Cone() = default;
-        Cone(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices);
+        Cone() : Cone(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
+        Cone(
+            const EngineMath::Transform& localTransform, 
+            const EngineUtil::ColorRGB& color, 
+            int slices = 3, 
+            const std::string& vertPath = "../Shaders/Basic.vert",
+            const std::string& fragPath = "../Shaders/Color.frag"
+        );
 
     private:
-        int slices_ = 16;
-        const EngineUtil::Mesh* mesh_ = nullptr;
-
-        void drawSolid() const override final;
-        void drawEdges() const override final;
+        int slices_;
 };
 
 #endif

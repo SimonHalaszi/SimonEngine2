@@ -36,8 +36,6 @@ void Scene::sceneDeInit() {
 }
 
 void Scene::sceneDraw() const {
-	camera_.apply();
-
 	draw();
 
 	for (auto& rootObject : rootObjects_) {

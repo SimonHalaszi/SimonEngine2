@@ -40,11 +40,6 @@ namespace EngineUtil {
 			std::vector<unsigned int> faceIndices_;
 			std::vector<unsigned int> edgeIndices_;
 	};
-
-	struct Material {
-		std::string shader_ = "color";
-		EngineUtil::ColorRGB color_;
-	};
 }
 
 

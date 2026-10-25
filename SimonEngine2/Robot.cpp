@@ -2,6 +2,10 @@
 
 #include "Engine.hpp"
 
+#include "Limb.hpp"
+#include "RectangularPrism.hpp"
+#include "Ellipsoid.hpp"
+
 namespace {
     constexpr float torsoWide = 1.0f;
     constexpr float torsoTall = 1.5f;
@@ -19,7 +23,7 @@ namespace {
 Robot::Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB color) {
     localTransform_ = localTransform;
     color_ = color;
-    rotationStep = 5.0f;
+    rotationStep_ = 5.0f;
 }
 
 void Robot::onStart() {
@@ -102,7 +106,7 @@ void Robot::onStart() {
     }
 
     // Head
-    addChild(std::make_unique<Sphere>(
+    addChild(std::make_unique<Ellipsoid>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, (torsoTall + headDiameter) / 2.0f, 0.0f),
             EngineMath::Quaternion::identity(),
@@ -117,69 +121,69 @@ void Robot::onStart() {
 void Robot::update() {
     if (InputManager::getInstance().isPressed('4')) {
         if (leftArm_) {
-            leftArm_->pivotMiddle(EngineMath::degreesToRadians(rotationStep));
+            leftArm_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
         }
         if (rightArm_) {
-            rightArm_->pivotMiddle(EngineMath::degreesToRadians(rotationStep));
+            rightArm_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
         }
     }
     if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F4))) {
         if (leftArm_) {
-            leftArm_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep));
+            leftArm_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
         }
         if (rightArm_) {
-            rightArm_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep));
+            rightArm_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
         }
     }
 
     if (InputManager::getInstance().isPressed('5')) {
         if (leftArm_) {
-            leftArm_->pivotHigh(EngineMath::degreesToRadians(rotationStep));
+            leftArm_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
         }
         if (rightArm_) {
-            rightArm_->pivotHigh(EngineMath::degreesToRadians(rotationStep));
+            rightArm_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
         }
     }
     if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F5))) {
         if (leftArm_) {
-            leftArm_->pivotHigh(EngineMath::degreesToRadians(-rotationStep));
+            leftArm_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
         }
         if (rightArm_) {
-            rightArm_->pivotHigh(EngineMath::degreesToRadians(-rotationStep));
+            rightArm_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
         }
     }
 
     if (InputManager::getInstance().isPressed('7')) {
         if (leftLeg_) {
-            leftLeg_->pivotMiddle(EngineMath::degreesToRadians(rotationStep));
+            leftLeg_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
         }
         if (rightLeg_) {
-            rightLeg_->pivotMiddle(EngineMath::degreesToRadians(rotationStep));
+            rightLeg_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
         }
     }
     if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F7))) {
         if (leftLeg_) {
-            leftLeg_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep));
+            leftLeg_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
         }
         if (rightLeg_) {
-            rightLeg_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep));
+            rightLeg_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
         }
     }
 
     if (InputManager::getInstance().isPressed('6')) {
         if (leftLeg_) {
-            leftLeg_->pivotHigh(EngineMath::degreesToRadians(rotationStep));
+            leftLeg_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
         }
         if (rightLeg_) {
-            rightLeg_->pivotHigh(EngineMath::degreesToRadians(rotationStep));
+            rightLeg_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
         }
     }
     if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F6))) {
         if (leftLeg_) {
-            leftLeg_->pivotHigh(EngineMath::degreesToRadians(-rotationStep));
+            leftLeg_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
         }
         if (rightLeg_) {
-            rightLeg_->pivotHigh(EngineMath::degreesToRadians(-rotationStep));
+            rightLeg_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
         }
     }
 }

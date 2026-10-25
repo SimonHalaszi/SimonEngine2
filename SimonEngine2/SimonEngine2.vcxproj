@@ -154,13 +154,12 @@
   <ItemGroup>
     <ClCompile Include="AxisDisplay.cpp" />
     <ClCompile Include="CameraMan.cpp" />
+    <ClCompile Include="EngineRender.cpp" />
     <ClCompile Include="EngineShader.cpp" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="GPUMeshUpload.cpp" />
     <ClCompile Include="Limb.cpp" />
     <ClCompile Include="MagicCubeScene.cpp" />
     <ClCompile Include="Plane.cpp" />
-    <ClCompile Include="ProperPrim.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RobotScene.cpp" />
     <ClCompile Include="Camera.cpp">
@@ -181,22 +180,20 @@
     <ClCompile Include="RectangularPrism.cpp" />
     <ClCompile Include="Robot.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="Ellipsoid.cpp" />
+    <ClCompile Include="Edge.cpp" />
     <ClCompile Include="StressTestScene.cpp" />
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AxisDisplay.hpp" />
     <ClInclude Include="CameraMan.hpp" />
+    <ClInclude Include="EngineRender.hpp" />
     <ClInclude Include="EngineShader.hpp" />
-    <ClInclude Include="GPUMesh.hpp" />
-    <ClInclude Include="GPUMeshUpload.hpp" />
     <ClInclude Include="GraphicsAPI.hpp" />
     <ClInclude Include="Limb.hpp" />
     <ClInclude Include="MagicCubeScene.hpp" />
     <ClInclude Include="Plane.hpp" />
-    <ClInclude Include="ProperPrim.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="RobotScene.hpp" />
     <ClInclude Include="Camera.hpp" />
@@ -215,11 +212,11 @@
     <ClInclude Include="RectangularPrism.hpp" />
     <ClInclude Include="Robot.hpp" />
     <ClInclude Include="Scene.hpp" />
-    <ClInclude Include="Sphere.hpp" />
+    <ClInclude Include="Ellipsoid.hpp" />
     <ClInclude Include="StressTestScene.hpp" />
     <ClInclude Include="TestScene.hpp" />
     <ClInclude Include="WindowConstants.hpp" />
-    <ClInclude Include="Line.hpp" />
+    <ClInclude Include="Edge.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

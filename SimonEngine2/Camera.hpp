@@ -1,9 +1,6 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "GraphicsAPI.hpp"
-
-#include "WindowConstants.hpp"
 #include "EngineMath.hpp"
 
 class Camera {
@@ -34,30 +31,18 @@ class Camera {
 
 		double getZoom() const;
 
-		void apply() const;
-
 	private:
-		void applyProjection() const;
-		void applyView() const;
-
 		ProjectionMode projectionMode_ = ProjectionMode::Perspective;
 
 		double perspectiveFovy_ = 120.0;
 		double perspectiveNear_ = 0.1;
 		double perspectiveFar_ = 100.0;
-		double perspectiveZoomFov_ = 60.0;
+		double perspectiveZoomFov_ = perspectiveFovy_;
 
 		double orthoHalfHeight_ = 2.3;
 		double orthoNear_ = 0.1;
 		double orthoFar_ = 100.0;
 		double orthoZoomScale_ = 1.0;
-
-		double zoom_ = 1.0;
-		double zoomPosition_ = 0.0;
-		
-		void updateZoomFromPosition();
-		void setZoomFromPerspectiveFov(double fov);
-		void setZoomFromOrthoScale(double scale);
 
 		EngineMath::Vector3 position_ = { 0.0f, 0.0f, 0.0f };
 		EngineMath::Vector3 target_ = { 0.0f, 0.0f, -1.0f };

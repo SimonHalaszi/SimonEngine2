@@ -1,7 +1,7 @@
 #include "AxisDisplay.hpp"
 
 #include "Engine.hpp"
-#include "Line.hpp"
+#include "Edge.hpp"
 #include "Cone.hpp"
 
 AxisDisplay::AxisDisplay() {
@@ -13,7 +13,7 @@ AxisDisplay::AxisDisplay() {
 }
 
 void AxisDisplay::onStart() {
-    addChild(std::make_unique<Line>(
+    addChild(std::make_unique<Edge>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
@@ -32,7 +32,7 @@ void AxisDisplay::onStart() {
         8
     ));
 
-    addChild(std::make_unique<Line>(
+    addChild(std::make_unique<Edge>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(90.0f)),
@@ -51,7 +51,7 @@ void AxisDisplay::onStart() {
         8
     ));
 
-    addChild(std::make_unique<Line>(
+    addChild(std::make_unique<Edge>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, EngineMath::degreesToRadians(-90.0f), 0.0f),

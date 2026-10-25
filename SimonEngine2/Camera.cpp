@@ -74,56 +74,6 @@ void Camera::pivotAroundTarget(const EngineMath::Vector3& axis, float radians) {
 	pivotAroundTarget(EngineMath::Quaternion::fromAxisAngle(axis, radians));
 }
 
-void Camera::updateZoomFromPosition() {
-	zoomPosition_ = std::clamp(zoomPosition_, -1.0, 1.0);
-
-	if (zoomPosition_ >= 0.0) {
-		perspectiveZoomFov_ = perspectiveFovy_ - zoomPosition_ * (perspectiveFovy_ - minPerspectiveFov);
-	}
-	else {
-		const double zoomOutPosition = -zoomPosition_;
-		perspectiveZoomFov_ = perspectiveFovy_ + zoomOutPosition * (maxPerspectiveFov - perspectiveFovy_);
-	}
-
-	perspectiveZoomFov_ = std::clamp(perspectiveZoomFov_, minPerspectiveFov, maxPerspectiveFov);
-
-	const float baseTan = std::tan(EngineMath::degreesToRadians(static_cast<float>(perspectiveFovy_) * 0.5f));
-
-	const float zoomedTan = std::tan(EngineMath::degreesToRadians(static_cast<float>(perspectiveZoomFov_) * 0.5f));
-
-	orthoZoomScale_ = baseTan > 0.0 ? zoomedTan / baseTan : 1.0;
-
-	orthoZoomScale_ = std::clamp(orthoZoomScale_, minOrthoScale, maxOrthoScale);
-}
-
-void Camera::setZoomFromPerspectiveFov(double fov) {
-	fov = std::clamp(fov, minPerspectiveFov, maxPerspectiveFov);
-
-	if (fov <= perspectiveFovy_) {
-		const double range = perspectiveFovy_ - minPerspectiveFov;
-		zoomPosition_ = range > 0.0 ? (perspectiveFovy_ - fov) / range : 1.0;
-	}
-	else {
-		const double range = maxPerspectiveFov - perspectiveFovy_;
-		zoomPosition_ = range > 0.0 ? -(fov - perspectiveFovy_) / range : -1.0;
-	}
-
-	updateZoomFromPosition();
-}
-
-void Camera::setZoomFromOrthoScale(double scale) {
-	scale = std::clamp(scale, minOrthoScale, maxOrthoScale);
-
-	if (scale <= 1.0) {
-		zoomPosition_ = (1.0 - scale) / (1.0 - minOrthoScale);
-	}
-	else {
-		zoomPosition_ = -(scale - 1.0) / (maxOrthoScale - 1.0);
-	}
-
-	updateZoomFromPosition();
-}
-
 void Camera::zoomIn(double amount) {
 	if (projectionMode_ == ProjectionMode::Perspective) {
 		perspectiveZoomFov_ = std::clamp(perspectiveZoomFov_ - amount, minPerspectiveFov, maxPerspectiveFov);
@@ -149,47 +99,33 @@ double Camera::getZoom() const {
 	return 1.0 / orthoZoomScale_;
 }
 
-void Camera::apply() const {
-	applyProjection();
-	applyView();
-}
-
-void Camera::applyProjection() const {
-	const int width = glutGet(GLUT_WINDOW_WIDTH);
-	const int height = glutGet(GLUT_WINDOW_HEIGHT);
-
-	if (width <= 0 || height <= 0) {
-		return;
-	}
-
-	const float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-
-	const EngineMath::Matrix4 projection = getProjectionMatrix(aspectRatio);
-
-	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(projection.data());
-}
-
-void Camera::applyView() const {
-	const EngineMath::Matrix4 view = getViewMatrix();
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(view.data());
-}
-
 EngineMath::Matrix4 Camera::getViewMatrix() const {
 	return EngineMath::Matrix4::lookAt(position_, target_, up_);
 }
 
 EngineMath::Matrix4 Camera::getProjectionMatrix(float aspectRatio) const {
-	return EngineMath::Matrix4::perspective(
-		EngineMath::degreesToRadians(static_cast<float>(perspectiveFovy_)), 
-		aspectRatio, 
-		static_cast<float>(perspectiveNear_), 
-		static_cast<float>(perspectiveFar_)
-	);
+	if (projectionMode_ == ProjectionMode::Ortho) {
+		const float halfHeight = static_cast<float>(orthoHalfHeight_ * orthoZoomScale_);
+
+		const float halfWidth = halfHeight * aspectRatio;
+
+		return EngineMath::Matrix4::orthographic(
+			-halfWidth,
+			halfWidth,
+			-halfHeight,
+			halfHeight,
+			static_cast<float>(orthoNear_),
+			static_cast<float>(orthoFar_)
+		);
+	}
+	else {
+		return EngineMath::Matrix4::perspective(
+			EngineMath::degreesToRadians(static_cast<float>(perspectiveZoomFov_)),
+			aspectRatio,
+			static_cast<float>(perspectiveNear_),
+			static_cast<float>(perspectiveFar_)
+		);
+	}
 }
 
 EngineMath::Matrix4 Camera::getViewProjectionMatrix(float aspectRatio) const {

@@ -85,28 +85,46 @@ void Engine::frameTimer(int v) {
 }
 
 void GAMEdraw() {
-	const Scene* currentScene = Engine::getInstance().getCurrentScene();
+	Engine& engine = Engine::getInstance();
+	const Scene* scene = engine.getCurrentScene();
 
-	if (!currentScene) {
+	if (scene == nullptr) {
+		return;
+	}
+
+	const int width = glutGet(GLUT_WINDOW_WIDTH);
+	const int height = glutGet(GLUT_WINDOW_HEIGHT);
+
+	if (width <= 0 || height <= 0) {
 		return;
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	if (scene->isDrawing()) {
+		Renderer& renderer = Renderer::getInstance();
 
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		if (renderer.beginPass(
+			scene->getCamera(),
+			0, 0,
+			width, height
+		)) {
+			try {
+				scene->sceneDraw();
+			}
+			catch (...) {
+				renderer.endPass();
+				throw;
+			}
 
-	if (currentScene->isDrawing()) {
-		glViewport(0, 0, ENGINE_WIN_W, ENGINE_WIN_H);
-		currentScene->sceneDraw();
+			renderer.endPass();
+		}
 	}
 
 	glFlush();
 	glutSwapBuffers();
 
-	Engine::getInstance().recordDrawnFrame();
+	engine.recordDrawnFrame();
 }
 
 void Engine::animationTimer(int v) {

@@ -4,9 +4,8 @@
 #include "Object.hpp"
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
+
 #include "Limb.hpp"
-#include "RectangularPrism.hpp"
-#include "Sphere.hpp"
 
 class Robot : public Object {
 	public:
@@ -25,7 +24,7 @@ class Robot : public Object {
 		Limb* rightLeg_ = nullptr;
 		EngineUtil::ColorRGB color_;
 
-		float rotationStep;
+		float rotationStep_;
 };
 
 #endif 

@@ -1,24 +1,21 @@
 #ifndef CYLINDER_HPP
 #define CYLINDER_HPP
 
-#include <algorithm>
-
 #include "Primitive.hpp"
-#include "EngineMath.hpp"
-#include "EngineUtil.hpp"
 
 class Cylinder : public Primitive {
     public:
-        Cylinder() = default;
-        Cylinder(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, int slices);
+        Cylinder() : Cylinder(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
+        Cylinder(
+            const EngineMath::Transform& localTransform,
+            const EngineUtil::ColorRGB& color,
+            int slices = 3,
+            const std::string& vertPath = "../Shaders/Basic.vert",
+            const std::string& fragPath = "../Shaders/Color.frag"
+        );
 
     private:
-        int slices_ = 16;
-        const EngineUtil::Vertex& vertexAt(int ring, int slice) const;
-        const EngineUtil::Mesh* mesh_ = nullptr;
-
-        void drawSolid() const override final;
-        void drawEdges() const override final;
+        int slices_;
 };
 
 #endif

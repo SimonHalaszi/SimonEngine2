@@ -168,7 +168,7 @@ namespace EngineMath {
 				Vector3 forward = direction.normalized();
 				Vector3 side = forward.cross(up);
 
-				if (direction.lengthSquared() <= 1e-8f) {
+				if (side.lengthSquared() <= 1e-8f) {
 					throw std::invalid_argument("Matrix4::lookAt: up must be nonzero and non parallel to view direction");
 				}
 
@@ -221,6 +221,24 @@ namespace EngineMath {
 				result.m_[11] = -1.0f;
 				result.m_[14] = -(2.0f * farPlane * nearPlane) / depthRange;
 				
+				return result;
+			}
+
+			static Matrix4 orthographic(float left, float right, float bottom, float top, float nearPlane, float farPlane) {
+				if (!(right > left && top > bottom && farPlane > nearPlane)) {
+					throw std::invalid_argument("Matrix4::orthographic: invalid bounds");
+				}
+
+				Matrix4 result = Matrix4::identity();
+
+				result.m_[0] = 2.0f / (right - left);
+				result.m_[5] = 2.0f / (top - bottom);
+				result.m_[10] = -2.0f / (farPlane - nearPlane);
+
+				result.m_[12] = -(right + left) / (right - left);
+				result.m_[13] = -(top + bottom) / (top - bottom);
+				result.m_[14] = -(farPlane + nearPlane) / (farPlane - nearPlane);
+
 				return result;
 			}
 

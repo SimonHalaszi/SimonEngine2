@@ -1,6 +1,6 @@
-#include "GPUMeshUpload.hpp"
+#include "EngineRender.hpp"
 
-void GPUMeshUpload::upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh) {
+void EngineRender::upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh) {
 	outGPUMesh.release();
 
 	if (CPUMesh.vertices_.empty()) {

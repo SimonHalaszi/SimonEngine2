@@ -105,10 +105,10 @@
     <ClCompile Include="RectangularPrism.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
+    <ClCompile Include="Ellipsoid.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="Line.cpp">
+    <ClCompile Include="Edge.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="AxisDisplay.cpp">
@@ -156,17 +156,14 @@
     <ClCompile Include="EngineShader.cpp">
       <Filter>Source Files\Library</Filter>
     </ClCompile>
-    <ClCompile Include="GPUMeshUpload.cpp">
-      <Filter>Source Files\Library</Filter>
-    </ClCompile>
     <ClCompile Include="TestScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="ProperPrim.cpp">
-      <Filter>Source Files\Objects\Primitives\Source</Filter>
+    <ClCompile Include="EngineRender.cpp">
+      <Filter>Source Files\Library</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,10 +203,10 @@
     <ClInclude Include="RectangularPrism.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.hpp">
+    <ClInclude Include="Ellipsoid.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="Line.hpp">
+    <ClInclude Include="Edge.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Cylinder.hpp">
@@ -251,12 +248,6 @@
     <ClInclude Include="EngineShader.hpp">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
-    <ClInclude Include="GPUMesh.hpp">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="GPUMeshUpload.hpp">
-      <Filter>Header Files\Library</Filter>
-    </ClInclude>
     <ClInclude Include="TestScene.hpp">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
@@ -266,8 +257,8 @@
     <ClInclude Include="GraphicsAPI.hpp">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
-    <ClInclude Include="ProperPrim.hpp">
-      <Filter>Header Files\Objects\Primitives\Source</Filter>
+    <ClInclude Include="EngineRender.hpp">
+      <Filter>Header Files\Library</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

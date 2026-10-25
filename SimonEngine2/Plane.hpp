@@ -2,17 +2,20 @@
 #define PLANE_HPP
 
 #include "Primitive.hpp"
-#include "EngineMath.hpp"
-#include "EngineUtil.hpp"
 
 class Plane : public Primitive {
-	public:
-		Plane() = default;
-		Plane(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color) : Primitive(localTransform, color) {}
+    public:
+        Plane() : Plane(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
+        Plane(
+            const EngineMath::Transform& localTransform,
+            const EngineUtil::ColorRGB& color,
+            int subdivisions = 1,
+            const std::string& vertPath = "../Shaders/Basic.vert",
+            const std::string& fragPath = "../Shaders/Color.frag"
+        );
 
-	private:
-		void drawSolid() const override final;
-		void drawEdges() const override final;
+    private:
+        int subdivisions_;
 };
 
 #endif 

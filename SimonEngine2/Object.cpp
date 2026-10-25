@@ -50,23 +50,15 @@ void Object::rootDraw() {
 		return;
 	}
 
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-
-	if (isLocalMatrixOutDated_) {
-		localMatrix_ = localTransform_.toMatrix();
-		isLocalMatrixOutDated_ = false;
+	if (isWorldTransformOutDated_) {
+		updateWorldTransform();
 	}
-	glMultMatrixf(localMatrix_.data());
 
 	draw();
 
 	for (auto& child : children_) {
 		child->rootDraw();
 	}
-
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
 }
 
 // Runs after right before being unattached from scene

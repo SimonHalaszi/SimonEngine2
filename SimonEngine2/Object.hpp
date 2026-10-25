@@ -1,8 +1,6 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include "GraphicsAPI.hpp"
-
 #include <vector>
 #include <memory>
 #include <stdexcept>
@@ -56,7 +54,7 @@ class Object {
 	protected:
 		virtual void onStart() {} // Runs when attached to scene
 		virtual void update() {} // Runs once per update of the Scene
-		virtual void draw() {} // Runs once per frame update of the Scene
+		virtual void draw() const {} // Runs once per frame update of the Scene
 		virtual void onDestruction() {} // Runs after right before being unattached from scene
 
 		Object* parent_ = nullptr;
@@ -65,7 +63,7 @@ class Object {
 		std::string name_ = "Object";
 		EngineMath::Transform localTransform_;
 
-		void onLocalTransformChanged() { isLocalMatrixOutDated_ = true; invalidateWorldTransform(); }
+		void onLocalTransformChanged() { isWorldTransformOutDated_ = true; invalidateWorldTransform(); }
 
 		std::vector<std::unique_ptr<Object>> children_ = {};
 
@@ -78,9 +76,6 @@ class Object {
 
 		bool isWorldTransformOutDated_ = true;
 		EngineMath::Transform worldTransform_;
-
-		EngineMath::Matrix4 localMatrix_;
-		bool isLocalMatrixOutDated_ = true;
 
 		bool isAlive_ = true;
 };

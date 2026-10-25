@@ -2,20 +2,17 @@
 #define OBJ_MESH_HPP
 
 #include "Primitive.hpp"
-#include "EngineMath.hpp"
-#include "EngineUtil.hpp"
-
-#include <string>
 
 class ObjMesh : public Primitive {
-public:
-	ObjMesh() = default;
-	ObjMesh(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color, const std::string& filepath);
-
-private:
-	const EngineUtil::Mesh* mesh_ = nullptr;
-	void drawSolid() const override final;
-	void drawEdges() const override final;
+    public:
+        ObjMesh() : ObjMesh(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
+        ObjMesh(
+            const EngineMath::Transform& localTransform,
+            const EngineUtil::ColorRGB& color,
+            const std::string& dotObjfilePath = "../Assets/null.obj",
+            const std::string& vertPath = "../Shaders/Basic.vert",
+            const std::string& fragPath = "../Shaders/Color.frag"
+        );
 };
 
-#endif 
+#endif

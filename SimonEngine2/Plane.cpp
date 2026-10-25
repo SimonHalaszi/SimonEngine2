@@ -1,33 +1,14 @@
 #include "Plane.hpp"
 
-#include "Engine.hpp"
-
-void Plane::drawSolid() const {
-    glDisable(GL_TEXTURE_2D);
-
-    glColor3f(color_.r_, color_.g_, color_.b_);
-
-    glBegin(GL_QUADS);
-
-    glVertex3f(-0.5f, 0.0f, -0.5f);
-    glVertex3f(0.5f, 0.0f, -0.5f);
-    glVertex3f(0.5f, 0.0f, 0.5f);
-    glVertex3f(-0.5f, 0.0f, 0.5f);
-
-    glEnd();
-}
-
-void Plane::drawEdges() const {
-    glDisable(GL_TEXTURE_2D);
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glBegin(GL_LINE_LOOP);
-
-    glVertex3f(-0.5f, 0.0f, -0.5f);
-    glVertex3f(0.5f, 0.0f, -0.5f);
-    glVertex3f(0.5f, 0.0f, 0.5f);
-    glVertex3f(-0.5f, 0.0f, 0.5f);
-
-    glEnd();
+Plane::Plane(
+	const EngineMath::Transform& localTransform,
+	const EngineUtil::ColorRGB& color,
+	int subdivisions,
+	const std::string& vertPath,
+	const std::string& fragPath
+)
+: Primitive(localTransform, color, vertPath, fragPath) {
+	subdivisions_ = subdivisions;
+	mesh_ = MeshRegistry::getInstance().getPlane(subdivisions_);
+	GPUMesh_ = MeshRegistry::getInstance().getGPUCylinder(subdivisions_);
 }

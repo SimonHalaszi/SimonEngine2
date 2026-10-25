@@ -2,7 +2,7 @@
 
 #include "Engine.hpp"
 #include "RectangularPrism.hpp"
-#include "Sphere.hpp"
+#include "Ellipsoid.hpp"
 
 MagicCube::MagicCube(const EngineMath::Transform& localTransform) {
     localTransform_ = localTransform;
@@ -11,7 +11,7 @@ MagicCube::MagicCube(const EngineMath::Transform& localTransform) {
 }
 
 void MagicCube::onStart() {
-    addChild(std::make_unique<Sphere>(
+    addChild(std::make_unique<Ellipsoid>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),

@@ -31,21 +31,71 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 	}
 }
 
-void Renderer::drawMesh(const GPUMesh& mesh, const EngineUtil::Material& material, const EngineMath::Matrix4& model, const EngineMath::Matrix4& viewProjection) const {
-	if (mesh.vao_ == 0 || mesh.faceIndexBuffer_ == 0 || mesh.faceIndexCount_ == 0) {
+#include "Camera.hpp"
+
+bool Renderer::beginPass(const class Camera& camera,
+	int x, int y,
+	int width, int height
+) {
+	if (passActive_) {
+		throw std::logic_error("Renderer::beginPass: a pass is already active");
+	}
+
+	if (width <= 0 || height <= 0) {
+		return false;
+	}
+
+	const float aspect = static_cast<float>(width) / static_cast<float>(height);
+
+	viewProjection_ = camera.getViewProjectionMatrix(aspect);
+
+	glViewport(x, y, width, height);
+
+	passActive_ = true;
+	return true;
+}
+
+void Renderer::endPass() {
+	glBindVertexArray(0);
+	glUseProgram(0);
+
+	passActive_ = false;
+}
+
+void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode) const {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::drawMesh: no active render pass");
+	}
+
+	GLuint indexBuffer = 0;
+	GLsizei indexCount = 0;
+	GLenum topology = GL_TRIANGLES;
+	
+	if (mode == DrawMode::Solid) {
+		indexBuffer = mesh.faceIndexBuffer_;
+		indexCount = mesh.faceIndexCount_;
+		topology = GL_TRIANGLES;
+	}
+	if (mode == DrawMode::Edges) {
+		indexBuffer = mesh.edgeIndexBuffer_;
+		indexCount = mesh.edgeIndexCount_;
+		topology = GL_LINES;
+	}
+
+	if (mesh.vao_ == 0 || indexBuffer == 0 || indexCount <= 0) {
 		return;
 	}
 
 	const auto found = programRegistry_.find(material.shader_);
 	if (found == programRegistry_.end()) {
-		throw std::runtime_error("Renderer::drawMesh: unkown shader: " + material.shader_);
+		throw std::runtime_error("Renderer::drawMesh: unknown shader: " + material.shader_);
 	}
 
 	const ShaderProgram& program = found->second;
 
 	glUseProgram(program.id_);
 
-	glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, viewProjection.data());
+	glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, viewProjection_.data());
 
 	glUniformMatrix4fv(program.modelLocation_, 1, GL_FALSE, model.data());
 
@@ -54,9 +104,9 @@ void Renderer::drawMesh(const GPUMesh& mesh, const EngineUtil::Material& materia
 	}
 
 	glBindVertexArray(mesh.vao_);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.faceIndexBuffer_);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-	glDrawElements(GL_TRIANGLES, mesh.faceIndexCount_, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(topology, indexCount, GL_UNSIGNED_INT, nullptr);
 
 	glBindVertexArray(0);
 	glUseProgram(0);
@@ -81,5 +131,7 @@ void Renderer::shutdown() {
 	}
 
 	programRegistry_.clear();
+
+	passActive_ = false;
 }
 

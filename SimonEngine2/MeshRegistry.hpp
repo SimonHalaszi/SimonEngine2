@@ -1,22 +1,12 @@
 #ifndef MESH_REGISTRY_HPP
 #define MESH_REGISTRY_HPP
 
-#include "GraphicsAPI.hpp"
-
-#include <unordered_map>
-#include <unordered_set>
-#include <fstream>
-#include <sstream> 
-#include <cstdint>
-#include <iostream>
+#include <memory>
 #include <string>
-#include <cmath>
+#include <unordered_map>
 
 #include "EngineUtil.hpp"
-#include "EngineMath.hpp"
-
-#include "GPUMesh.hpp"
-#include "GPUMeshUpload.hpp"
+#include "EngineRender.hpp"
 
 // Registry for Meshes
 class MeshRegistry {
@@ -26,17 +16,25 @@ class MeshRegistry {
 			return instance;
 		}
 
-		// All meshes are unit meshes. They are scaled, rotated, dynamically inside draw functions, but not altered
-
+		// All meshes are unit meshes.
+		const EngineUtil::Mesh* getEdge();
+		const EngineUtil::Mesh* getRectangularPrism();
+		const EngineUtil::Mesh* getPlane(int subdivisions);
 		const EngineUtil::Mesh* getCone(int slices);
 		const EngineUtil::Mesh* getCylinder(int slices);
-		const EngineUtil::Mesh* getRectangularPrism(); // Kinda useless but for consistent interface
-		const EngineUtil::Mesh* getSphere(int slices, int stacks);
+		const EngineUtil::Mesh* getEllipsoid(int slices, int stacks);
 		const EngineUtil::Mesh* getDotObj(const std::string& filepath);
 
-		const GPUMesh* getGPUSphere(int slices, int stacks);
-		const GPUMesh* getGPUMesh(const std::string& key);
-		const GPUMesh* getOrCreateGPUMesh(const std::string& key, const EngineUtil::Mesh& CPUMesh);
+		const EngineRender::GPUMesh* getGPUMesh(const std::string& key);
+		const EngineRender::GPUMesh* getOrCreateGPUMesh(const std::string& key, const EngineUtil::Mesh& CPUMesh);
+
+		const EngineRender::GPUMesh* getGPUEdge();
+		const EngineRender::GPUMesh* getGPURectangularPrism();
+		const EngineRender::GPUMesh* getGPUPlane(int subdivisions);
+		const EngineRender::GPUMesh* getGPUCone(int slices);
+		const EngineRender::GPUMesh* getGPUCylinder(int slices);
+		const EngineRender::GPUMesh* getGPUEllipsoid(int slices, int stacks);
+		const EngineRender::GPUMesh* getGPUDotObj(const std::string& filepath);
 
 		void clearRegistry();
 
@@ -52,7 +50,7 @@ class MeshRegistry {
 
 		// Registry
 		std::unordered_map<std::string, EngineUtil::Mesh> registry_;
-		std::unordered_map<std::string, std::unique_ptr<GPUMesh>> GPURegistry_;
+		std::unordered_map<std::string, std::unique_ptr<EngineRender::GPUMesh>> GPURegistry_;
 
 };
 

@@ -15,8 +15,6 @@
 #include "InputManager.hpp"
 #include "EngineUtil.hpp"
 #include "MeshRegistry.hpp"
-#include "GPUMesh.hpp"
-#include "GPUMeshUpload.hpp"
 #include "EngineShader.hpp"
 #include "Renderer.hpp"
 
@@ -35,8 +33,8 @@ public:
 	virtual void deInit() override final;
 
 private:
-	const GPUMesh* gpuMesh_ = nullptr;
-	EngineUtil::Material material_;
+	const EngineRender::GPUMesh* gpuMesh_ = nullptr;
+	EngineRender::Material material_;
 
 	GLuint colorProgram_ = 0;
 	GLint uViewProjectionLoc_ = -1;
