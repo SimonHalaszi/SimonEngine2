@@ -9,6 +9,13 @@ Primitive::Primitive(
 	localTransform_ = localTransform;
     material_.color_ = color;
     material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath, fragPath);
+	edgeMaterial_.color_ = { 255,255,255 };
+	edgeMaterial_.shader_ = Renderer::getInstance().getOrLoadShader("../Shaders/Basic.vert", "../Shaders/Color.frag");
+}
+
+void Primitive::onStart() {
+	material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
+	resolveMeshes();
 }
 
 void Primitive::draw() const {
@@ -20,15 +27,15 @@ void Primitive::draw() const {
 		Renderer::getInstance().drawMesh(
 			*GPUMesh_,
 			material_,
-			getWorldTransform().toMatrix(),
+			getWorldMatrix(),
 			Renderer::DrawMode::Solid
 		);
 	}
 	else {
 		Renderer::getInstance().drawMesh(
 			*GPUMesh_,
-			material_,
-			getWorldTransform().toMatrix(),
+			edgeMaterial_,
+			getWorldMatrix(),
 			Renderer::DrawMode::Edges
 		);
 	}
@@ -41,4 +48,9 @@ void Primitive::update() {
     if (InputManager::getInstance().isPressed('2')) {
         drawAsSolid_ = true;
     }
+}
+
+void Primitive::onDestruction() {
+	mesh_ = nullptr;
+	GPUMesh_ = nullptr;
 }

@@ -120,8 +120,8 @@ namespace {
 			return static_cast<unsigned int>(z * verticesPerSide + x);
 		};
 
-		for (int z = 0; z <= grid; ++z) {
-			for (int x = 0; x <= grid; ++x) {
+		for (int z = 0; z < grid; ++z) {
+			for (int x = 0; x < grid; ++x) {
 				const unsigned int a = idx(x, z);
 				const unsigned int b = idx(x + 1, z);
 				const unsigned int c = idx(x + 1, z + 1);
@@ -220,9 +220,9 @@ namespace {
 			// Side
 			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { b0, t0, b1, b1, t0, t1 });
 			// Bottom cap
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { bottomCenter, b1, b0 });
+			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { bottomCenter, b0, b1 });
 			// Top cap
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { topCenter, t0, t1 });
+			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { topCenter, t1, t0 });
 
 			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { b0, b1, t0, t1, b0, t0 });
 		}
@@ -269,51 +269,76 @@ namespace {
 			return static_cast<unsigned int>(1 + ringIndex * vertsPerRing + wrappedSlice);
 			};
 
-		// South cap
+		const int lastRing = ringCount - 1;
+
+		// North cap
 		for (int slice = 0; slice < slices; ++slice) {
 			const unsigned int a = ringVertex(0, slice);
 			const unsigned int b = ringVertex(0, slice + 1);
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { southPole, a, b });
+
+			mesh.faceIndices_.insert(
+				mesh.faceIndices_.end(),
+				{ northPole, b, a }
+			);
 		}
 
-		// Middle quads
-		for (int ring = 0; ring < ringCount - 1; ++ring) {
+		// Middle bands
+		for (int ring = 0; ring < lastRing; ++ring) {
 			for (int slice = 0; slice < slices; ++slice) {
 				const unsigned int a = ringVertex(ring, slice);
 				const unsigned int b = ringVertex(ring, slice + 1);
 				const unsigned int c = ringVertex(ring + 1, slice + 1);
 				const unsigned int d = ringVertex(ring + 1, slice);
 
-				mesh.faceIndices_.insert(mesh.faceIndices_.end(), { a, b, d, b, c, d });
+				mesh.faceIndices_.insert(
+					mesh.faceIndices_.end(),
+					{ a, b, d, b, c, d }
+				);
 			}
 		}
 
-		// North cap
-		if (ringCount > 0) {
-			const int lastRing = ringCount - 1;
-			for (int slice = 0; slice < slices; ++slice) {
-				const unsigned int a = ringVertex(lastRing, slice);
-				const unsigned int b = ringVertex(lastRing, slice + 1);
-				mesh.faceIndices_.insert(mesh.faceIndices_.end(), { a, northPole, b });
-			}
-		}
-
-		// Edges
+		// South cap
 		for (int slice = 0; slice < slices; ++slice) {
-			// Pole to first ring
-			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { southPole, ringVertex(0, slice) });
+			const unsigned int a = ringVertex(lastRing, slice);
+			const unsigned int b = ringVertex(lastRing, slice + 1);
 
-			for (int ring = 0; ring < ringCount - 1; ++ring) {
-				mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { ringVertex(ring, slice), ringVertex(ring + 1, slice) });
+			mesh.faceIndices_.insert(
+				mesh.faceIndices_.end(),
+				{ southPole, a, b }
+			);
+		}
+
+		for (int slice = 0; slice < slices; ++slice) {
+			mesh.edgeIndices_.insert(
+				mesh.edgeIndices_.end(),
+				{ northPole, ringVertex(0, slice) }
+			);
+
+			for (int ring = 0; ring < lastRing; ++ring) {
+				mesh.edgeIndices_.insert(
+					mesh.edgeIndices_.end(),
+					{
+						ringVertex(ring, slice),
+						ringVertex(ring + 1, slice)
+					}
+				);
 			}
 
-			// Last ring to north pole
-			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { ringVertex(ringCount - 1, slice), northPole });
+			mesh.edgeIndices_.insert(
+				mesh.edgeIndices_.end(),
+				{ ringVertex(lastRing, slice), southPole }
+			);
 		}
 
 		for (int ring = 0; ring < ringCount; ++ring) {
 			for (int slice = 0; slice < slices; ++slice) {
-				mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { ringVertex(ring, slice), ringVertex(ring, slice + 1) });
+				mesh.edgeIndices_.insert(
+					mesh.edgeIndices_.end(),
+					{
+						ringVertex(ring, slice),
+						ringVertex(ring, slice + 1)
+					}
+				);
 			}
 		}
 

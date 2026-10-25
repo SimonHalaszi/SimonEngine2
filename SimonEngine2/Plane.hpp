@@ -16,6 +16,8 @@ class Plane : public Primitive {
 
     private:
         int subdivisions_;
+
+        virtual const void resolveMeshes() override;
 };
 
 #endif 

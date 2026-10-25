@@ -9,6 +9,9 @@ Cone::Cone(
 ) 
 : Primitive(localTransform, color, vertPath, fragPath) {
     slices_ = slices;
+}
+
+const void Cone::resolveMeshes() {
     mesh_ = MeshRegistry::getInstance().getCone(slices_);
     GPUMesh_ = MeshRegistry::getInstance().getGPUCone(slices_);
 }

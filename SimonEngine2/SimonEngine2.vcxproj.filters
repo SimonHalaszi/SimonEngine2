@@ -156,9 +156,6 @@
     <ClCompile Include="EngineShader.cpp">
       <Filter>Source Files\Library</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -247,9 +244,6 @@
     </ClInclude>
     <ClInclude Include="EngineShader.hpp">
       <Filter>Header Files\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="TestScene.hpp">
-      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.hpp">
       <Filter>Header Files\Engine</Filter>

@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <limits>
 
 #include "EngineUtil.hpp"
 #include "GraphicsAPI.hpp"

@@ -9,6 +9,9 @@ Cylinder::Cylinder(
 )
 : Primitive(localTransform, color, vertPath, fragPath) {
 	slices_ = slices;
+}
+
+const void Cylinder::resolveMeshes() {
 	mesh_ = MeshRegistry::getInstance().getCylinder(slices_);
 	GPUMesh_ = MeshRegistry::getInstance().getGPUCylinder(slices_);
 }

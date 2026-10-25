@@ -13,7 +13,8 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(50.0f, 0.0f, 50.0f)
         ),
-        EngineUtil::ColorRGB(255, 255, 255)
+        EngineUtil::ColorRGB(255, 255, 255),
+        4
     ));
 
     // I wanted to learn the non srand, rand, time way
@@ -23,7 +24,7 @@ void RobotScene::init() {
     std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
     std::uniform_int_distribution<int> randomColor(0, 255);
 
-    for (int i = 0; i < 25; ++i) {
+    for (int i = 0; i < 15; ++i) {
         addRootObject(std::make_unique<Robot>(
             EngineMath::Transform(
                 EngineMath::Vector3(randomPos(gen), 0.0f, randomPos(gen)),

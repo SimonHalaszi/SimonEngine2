@@ -18,12 +18,13 @@ void Object::rootOnStart() {
 
 // Runs once per update of the Scene
 void Object::rootUpdate() {
-	if (isWorldTransformOutDated_ ||
-		(parent_ && parent_->isWorldTransformOutDated_)) {
+	if (isWorldTransformOutDated_ || (parent_ && parent_->isWorldTransformOutDated_)) {
 		updateWorldTransform();
 	}
 
-	update();
+	if (isAlive_ && isUpdating_) {
+		update();
+	}
 
 	if (isWorldTransformOutDated_) {
 		updateWorldTransform();
@@ -32,14 +33,16 @@ void Object::rootUpdate() {
 	for (auto it = children_.begin(); it != children_.end();) {
 		Object* child = it->get();
 
-		child->rootUpdate();
-
 		if (child->isAlive()) {
-			++it;
+			child->rootUpdate();
 		}
-		else {
+
+		if (!child->isAlive()) {
 			child->rootOnDestruction();
 			it = children_.erase(it);
+		}
+		else {
+			++it;
 		}
 	}
 }
@@ -80,11 +83,12 @@ void Object::invalidateWorldTransform() {
 
 void Object::updateWorldTransform() {
 	if (parent_) {
-		worldTransform_ =
-			localTransform_.composedWith(parent_->worldTransform_);
+		worldTransform_ =localTransform_.composedWith(parent_->worldTransform_);
+		worldMatrix_ = parent_->worldMatrix_ * localTransform_.toMatrix();
 	}
 	else {
 		worldTransform_ = localTransform_;
+		worldMatrix_ = localTransform_.toMatrix();
 	}
 
 	isWorldTransformOutDated_ = false;
@@ -127,9 +131,14 @@ void Object::addChild(std::unique_ptr<Object> child) {
 // Removes a child from any hierarchy (If you want it attached to scene as root do so yourself)
 // Just a public exposure of extractChild
 std::unique_ptr<Object> Object::orphanChild(Object* child) {
-	if (child->parent_ != this) {
-		throw std::runtime_error("Object::orphanChild: object is not a direct child of this object");
+	if (!child) {
+		throw std::invalid_argument("Object::orphanChild: child cannot be null");
 	}
+
+	if (child->parent_ != this) {
+		throw std::runtime_error("Object::orphanChild: object is not a direct child");
+	}
+
 	return extractChild(child);
 }
 
@@ -148,11 +157,15 @@ void Object::reparentChild(Object* child, Object* newParent) {
 		return;
 	}
 
-	for (Object* ancestor = this; ancestor != nullptr; ancestor = ancestor->parent_) {
+	for (Object* ancestor = newParent;
+		ancestor != nullptr;
+		ancestor = ancestor->parent_) {
 		if (ancestor == child) {
-			throw std::runtime_error("Object::attachChild: operation would create a hierarchy cycle");
+			throw std::runtime_error("Object::reparentChild: operation would create a hierarchy cycle");
 		}
 	}
+
+	newParent->children_.reserve(newParent->children_.size() + 1);
 
 	std::unique_ptr<Object> transferred = extractChild(child);
 	newParent->addChild(std::move(transferred));

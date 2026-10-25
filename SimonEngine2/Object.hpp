@@ -41,7 +41,7 @@ class Object {
 		std::unique_ptr<Object> orphanChild(Object* child);
 		void reparentChild(Object* child, Object* newParent);
 
-		const std::vector<std::unique_ptr<Object>>& getChildren() { return children_; }
+		const std::vector<std::unique_ptr<Object>>& getChildren() const { return children_; }
 
 		std::string getTag() const { return tag_; }
 		std::string getName() const { return name_; }
@@ -63,7 +63,9 @@ class Object {
 		std::string name_ = "Object";
 		EngineMath::Transform localTransform_;
 
-		void onLocalTransformChanged() { isWorldTransformOutDated_ = true; invalidateWorldTransform(); }
+		void onLocalTransformChanged() { invalidateWorldTransform(); }
+
+		const EngineMath::Matrix4& getWorldMatrix() const { return worldMatrix_; }
 
 		std::vector<std::unique_ptr<Object>> children_ = {};
 
@@ -76,6 +78,7 @@ class Object {
 
 		bool isWorldTransformOutDated_ = true;
 		EngineMath::Transform worldTransform_;
+		EngineMath::Matrix4 worldMatrix_ = EngineMath::Matrix4::identity();
 
 		bool isAlive_ = true;
 };

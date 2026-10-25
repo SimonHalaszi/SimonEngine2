@@ -10,6 +10,10 @@ namespace {
 }
 
 void Camera::setPerspective(double fovy, double zNear, double zFar) {
+	if (!(zNear > 0.0 && zFar > zNear)) {
+		throw std::invalid_argument("Camera::setPerspective: expected 0 < zNear < zFar");
+	}
+
 	projectionMode_ = ProjectionMode::Perspective;
 
 	perspectiveFovy_ = std::clamp(fovy, minPerspectiveFov, maxPerspectiveFov);
@@ -20,6 +24,14 @@ void Camera::setPerspective(double fovy, double zNear, double zFar) {
 }
 
 void Camera::setOrthographic(double halfHeight, double zNear, double zFar) {
+	if (!(halfHeight > 0.0)) {
+		throw std::invalid_argument("Camera::setOrthographic: halfHeight must be positive");
+	}
+
+	if (!(zNear > 0.0 && zFar > zNear)) {
+		throw std::invalid_argument("Camera::setOrthographic: expected 0 < zNear < zFar");
+	}
+	
 	projectionMode_ = ProjectionMode::Ortho;
 	orthoHalfHeight_ = halfHeight;
 	orthoNear_ = zNear;

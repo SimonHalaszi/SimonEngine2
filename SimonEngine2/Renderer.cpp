@@ -51,6 +51,7 @@ bool Renderer::beginPass(const class Camera& camera,
 
 	glViewport(x, y, width, height);
 
+	resetBindingCache();
 	passActive_ = true;
 	return true;
 }
@@ -59,6 +60,7 @@ void Renderer::endPass() {
 	glBindVertexArray(0);
 	glUseProgram(0);
 
+	resetBindingCache();
 	passActive_ = false;
 }
 
@@ -93,9 +95,11 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 
 	const ShaderProgram& program = found->second;
 
-	glUseProgram(program.id_);
-
-	glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, viewProjection_.data());
+	if (program.id_ != boundProgram_) {
+		glUseProgram(program.id_);
+		glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, viewProjection_.data());
+		boundProgram_ = program.id_;
+	}
 
 	glUniformMatrix4fv(program.modelLocation_, 1, GL_FALSE, model.data());
 
@@ -103,13 +107,18 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 		glUniform4f(program.colorLocation_, material.color_.r_, material.color_.g_, material.color_.b_, 1.0f);
 	}
 
-	glBindVertexArray(mesh.vao_);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	if (mesh.vao_ != boundVAO_) {
+		glBindVertexArray(mesh.vao_);
+		boundVAO_ = mesh.vao_;
+		boundElementBuffer_ = 0;
+	}
+
+	if (indexBuffer != boundElementBuffer_) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+		boundElementBuffer_ = indexBuffer;
+	}
 
 	glDrawElements(topology, indexCount, GL_UNSIGNED_INT, nullptr);
-
-	glBindVertexArray(0);
-	glUseProgram(0);
 }
 
 std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::string& fragPath) {

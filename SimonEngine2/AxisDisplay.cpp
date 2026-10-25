@@ -15,16 +15,16 @@ AxisDisplay::AxisDisplay() {
 void AxisDisplay::onStart() {
     addChild(std::make_unique<Edge>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.5f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.5f, 1.5f, 1.5f)
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB{ 255, 0, 0 }
     ));
     auto obj = std::prev(children_.end());
     (*obj)->addChild(std::make_unique<Cone>(
         EngineMath::Transform(
-            EngineMath::Vector3(1.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.5f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
@@ -34,16 +34,16 @@ void AxisDisplay::onStart() {
 
     addChild(std::make_unique<Edge>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.0f, 0.5f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(90.0f)),
-            EngineMath::Vector3(1.5f, 1.5f, 1.5f)
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB{ 0, 255, 0 }
     ));
     obj = std::prev(children_.end());
     (*obj)->addChild(std::make_unique<Cone>(
         EngineMath::Transform(
-            EngineMath::Vector3(1.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.5f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
@@ -53,16 +53,16 @@ void AxisDisplay::onStart() {
 
     addChild(std::make_unique<Edge>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.0f, 0.0f, 0.5f),
             EngineMath::Quaternion::fromXYZ(0.0f, EngineMath::degreesToRadians(-90.0f), 0.0f),
-            EngineMath::Vector3(1.5f, 1.5f, 1.5f)
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB{ 0, 0, 255 }
     ));
     obj = std::prev(children_.end());
     (*obj)->addChild(std::make_unique<Cone>(
         EngineMath::Transform(
-            EngineMath::Vector3(1.0f, 0.0f, 0.0f),
+            EngineMath::Vector3(0.5f, 0.0f, 0.0f),
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),

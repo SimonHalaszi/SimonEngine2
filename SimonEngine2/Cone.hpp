@@ -16,6 +16,8 @@ class Cone : public Primitive {
 
     private:
         int slices_;
+
+        virtual const void resolveMeshes() override;
 };
 
 #endif

@@ -9,6 +9,9 @@ Plane::Plane(
 )
 : Primitive(localTransform, color, vertPath, fragPath) {
 	subdivisions_ = subdivisions;
+}
+
+const void Plane::resolveMeshes() {
 	mesh_ = MeshRegistry::getInstance().getPlane(subdivisions_);
-	GPUMesh_ = MeshRegistry::getInstance().getGPUCylinder(subdivisions_);
+	GPUMesh_ = MeshRegistry::getInstance().getGPUPlane(subdivisions_);
 }

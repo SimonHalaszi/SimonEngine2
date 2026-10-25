@@ -81,7 +81,7 @@ GLuint EngineShader::loadProgram(const std::string& vertexPath, const std::strin
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
 
 			std::string log(logLength > 0 ? logLength : 1, '\0');
-			glGetShaderInfoLog(program, logLength, nullptr, &log[0]);
+			glGetProgramInfoLog(program, logLength, nullptr, &log[0]);
 
 			throw std::runtime_error("Shader linking failed: " + vertexPath + "\n" + log);
 		}

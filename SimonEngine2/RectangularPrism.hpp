@@ -12,6 +12,9 @@ class RectangularPrism : public Primitive {
             const std::string& vertPath = "../Shaders/Basic.vert",
             const std::string& fragPath = "../Shaders/Color.frag"
         );
+    
+    private:
+        virtual const void resolveMeshes() override;
 };
 
 #endif 

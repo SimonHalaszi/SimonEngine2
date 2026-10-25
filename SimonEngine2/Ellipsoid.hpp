@@ -18,6 +18,7 @@ class Ellipsoid : public Primitive {
 	private:
 		int slices_;
 		int stacks_;
+		virtual const void resolveMeshes() override;
 };
 
 #endif 

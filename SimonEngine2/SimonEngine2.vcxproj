@@ -183,7 +183,6 @@
     <ClCompile Include="Ellipsoid.cpp" />
     <ClCompile Include="Edge.cpp" />
     <ClCompile Include="StressTestScene.cpp" />
-    <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AxisDisplay.hpp" />
@@ -214,7 +213,6 @@
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Ellipsoid.hpp" />
     <ClInclude Include="StressTestScene.hpp" />
-    <ClInclude Include="TestScene.hpp" />
     <ClInclude Include="WindowConstants.hpp" />
     <ClInclude Include="Edge.hpp" />
   </ItemGroup>

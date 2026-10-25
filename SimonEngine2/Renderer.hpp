@@ -53,6 +53,16 @@ class Renderer {
 		std::unordered_map<std::string, ShaderProgram> programRegistry_;
 
 		~Renderer() {}
+
+		mutable GLuint boundProgram_ = 0;
+		mutable GLuint boundVAO_ = 0;
+		mutable GLuint boundElementBuffer_ = 0;
+
+		void resetBindingCache() const {
+			boundProgram_ = 0;
+			boundVAO_ = 0;
+			boundElementBuffer_ = 0;
+		}
 };
 
 #endif

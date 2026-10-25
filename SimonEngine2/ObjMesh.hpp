@@ -13,6 +13,11 @@ class ObjMesh : public Primitive {
             const std::string& vertPath = "../Shaders/Basic.vert",
             const std::string& fragPath = "../Shaders/Color.frag"
         );
+    
+    private:
+        std::string filepath_;
+
+        virtual const void resolveMeshes() override;
 };
 
 #endif

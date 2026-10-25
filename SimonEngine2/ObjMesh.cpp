@@ -8,6 +8,10 @@ ObjMesh::ObjMesh(
 	const std::string& fragPath
 )
 : Primitive(localTransform, color, vertPath, fragPath) {
-	mesh_ = MeshRegistry::getInstance().getDotObj(dotObjfilePath);
-	GPUMesh_ = MeshRegistry::getInstance().getGPUDotObj(dotObjfilePath);
+	filepath_ = dotObjfilePath;
+}
+
+const void ObjMesh::resolveMeshes() {
+	mesh_ = MeshRegistry::getInstance().getDotObj(filepath_);
+	GPUMesh_ = MeshRegistry::getInstance().getGPUDotObj(filepath_);
 }

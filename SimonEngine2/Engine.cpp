@@ -151,7 +151,7 @@ void Engine::createWindow() {
 	);
 
 	glutInitContextVersion(3, 3);
-	glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
+	glutInitContextProfile(GLUT_CORE_PROFILE);
 
 	glutCreateWindow("(Simon Halaszi) (811196947)");
 }
@@ -239,7 +239,7 @@ void Engine::validateShaders() {
 	std::cout << "Shaders successfully compiled and linked.\n";
 }
 
-#include "TestScene.hpp"
+#include "RobotScene.hpp"
 
 void Engine::init() {
 	createWindow();
@@ -248,7 +248,7 @@ void Engine::init() {
 	registerInputFuncs();
 
 	if (!currentScene_) {
-		currentScene_ = std::make_unique<TestScene>();
+		currentScene_ = std::make_unique<RobotScene>();
 	}
 
 	currentScene_->sceneInit();

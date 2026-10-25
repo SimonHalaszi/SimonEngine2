@@ -21,16 +21,26 @@ class Primitive : public Object {
 			const std::string& fragPath= "../Shaders/Color.frag" 
 		);
 
-		void draw() const override final;
+		void draw() const override;
 		void update() override final;
 
 		void setColor(const EngineUtil::ColorRGB& color) { material_.color_ = color; }
 
 	protected:
 		bool drawAsSolid_ = true;
+		
 		const EngineUtil::Mesh* mesh_ = nullptr;
 		const EngineRender::GPUMesh* GPUMesh_ = nullptr;
+		
 		EngineRender::Material material_;
+		EngineRender::Material edgeMaterial_;
+
+		std::string vertPath_ = "../Shaders/Basic.vert";
+		std::string fragPath_ = "../Shaders/Color.frag";
+
+		virtual const void resolveMeshes() = 0;
+		void onStart() override;
+		void onDestruction() override;
 };
 
 #endif 
