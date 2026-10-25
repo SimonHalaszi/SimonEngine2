@@ -24,7 +24,8 @@ class Renderer {
 		
 		bool beginPass(const class Camera& camera,
 			int x, int y,
-			int width, int height
+			int width, int height,
+			float time
 		);
 
 		void endPass();
@@ -45,10 +46,16 @@ class Renderer {
 			GLint viewProjLocation_ = -1;
 			GLint modelLocation_ = -1;
 			GLint colorLocation_ = -1;
+			GLint timeLocation_ = -1;
+			GLint resolutionLocation_ = -1;
 		};
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
 		bool passActive_ = false;
+
+		float passTime_ = 0.0f;
+		float passResolutionX_ = 1.0f;
+		float passResolutionY_ = 1.0f;
 
 		std::unordered_map<std::string, ShaderProgram> programRegistry_;
 

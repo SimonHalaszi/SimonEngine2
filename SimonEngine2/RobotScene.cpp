@@ -5,6 +5,7 @@
 #include "AxisDisplay.hpp"
 #include "CameraMan.hpp"
 #include "Plane.hpp"
+#include "RectangularPrism.hpp"
 
 void RobotScene::init() {
     addRootObject(std::make_unique<Plane>(
@@ -15,6 +16,17 @@ void RobotScene::init() {
         ),
         EngineUtil::ColorRGB(255, 255, 255),
         4
+    ));
+
+    addRootObject(std::make_unique<RectangularPrism>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(50.0f, 10.0f, 1.0f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
     ));
 
     // I wanted to learn the non srand, rand, time way

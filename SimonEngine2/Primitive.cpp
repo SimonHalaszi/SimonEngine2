@@ -6,15 +6,19 @@ Primitive::Primitive(
     const std::string& vertPath,
     const std::string& fragPath
 ) {
+	vertPath_ = vertPath;
+	fragPath_ = fragPath;
 	localTransform_ = localTransform;
     material_.color_ = color;
-    material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath, fragPath);
 	edgeMaterial_.color_ = { 255,255,255 };
-	edgeMaterial_.shader_ = Renderer::getInstance().getOrLoadShader("../Shaders/Basic.vert", "../Shaders/Color.frag");
 }
 
 void Primitive::onStart() {
 	material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
+	edgeMaterial_.shader_ = Renderer::getInstance().getOrLoadShader("../Shaders/Basic.vert", "../Shaders/Color.frag");
+
+	material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
+
 	resolveMeshes();
 }
 

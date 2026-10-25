@@ -39,6 +39,8 @@ class Engine {
 		float getDeltaTime() const { return deltaTime_; }
 		float getFPS() const { return fps_; }
 		void recordDrawnFrame();
+		float getTime() const { return time_; }
+		void refreshTime();
 
 		Engine(const Engine&) = delete;
 		Engine& operator=(const Engine&) = delete;
@@ -62,6 +64,10 @@ class Engine {
 
 		std::unique_ptr<Scene> currentScene_;
 		std::unique_ptr<Scene> pendingScene_;
+
+		std::chrono::steady_clock::time_point startTime_{};
+		bool hasStartTime_ = false;
+		float time_ = 0.0f;
 
 		std::chrono::steady_clock::time_point lastUpdateTime_{};
 		bool hasPreviousUpdate_ = false;

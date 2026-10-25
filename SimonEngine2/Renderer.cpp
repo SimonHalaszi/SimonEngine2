@@ -1,4 +1,5 @@
 #include "Renderer.hpp"
+#include "Camera.hpp"
 
 void Renderer::loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath) {
 	if (programRegistry_.find(name) != programRegistry_.end()) {
@@ -14,10 +15,11 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 
 	try {
 		program.viewProjLocation_ = glGetUniformLocation(program.id_, "uViewProjection");
-
 		program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
-
 		program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
+
+		program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
+		program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
 
 		if (program.viewProjLocation_ == -1 || program.modelLocation_ == -1) {
 			throw std::runtime_error("Renderer::loadShader: shader must use uViewProjection and uModel: " + name);
@@ -31,11 +33,11 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 	}
 }
 
-#include "Camera.hpp"
-
-bool Renderer::beginPass(const class Camera& camera,
+bool Renderer::beginPass(
+	const Camera& camera,
 	int x, int y,
-	int width, int height
+	int width, int height,
+	float time
 ) {
 	if (passActive_) {
 		throw std::logic_error("Renderer::beginPass: a pass is already active");
@@ -48,6 +50,10 @@ bool Renderer::beginPass(const class Camera& camera,
 	const float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 	viewProjection_ = camera.getViewProjectionMatrix(aspect);
+
+	passTime_ = time;
+	passResolutionX_ = static_cast<float>(width);
+	passResolutionY_ = static_cast<float>(height);
 
 	glViewport(x, y, width, height);
 
@@ -72,16 +78,20 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 	GLuint indexBuffer = 0;
 	GLsizei indexCount = 0;
 	GLenum topology = GL_TRIANGLES;
-	
-	if (mode == DrawMode::Solid) {
+
+	switch (mode) {
+	case DrawMode::Solid:
 		indexBuffer = mesh.faceIndexBuffer_;
 		indexCount = mesh.faceIndexCount_;
 		topology = GL_TRIANGLES;
-	}
-	if (mode == DrawMode::Edges) {
+		break;
+	case DrawMode::Edges:
 		indexBuffer = mesh.edgeIndexBuffer_;
 		indexCount = mesh.edgeIndexCount_;
 		topology = GL_LINES;
+		break;
+	default:
+		throw std::invalid_argument("Renderer::drawMesh: invalid draw mode");
 	}
 
 	if (mesh.vao_ == 0 || indexBuffer == 0 || indexCount <= 0) {
@@ -98,6 +108,16 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 	if (program.id_ != boundProgram_) {
 		glUseProgram(program.id_);
 		glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, viewProjection_.data());
+
+		if (program.timeLocation_ != -1) {
+			glUniform1f(program.timeLocation_, passTime_);
+		}
+
+		if (program.resolutionLocation_ != -1) {
+			glUniform2f(program.resolutionLocation_, passResolutionX_, passResolutionY_);
+		}
+
+
 		boundProgram_ = program.id_;
 	}
 
@@ -122,8 +142,7 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 }
 
 std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::string& fragPath) {
-	const std::string key =
-		std::to_string(vertPath.size()) + ":" + vertPath + std::to_string(fragPath.size()) + ":" + fragPath;
+	const std::string key = std::to_string(vertPath.size()) + ":" + vertPath + std::to_string(fragPath.size()) + ":" + fragPath;
 
 	if (programRegistry_.find(key) == programRegistry_.end()) {
 		loadShader(key, vertPath, fragPath);
@@ -140,7 +159,6 @@ void Renderer::shutdown() {
 	}
 
 	programRegistry_.clear();
-
+	resetBindingCache();
 	passActive_ = false;
 }
-

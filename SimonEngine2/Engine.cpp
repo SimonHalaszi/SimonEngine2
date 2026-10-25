@@ -86,6 +86,7 @@ void Engine::frameTimer(int v) {
 
 void GAMEdraw() {
 	Engine& engine = Engine::getInstance();
+	engine.refreshTime();
 	const Scene* scene = engine.getCurrentScene();
 
 	if (scene == nullptr) {
@@ -107,7 +108,8 @@ void GAMEdraw() {
 		if (renderer.beginPass(
 			scene->getCamera(),
 			0, 0,
-			width, height
+			width, height,
+			engine.getTime()
 		)) {
 			try {
 				scene->sceneDraw();
@@ -214,6 +216,17 @@ void Engine::registerInputFuncs() {
 	glutPassiveMotionFunc(INPUTMANAGERpassiveMouseMove);
 }
 
+void Engine::refreshTime() {
+	const auto now = std::chrono::steady_clock::now();
+
+	if (!hasStartTime_) {
+		startTime_ = now;
+		hasStartTime_ = true;
+	}
+
+	time_ = std::chrono::duration<float>(now - startTime_).count();
+}
+
 void Engine::registerTimeFuncs() {
 	hasPreviousUpdate_ = false;
 	deltaTime_ = 0.0f;
@@ -221,6 +234,8 @@ void Engine::registerTimeFuncs() {
 	fpsMeasurementStart_ = std::chrono::steady_clock::now();
 	framesDrawn_ = 0;
 	fps_ = 0.0f;
+
+	refreshTime();
 
 	glutTimerFunc(0, ENGINEanimationTimer, 0);
 	glutTimerFunc(0, ENGINEupdateTimer, 0);
