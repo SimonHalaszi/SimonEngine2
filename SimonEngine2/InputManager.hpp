@@ -70,8 +70,8 @@ class InputManager {
         std::array<bool, 8> mouseCurrent_ = {};
         std::array<bool, 8> mousePrevious_ = {};
 
-        std::array<bool, 16> specialKeyCurrent_ = {};
-        std::array<bool, 16> specialKeyPrevious_ = {};
+        std::array<bool, 20> specialKeyCurrent_ = {};
+        std::array<bool, 20> specialKeyPrevious_ = {};
 
         int mouseX_, mouseY_;
         int mouseDeltaX_, mouseDeltaY_;

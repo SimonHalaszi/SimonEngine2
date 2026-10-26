@@ -79,19 +79,15 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 	GLsizei indexCount = 0;
 	GLenum topology = GL_TRIANGLES;
 
-	switch (mode) {
-	case DrawMode::Solid:
+	if (mode == DrawMode::Solid) {
 		indexBuffer = mesh.faceIndexBuffer_;
 		indexCount = mesh.faceIndexCount_;
 		topology = GL_TRIANGLES;
-		break;
-	case DrawMode::Edges:
+	}
+	if (mode == DrawMode::Edges) {
 		indexBuffer = mesh.edgeIndexBuffer_;
 		indexCount = mesh.edgeIndexCount_;
 		topology = GL_LINES;
-		break;
-	default:
-		throw std::invalid_argument("Renderer::drawMesh: invalid draw mode");
 	}
 
 	if (mesh.vao_ == 0 || indexBuffer == 0 || indexCount <= 0) {

@@ -29,6 +29,13 @@ void CameraMan::update() {
 		pos -= forward * moveStep;
 	}
 
+	if (InputManager::getInstance().isSpecialKeyDown(mapSpecialKey(GLUT_KEY_CTRL_L))) {
+		pos.y_ -= moveStep;
+	}
+	if (InputManager::getInstance().isDown(' ')) {
+		pos.y_ += moveStep;
+	}
+
 	float yawDelta = 0.0f;
 	if (InputManager::getInstance().isSpecialKeyDown(mapSpecialKey(GLUT_KEY_LEFT))) {
 		yawDelta += 1.0f;

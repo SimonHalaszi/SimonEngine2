@@ -182,22 +182,26 @@ void INPUTMANAGERpassiveMouseMove(int x, int y) {
 
 int mapSpecialKey(int key) {
     switch (key) {
-    case GLUT_KEY_LEFT:   return 0;
-    case GLUT_KEY_UP:     return 1;
-    case GLUT_KEY_RIGHT:  return 2;
-    case GLUT_KEY_DOWN:   return 3;
-    case GLUT_KEY_F1:     return 4;
-    case GLUT_KEY_F2:     return 5;
-    case GLUT_KEY_F3:     return 6;
-    case GLUT_KEY_F4:     return 7;
-    case GLUT_KEY_F5:     return 8;
-    case GLUT_KEY_F6:     return 9;
-    case GLUT_KEY_F7:     return 10;
-    case GLUT_KEY_F8:     return 11;
-    case GLUT_KEY_F9:     return 12;
-    case GLUT_KEY_F10:    return 13;
-    case GLUT_KEY_F11:    return 14;
-    case GLUT_KEY_F12:    return 15;
-    default: return -1;
+        case GLUT_KEY_LEFT:   return 0;
+        case GLUT_KEY_UP:     return 1;
+        case GLUT_KEY_RIGHT:  return 2;
+        case GLUT_KEY_DOWN:   return 3;
+        case GLUT_KEY_F1:     return 4;
+        case GLUT_KEY_F2:     return 5;
+        case GLUT_KEY_F3:     return 6;
+        case GLUT_KEY_F4:     return 7;
+        case GLUT_KEY_F5:     return 8;
+        case GLUT_KEY_F6:     return 9;
+        case GLUT_KEY_F7:     return 10;
+        case GLUT_KEY_F8:     return 11;
+        case GLUT_KEY_F9:     return 12;
+        case GLUT_KEY_F10:    return 13;
+        case GLUT_KEY_F11:    return 14;
+        case GLUT_KEY_F12:    return 15;
+        case GLUT_KEY_CTRL_L:  return 16;
+        case GLUT_KEY_CTRL_R:  return 17;
+        case GLUT_KEY_SHIFT_L: return 18;
+        case GLUT_KEY_SHIFT_R: return 19;
+        default: return -1;
     }
 }

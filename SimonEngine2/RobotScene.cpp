@@ -4,8 +4,13 @@
 #include "Robot.hpp"
 #include "AxisDisplay.hpp"
 #include "CameraMan.hpp"
+
+#include "Cone.hpp"
+#include "Cylinder.hpp"
+#include "Ellipsoid.hpp"
 #include "Plane.hpp"
 #include "RectangularPrism.hpp"
+#include "ObjMesh.hpp"
 
 void RobotScene::init() {
     addRootObject(std::make_unique<Plane>(
@@ -18,16 +23,66 @@ void RobotScene::init() {
         4
     ));
 
-    addRootObject(std::make_unique<RectangularPrism>(
+    addRootObject(std::make_unique<Cone>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-6.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+        16,
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    ));
+
+    addRootObject(std::make_unique<Cylinder>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-3.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+        16,
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    ));
+
+    addRootObject(std::make_unique<Ellipsoid>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 2.5f, -25.5f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(50.0f, 10.0f, 1.0f)
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+        16,
+        16,
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    ));
+
+    addRootObject(std::make_unique<RectangularPrism>(
+        EngineMath::Transform(
+            EngineMath::Vector3(3.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
         EngineUtil::ColorRGB(100, 140, 220),
         "../Shaders/Basic.vert",
         "../Shaders/Bounce.frag"
     ));
+
+    addRootObject(std::make_unique<ObjMesh>(
+        EngineMath::Transform(
+            EngineMath::Vector3(6.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(0.5f, 0.5f, 0.5f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+		"../Assets/teapot.obj",
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    ));
+
 
     // I wanted to learn the non srand, rand, time way
     std::random_device rd;
@@ -36,7 +91,7 @@ void RobotScene::init() {
     std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
     std::uniform_int_distribution<int> randomColor(0, 255);
 
-    for (int i = 0; i < 15; ++i) {
+    for (int i = 0; i < 25; ++i) {
         addRootObject(std::make_unique<Robot>(
             EngineMath::Transform(
                 EngineMath::Vector3(randomPos(gen), 0.0f, randomPos(gen)),
