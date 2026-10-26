@@ -68,8 +68,6 @@ void Engine::recordDrawnFrame() {
 	if (secondsPassed >= 1.0f) {
 		fps_ = static_cast<float>(framesDrawn_) / secondsPassed;
 
-		std::cout << "FPS: " << fps_ << "\n";
-
 		framesDrawn_ = 0;
 		fpsMeasurementStart_ = now;
 	}
@@ -192,16 +190,17 @@ void Engine::printGraphicsInfo() const {
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
 	glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profileMask);
 
-	const char* profile = "unknown profile";
+	const char* profile = "Unknown profile";
 
 	if (profileMask & GL_CONTEXT_CORE_PROFILE_BIT) {
-		profile = "core";
+		profile = "Core";
 	}
 	else if (profileMask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT) {
-		profile = "compat";
+		profile = "Compatibility";
 	}
 
 	std::cout << "GL Context  : " << major << "." << minor << " (" << profile << ")\n";
+	std::cout << std::endl;
 }
 
 void Engine::registerInputFuncs() {
@@ -242,18 +241,6 @@ void Engine::registerTimeFuncs() {
 	glutTimerFunc(0, ENGINEframeTimer, 0);
 }
 
-void Engine::validateShaders() {
-	GLuint colorProgram = EngineShader::loadProgram("../Shaders/Basic.vert", "../Shaders/Color.frag");
-
-	glDeleteProgram(colorProgram);
-
-	GLuint grayscaleProgram = EngineShader::loadProgram("../Shaders/Basic.vert", "../Shaders/Grayscale.frag");
-
-	glDeleteProgram(grayscaleProgram);
-
-	std::cout << "Shaders successfully compiled and linked.\n";
-}
-
 #include "RobotScene.hpp"
 
 void Engine::init() {
@@ -279,6 +266,6 @@ void Engine::safeExit() {
 		currentScene_->sceneDeInit();
 	}
 
-	std::cout << "Engine::safeEngineExit : Exited game\n";
+	std::cout << "Engine::safeEngineExit: Exited game\n";
 	exit(0);
 }

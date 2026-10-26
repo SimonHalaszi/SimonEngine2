@@ -17,7 +17,7 @@ class Object {
 		void rootOnStart(); // Runs when attached to scene
 		void rootUpdate(); // Runs once per update of the Scene
 		void rootDraw(); // Runs once per frame update of the Scene
-		void rootOnDestruction(); // Runs after right before being unattached from scene
+		void rootOnDestruction(); // Runs on automatically on Scene destruction and next update after destroy
 
 		bool isAlive() const { return isAlive_; }
 		void destroy() { isAlive_ = false; } // Call this function or just change isAlive to delete GameObject
@@ -55,7 +55,7 @@ class Object {
 		virtual void onStart() {} // Runs when attached to scene
 		virtual void update() {} // Runs once per update of the Scene
 		virtual void draw() const {} // Runs once per frame update of the Scene
-		virtual void onDestruction() {} // Runs after right before being unattached from scene
+		virtual void onDestruction() {} // Runs on automatically on Scene destruction and next update after destroy
 
 		Object* parent_ = nullptr;
 

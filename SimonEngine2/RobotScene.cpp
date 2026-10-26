@@ -15,7 +15,7 @@
 void RobotScene::init() {
     addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, -2.5f, 0.0f),
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(50.0f, 0.0f, 50.0f)
         ),
@@ -94,7 +94,7 @@ void RobotScene::init() {
     for (int i = 0; i < 25; ++i) {
         addRootObject(std::make_unique<Robot>(
             EngineMath::Transform(
-                EngineMath::Vector3(randomPos(gen), 0.0f, randomPos(gen)),
+                EngineMath::Vector3(randomPos(gen), 2.25f, randomPos(gen)),
                 EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(randomRotation(gen))),
                 EngineMath::Vector3(1.0f, 1.0f, 1.0f)
             ),
@@ -106,11 +106,24 @@ void RobotScene::init() {
 
     addRootObject(std::make_unique<CameraMan>(
         EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 1.0f, 5.0f),
+            EngineMath::Vector3(0.0f, 3.5f, 5.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         )
     ));
+
+    std::cout << "Controls:\n";
+    std::cout << "1: Show primitive mesh as wires\n";
+    std::cout << "2: Show primitive mesh as solids\n";
+    std::cout << "3: Toggle axis display\n";
+    std::cout << "4/F4: Increase/Decrease angle of elbows\n";
+    std::cout << "5/F5: Increase/Decrease angle of shoulders\n";
+    std::cout << "6/F6: Increase/Decrease angle of hips\n";
+    std::cout << "7/F7: Increase/Decrease angle of knees\n";
+    std::cout << "Arrow Keys: Tank controls\n";
+    std::cout << "Space/LCtrl: Fly up/down\n";
+    std::cout << "0: Print FPS\n";
+    std::cout << std::endl;
 }
 
 #include "Engine.hpp"
@@ -118,6 +131,9 @@ void RobotScene::init() {
 void RobotScene::update() {
     if (InputManager::getInstance().isPressed(27)) {
         Engine::getInstance().safeExit();
+    }
+    if (InputManager::getInstance().isPressed('0')) {
+        std::cout << "FPS: " << Engine::getInstance().getFPS() << std::endl;
     }
 }
 

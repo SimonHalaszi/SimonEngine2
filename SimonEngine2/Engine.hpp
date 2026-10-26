@@ -56,7 +56,6 @@ class Engine {
 		void printGraphicsInfo() const;
 		void registerInputFuncs();
 		void registerTimeFuncs();
-		void validateShaders();
 
 		Engine() : currentScene_(nullptr), pendingScene_(nullptr) {}
 

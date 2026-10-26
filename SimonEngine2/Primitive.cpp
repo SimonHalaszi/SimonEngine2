@@ -17,8 +17,6 @@ void Primitive::onStart() {
 	material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
 	edgeMaterial_.shader_ = Renderer::getInstance().getOrLoadShader("../Shaders/Basic.vert", "../Shaders/Color.frag");
 
-	material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
-
 	resolveMeshes();
 }
 
