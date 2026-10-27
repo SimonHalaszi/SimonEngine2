@@ -34,7 +34,7 @@ class Camera {
 	private:
 		ProjectionMode projectionMode_ = ProjectionMode::Perspective;
 
-		double perspectiveFovy_ = 120.0;
+		double perspectiveFovy_ = 90.0;
 		double perspectiveNear_ = 0.1;
 		double perspectiveFar_ = 100.0;
 		double perspectiveZoomFov_ = perspectiveFovy_;

@@ -672,7 +672,7 @@ const EngineRender::GPUMesh* MeshRegistry::getGPUDotObj(const std::string& filep
 	return getOrCreateGPUMesh(key, *getDotObj(filepath));
 }
 
-void MeshRegistry::clearRegistry() {
+void MeshRegistry::clear() {
 	for (auto& kv : GPURegistry_) {
 		kv.second->release();
 	}

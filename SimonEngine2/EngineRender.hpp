@@ -60,7 +60,7 @@ namespace EngineRender {
 	};
 
 	struct Material {
-		std::string shader_ = "color";
+		std::string shader_;
 		EngineUtil::ColorRGB color_;
 	};
 

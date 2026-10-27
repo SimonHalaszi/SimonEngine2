@@ -36,7 +36,7 @@ class MeshRegistry {
 		const EngineRender::GPUMesh* getGPUEllipsoid(int slices, int stacks);
 		const EngineRender::GPUMesh* getGPUDotObj(const std::string& filepath);
 
-		void clearRegistry();
+		void clear();
 
 		MeshRegistry(const MeshRegistry&) = delete;
 		MeshRegistry& operator=(const MeshRegistry&) = delete;

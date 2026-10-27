@@ -25,7 +25,7 @@ void Engine::applyPendingScene() {
 	}
 
 	currentScene_ = std::move(pendingScene_);
-	InputManager::getInstance().reset();
+	InputManager::getInstance().clear();
 
 	if (currentScene_) {
 		currentScene_->sceneInit();

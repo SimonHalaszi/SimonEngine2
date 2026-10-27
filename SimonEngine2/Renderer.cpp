@@ -137,7 +137,7 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 }
 
 std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::string& fragPath) {
-	const std::string key = std::to_string(vertPath.size()) + ":" + vertPath + std::to_string(fragPath.size()) + ":" + fragPath;
+	const std::string key = vertPath + fragPath;
 
 	if (programRegistry_.find(key) == programRegistry_.end()) {
 		loadShader(key, vertPath, fragPath);
@@ -146,7 +146,7 @@ std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::st
 	return key;
 }
 
-void Renderer::shutdown() {
+void Renderer::clear() {
 	glUseProgram(0);
 
 	for (const auto& entry : programRegistry_) {

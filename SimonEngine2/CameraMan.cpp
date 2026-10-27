@@ -5,11 +5,12 @@ CameraMan::CameraMan(const EngineMath::Transform& localTransform) {
 	speed_ = 5.0f;
 }
 
-void CameraMan::onStart() {
-	// Currently nothing
-}
-
 #include "Engine.hpp"
+
+void CameraMan::onStart() {
+	Scene* scene = Engine::getInstance().getCurrentScene();
+	scene->getCamera().setPerspective(90, 0.1, 100.0);
+}
 
 void CameraMan::update() {
 	Scene* scene = Engine::getInstance().getCurrentScene();

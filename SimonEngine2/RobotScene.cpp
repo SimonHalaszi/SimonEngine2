@@ -14,8 +14,6 @@
 #include "ObjMesh.hpp"
 
 void RobotScene::init() {
-    // camera_.setProjectionMode(Camera::ProjectionMode::Ortho);
-
     addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),

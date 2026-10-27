@@ -119,7 +119,7 @@ void InputManager::update() {
     mouseDeltaX_ = mouseDeltaY_ = 0;
 }
 
-void InputManager::reset() {
+void InputManager::clear() {
     keyCurrent_.fill(false);        
     keyPrevious_.fill(false);
     specialKeyCurrent_.fill(false); 

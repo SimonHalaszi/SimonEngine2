@@ -49,7 +49,7 @@ class InputManager {
         void registerScroll(int button);
 
         void update();
-        void reset();
+        void clear();
 
         InputManager(const InputManager&) = delete;
         InputManager& operator=(const InputManager&) = delete;
