@@ -14,11 +14,13 @@
 #include "ObjMesh.hpp"
 
 void RobotScene::init() {
+    // camera_.setProjectionMode(Camera::ProjectionMode::Ortho);
+
     addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(50.0f, 0.0f, 50.0f)
+            EngineMath::Vector3(100.0f, 0.0f, 100.0f)
         ),
         EngineUtil::ColorRGB(255, 255, 255),
         4
