@@ -17,7 +17,6 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 		program.viewProjLocation_ = glGetUniformLocation(program.id_, "uViewProjection");
 		program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
 		program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
-
 		program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
 		program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
 

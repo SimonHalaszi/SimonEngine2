@@ -5,6 +5,7 @@
 #include "AxisDisplay.hpp"
 #include "CameraMan.hpp"
 
+#include "Edge.hpp"
 #include "Cone.hpp"
 #include "Cylinder.hpp"
 #include "Ellipsoid.hpp"
@@ -21,6 +22,17 @@ void RobotScene::init() {
         ),
         EngineUtil::ColorRGB(255, 255, 255),
         4
+    ));
+
+    addRootObject(std::make_unique<Edge>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
     ));
 
     addRootObject(std::make_unique<Cone>(
@@ -71,9 +83,21 @@ void RobotScene::init() {
         "../Shaders/Bounce.frag"
     ));
 
-    addRootObject(std::make_unique<ObjMesh>(
+    addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
             EngineMath::Vector3(6.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f)),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        EngineUtil::ColorRGB(100, 140, 220),
+        4,
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    ));
+
+    addRootObject(std::make_unique<ObjMesh>(
+        EngineMath::Transform(
+            EngineMath::Vector3(9.0f, 2.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
@@ -82,7 +106,6 @@ void RobotScene::init() {
         "../Shaders/Basic.vert",
         "../Shaders/Bounce.frag"
     ));
-
 
     // I wanted to learn the non srand, rand, time way
     std::random_device rd;
@@ -123,6 +146,7 @@ void RobotScene::init() {
     std::cout << "Arrow Keys: Tank controls\n";
     std::cout << "Space/LCtrl: Fly up/down\n";
     std::cout << "0: Print FPS\n";
+    std::cout << "ESC: Quit\n";
     std::cout << std::endl;
 }
 
