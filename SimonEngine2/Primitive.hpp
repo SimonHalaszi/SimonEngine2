@@ -10,21 +10,17 @@
 #include "EngineUtil.hpp"
 
 #include "MeshRegistry.hpp"
+#include "TextureRegistry.hpp"
 
 class Primitive : public Object {
 	public:
 		Primitive() = default;
-		Primitive(
-			const EngineMath::Transform& localTransform, 
-			const EngineUtil::ColorRGB& color, 
-			const std::string& vertPath = "../Shaders/Basic.vert", 
-			const std::string& fragPath= "../Shaders/Color.frag" 
-		);
+		Primitive(const EngineMath::Transform& localTransform, EngineRender::Material material);
 
 		void draw() const override;
 		void update() override final;
 
-		void setColor(const EngineUtil::ColorRGB& color) { material_.color_ = color; }
+		void setMaterial(EngineRender::Material material);
 
 	protected:
 		bool drawAsSolid_ = true;
@@ -34,9 +30,6 @@ class Primitive : public Object {
 		
 		EngineRender::Material material_;
 		EngineRender::Material edgeMaterial_;
-
-		std::string vertPath_ = "../Shaders/Basic.vert";
-		std::string fragPath_ = "../Shaders/Color.frag";
 
 		virtual const void resolveMeshes() = 0;
 		void onStart() override;

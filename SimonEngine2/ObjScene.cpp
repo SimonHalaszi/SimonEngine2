@@ -7,7 +7,7 @@ void ObjScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.25f, 0.25f, 0.25f)
         ),
-        EngineUtil::ColorRGB(50, 185, 235),
+        EngineRender::Material(EngineUtil::ColorRGB(50, 185, 235)),
         "../Assets/teapot.obj"
     ));
     addRootObject(std::make_unique<AxisDisplay>());

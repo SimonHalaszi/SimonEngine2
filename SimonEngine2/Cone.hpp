@@ -5,14 +5,8 @@
 
 class Cone : public Primitive {
     public:
-        Cone() : Cone(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
-        Cone(
-            const EngineMath::Transform& localTransform, 
-            const EngineUtil::ColorRGB& color, 
-            int slices = 3, 
-            const std::string& vertPath = "../Shaders/Basic.vert",
-            const std::string& fragPath = "../Shaders/Color.frag"
-        );
+        Cone() : Cone(EngineMath::Transform{}) {}
+        Cone(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, int slices = 3);
 
     private:
         int slices_;

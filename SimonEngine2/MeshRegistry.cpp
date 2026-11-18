@@ -71,20 +71,31 @@ namespace {
 			{ -halfUnit,  halfUnit, -halfUnit }  // 7
 		};
 
-		mesh.faceIndices_ = {
-			// Front
-			0u, 1u, 2u,  0u, 2u, 3u,
-			// Back
-			5u, 4u, 7u,  5u, 7u, 6u,
-			// Left
-			4u, 0u, 3u,  4u, 3u, 7u,
-			// Right
-			1u, 5u, 6u,  1u, 6u, 2u,
-			// Top
-			3u, 2u, 6u,  3u, 6u, 7u,
-			// Bottom
-			4u, 5u, 1u,  4u, 1u, 0u
-		};
+		auto addFace = [&mesh](unsigned int a, unsigned int b, unsigned int c, unsigned int d) {
+			const EngineUtil::Vertex corners[] = {
+				mesh.vertices_[a], mesh.vertices_[b], mesh.vertices_[c], mesh.vertices_[d]
+			};
+			const float uv[4][2] = {
+				{ 0.0f, 0.0f }, { 1.0f, 0.0f },
+				{ 1.0f, 1.0f }, { 0.0f, 1.0f }
+			};
+			const unsigned int base = static_cast<unsigned int>(mesh.vertices_.size());
+
+			for (unsigned int i = 0; i < 4; ++i) {
+				mesh.vertices_.push_back({ corners[i].x_, corners[i].y_, corners[i].z_, uv[i][0], uv[i][1] });
+			}
+
+			mesh.faceIndices_.insert(mesh.faceIndices_.end(), {
+				base, base + 1, base + 2, base, base + 2, base + 3
+				});
+			};
+
+		addFace(0u, 1u, 2u, 3u); // Front
+		addFace(5u, 4u, 7u, 6u); // Back
+		addFace(4u, 0u, 3u, 7u); // Left
+		addFace(1u, 5u, 6u, 2u); // Right
+		addFace(3u, 2u, 6u, 7u); // Top
+		addFace(4u, 5u, 1u, 0u); // Bottom
 
 		mesh.edgeIndices_ = {
 			0u, 1u, 1u, 2u, 2u, 3u, 3u, 0u,
@@ -112,7 +123,9 @@ namespace {
 
 			for (int x = 0; x <= grid; ++x) {
 				const float vx = -halfUnit + unit * (static_cast<float>(x) / static_cast<float>(grid));
-				mesh.vertices_.push_back({ vx, 0.0f, vz });
+				const float u = static_cast<float>(x) / static_cast<float>(grid);
+				const float v = static_cast<float>(z) / static_cast<float>(grid);
+				mesh.vertices_.push_back({ vx, 0.0f, vz, u, v });
 			}
 		}
 
@@ -160,23 +173,43 @@ namespace {
 			const float theta = 2.0f * EngineMath::PI * static_cast<float>(slice) / static_cast<float>(slices);
 			const float x = halfUnit * std::cos(theta);
 			const float z = halfUnit * std::sin(theta);
-			mesh.vertices_.push_back({ x, -halfUnit, z });
+			mesh.vertices_.push_back({ x, -halfUnit, z, 0.0f, 0.0f });
 		}
 
 		const unsigned int tip = static_cast<unsigned int>(mesh.vertices_.size());
-		mesh.vertices_.push_back({ 0.0f, halfUnit, 0.0f });
+		mesh.vertices_.push_back({ 0.0f, halfUnit, 0.0f, 0.0f, 0.0f });
 
 		const unsigned int baseCenter = static_cast<unsigned int>(mesh.vertices_.size());
-		mesh.vertices_.push_back({ 0.0f, -halfUnit, 0.0f });
+		mesh.vertices_.push_back({ 0.0f, -halfUnit, 0.0f, 0.0f, 0.0f });
+
+		auto addFaceTriangle = [&mesh](unsigned int a, float au, float av, unsigned int b, float bu, float bv, unsigned int c, float cu, float cv) {
+			const EngineUtil::Vertex va = mesh.vertices_[a];
+			const EngineUtil::Vertex vb = mesh.vertices_[b];
+			const EngineUtil::Vertex vc = mesh.vertices_[c];
+			const unsigned int first = static_cast<unsigned int>(mesh.vertices_.size());
+
+			mesh.vertices_.push_back({ va.x_, va.y_, va.z_, au, av });
+			mesh.vertices_.push_back({ vb.x_, vb.y_, vb.z_, bu, bv });
+			mesh.vertices_.push_back({ vc.x_, vc.y_, vc.z_, cu, cv });
+			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { first, first + 1, first + 2 });
+			};
 
 		for (int slice = 0; slice < slices; ++slice) {
 			const unsigned int current = static_cast<unsigned int>(slice);
 			const unsigned int next = static_cast<unsigned int>((slice + 1) % slices);
+			const float u0 = static_cast<float>(slice) / static_cast<float>(slices);
+			const float u1 = static_cast<float>(slice + 1) / static_cast<float>(slices);
 
-			// Side
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { current, tip, next });
-			// Bottom cap
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { baseCenter, current, next });
+			addFaceTriangle(current, u0, 0.0f, tip, (u0 + u1) * 0.5f, 1.0f, next, u1, 0.0f);
+
+			const EngineUtil::Vertex center = mesh.vertices_[baseCenter];
+			const EngineUtil::Vertex ring0 = mesh.vertices_[current];
+			const EngineUtil::Vertex ring1 = mesh.vertices_[next];
+			addFaceTriangle(
+				baseCenter, center.x_ + 0.5f, center.z_ + 0.5f,
+				current, ring0.x_ + 0.5f, ring0.z_ + 0.5f,
+				next, ring1.x_ + 0.5f, ring1.z_ + 0.5f
+			);
 
 			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { current, next, current, tip });
 		}
@@ -192,37 +225,58 @@ namespace {
 		EngineUtil::Mesh mesh;
 		mesh.vertices_.reserve(static_cast<std::size_t>(2 * slices + 2));
 
-		// Bottom ring
 		for (int slice = 0; slice < slices; ++slice) {
 			const float theta = 2.0f * EngineMath::PI * static_cast<float>(slice) / static_cast<float>(slices);
-			mesh.vertices_.push_back({ halfUnit * std::cos(theta), -halfUnit, halfUnit * std::sin(theta) });
+			mesh.vertices_.push_back({ halfUnit * std::cos(theta), -halfUnit, halfUnit * std::sin(theta), 0.0f, 0.0f });
 		}
-		// Top ring
+
 		for (int slice = 0; slice < slices; ++slice) {
 			const float theta = 2.0f * EngineMath::PI * static_cast<float>(slice) / static_cast<float>(slices);
-			mesh.vertices_.push_back({ halfUnit * std::cos(theta), halfUnit, halfUnit * std::sin(theta) });
+			mesh.vertices_.push_back({ halfUnit * std::cos(theta), halfUnit, halfUnit * std::sin(theta), 0.0f, 0.0f });
 		}
 
 		const unsigned int bottomCenter = static_cast<unsigned int>(mesh.vertices_.size());
-		mesh.vertices_.push_back({ 0.0f, -halfUnit, 0.0f });
+		mesh.vertices_.push_back({ 0.0f, -halfUnit, 0.0f, 0.0f, 0.0f });
 
 		const unsigned int topCenter = static_cast<unsigned int>(mesh.vertices_.size());
-		mesh.vertices_.push_back({ 0.0f, halfUnit, 0.0f });
+		mesh.vertices_.push_back({ 0.0f, halfUnit, 0.0f, 0.0f, 0.0f });
+
+		auto addFaceTriangle = [&mesh](unsigned int a, float au, float av, unsigned int b, float bu, float bv, unsigned int c, float cu, float cv) {
+			const EngineUtil::Vertex va = mesh.vertices_[a];
+			const EngineUtil::Vertex vb = mesh.vertices_[b];
+			const EngineUtil::Vertex vc = mesh.vertices_[c];
+			const unsigned int first = static_cast<unsigned int>(mesh.vertices_.size());
+
+			mesh.vertices_.push_back({ va.x_, va.y_, va.z_, au, av });
+			mesh.vertices_.push_back({ vb.x_, vb.y_, vb.z_, bu, bv });
+			mesh.vertices_.push_back({ vc.x_, vc.y_, vc.z_, cu, cv });
+			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { first, first + 1, first + 2 });
+			};
 
 		for (int slice = 0; slice < slices; ++slice) {
 			const unsigned int next = static_cast<unsigned int>((slice + 1) % slices);
-
 			const unsigned int b0 = static_cast<unsigned int>(slice);
 			const unsigned int b1 = next;
 			const unsigned int t0 = static_cast<unsigned int>(slice + slices);
 			const unsigned int t1 = static_cast<unsigned int>(next + slices);
+			const float u0 = static_cast<float>(slice) / static_cast<float>(slices);
+			const float u1 = static_cast<float>(slice + 1) / static_cast<float>(slices);
 
-			// Side
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { b0, t0, b1, b1, t0, t1 });
-			// Bottom cap
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { bottomCenter, b0, b1 });
-			// Top cap
-			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { topCenter, t1, t0 });
+			addFaceTriangle(b0, u0, 0.0f, t0, u0, 1.0f, b1, u1, 0.0f);
+			addFaceTriangle(b1, u1, 0.0f, t0, u0, 1.0f, t1, u1, 1.0f);
+
+			auto capU = [](const EngineUtil::Vertex& vertex) { return vertex.x_ + 0.5f; };
+			auto capV = [](const EngineUtil::Vertex& vertex) { return vertex.z_ + 0.5f; };
+			addFaceTriangle(
+				bottomCenter, capU(mesh.vertices_[bottomCenter]), capV(mesh.vertices_[bottomCenter]),
+				b0, capU(mesh.vertices_[b0]), capV(mesh.vertices_[b0]),
+				b1, capU(mesh.vertices_[b1]), capV(mesh.vertices_[b1])
+			);
+			addFaceTriangle(
+				topCenter, capU(mesh.vertices_[topCenter]), capV(mesh.vertices_[topCenter]),
+				t1, capU(mesh.vertices_[t1]), capV(mesh.vertices_[t1]),
+				t0, capU(mesh.vertices_[t0]), capV(mesh.vertices_[t0])
+			);
 
 			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { b0, b1, t0, t1, b0, t0 });
 		}
@@ -241,15 +295,14 @@ namespace {
 		EngineUtil::Mesh mesh;
 
 		const unsigned int southPole = 0u;
-		mesh.vertices_.push_back({ 0.0f, -halfUnit, 0.0f });
+		mesh.vertices_.push_back({ 0.0f, -halfUnit, 0.0f, 0.0f, 0.0f });
 
-		const int ringCount = stacks - 1; // excludes poles
+		const int ringCount = stacks - 1;
 		const int vertsPerRing = slices;
 
 		for (int ring = 1; ring <= ringCount; ++ring) {
 			const float v = static_cast<float>(ring) / static_cast<float>(stacks);
 			const float phi = EngineMath::PI * v;
-
 			const float y = halfUnit * std::cos(phi);
 			const float r = halfUnit * std::sin(phi);
 
@@ -257,88 +310,81 @@ namespace {
 				const float theta = 2.0f * EngineMath::PI * static_cast<float>(slice) / static_cast<float>(slices);
 				const float x = r * std::cos(theta);
 				const float z = r * std::sin(theta);
-				mesh.vertices_.push_back({ x, y, z });
+				mesh.vertices_.push_back({ x, y, z, 0.0f, 0.0f });
 			}
 		}
 
 		const unsigned int northPole = static_cast<unsigned int>(mesh.vertices_.size());
-		mesh.vertices_.push_back({ 0.0f, halfUnit, 0.0f });
+		mesh.vertices_.push_back({ 0.0f, halfUnit, 0.0f, 0.0f, 0.0f });
 
 		auto ringVertex = [vertsPerRing](int ringIndex, int sliceIndex) -> unsigned int {
 			const int wrappedSlice = (sliceIndex % vertsPerRing + vertsPerRing) % vertsPerRing;
 			return static_cast<unsigned int>(1 + ringIndex * vertsPerRing + wrappedSlice);
 			};
 
+		auto addFaceTriangle = [&mesh](unsigned int a, float au, float av, unsigned int b, float bu, float bv, unsigned int c, float cu, float cv) {
+			const EngineUtil::Vertex va = mesh.vertices_[a];
+			const EngineUtil::Vertex vb = mesh.vertices_[b];
+			const EngineUtil::Vertex vc = mesh.vertices_[c];
+			const unsigned int first = static_cast<unsigned int>(mesh.vertices_.size());
+
+			mesh.vertices_.push_back({ va.x_, va.y_, va.z_, au, av });
+			mesh.vertices_.push_back({ vb.x_, vb.y_, vb.z_, bu, bv });
+			mesh.vertices_.push_back({ vc.x_, vc.y_, vc.z_, cu, cv });
+			mesh.faceIndices_.insert(mesh.faceIndices_.end(), { first, first + 1, first + 2 });
+			};
+
 		const int lastRing = ringCount - 1;
 
-		// North cap
 		for (int slice = 0; slice < slices; ++slice) {
 			const unsigned int a = ringVertex(0, slice);
 			const unsigned int b = ringVertex(0, slice + 1);
+			const float u0 = static_cast<float>(slice) / static_cast<float>(slices);
+			const float u1 = static_cast<float>(slice + 1) / static_cast<float>(slices);
+			const float v = 1.0f - 1.0f / static_cast<float>(stacks);
 
-			mesh.faceIndices_.insert(
-				mesh.faceIndices_.end(),
-				{ northPole, b, a }
-			);
+			addFaceTriangle(northPole, (u0 + u1) * 0.5f, 1.0f, b, u1, v, a, u0, v);
 		}
 
-		// Middle bands
 		for (int ring = 0; ring < lastRing; ++ring) {
 			for (int slice = 0; slice < slices; ++slice) {
 				const unsigned int a = ringVertex(ring, slice);
 				const unsigned int b = ringVertex(ring, slice + 1);
 				const unsigned int c = ringVertex(ring + 1, slice + 1);
 				const unsigned int d = ringVertex(ring + 1, slice);
+				const float u0 = static_cast<float>(slice) / static_cast<float>(slices);
+				const float u1 = static_cast<float>(slice + 1) / static_cast<float>(slices);
+				const float v0 = 1.0f - static_cast<float>(ring + 1) / static_cast<float>(stacks);
+				const float v1 = 1.0f - static_cast<float>(ring + 2) / static_cast<float>(stacks);
 
-				mesh.faceIndices_.insert(
-					mesh.faceIndices_.end(),
-					{ a, b, d, b, c, d }
-				);
+				addFaceTriangle(a, u0, v0, b, u1, v0, d, u0, v1);
+				addFaceTriangle(b, u1, v0, c, u1, v1, d, u0, v1);
 			}
 		}
 
-		// South cap
 		for (int slice = 0; slice < slices; ++slice) {
 			const unsigned int a = ringVertex(lastRing, slice);
 			const unsigned int b = ringVertex(lastRing, slice + 1);
+			const float u0 = static_cast<float>(slice) / static_cast<float>(slices);
+			const float u1 = static_cast<float>(slice + 1) / static_cast<float>(slices);
+			const float v = 1.0f / static_cast<float>(stacks);
 
-			mesh.faceIndices_.insert(
-				mesh.faceIndices_.end(),
-				{ southPole, a, b }
-			);
+			addFaceTriangle(southPole, (u0 + u1) * 0.5f, 0.0f, a, u0, v, b, u1, v);
 		}
 
 		for (int slice = 0; slice < slices; ++slice) {
-			mesh.edgeIndices_.insert(
-				mesh.edgeIndices_.end(),
-				{ northPole, ringVertex(0, slice) }
-			);
+			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { northPole, ringVertex(0, slice) });
 
 			for (int ring = 0; ring < lastRing; ++ring) {
-				mesh.edgeIndices_.insert(
-					mesh.edgeIndices_.end(),
-					{
-						ringVertex(ring, slice),
-						ringVertex(ring + 1, slice)
-					}
-				);
+				mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { ringVertex(ring, slice), ringVertex(ring + 1, slice) });
 			}
 
-			mesh.edgeIndices_.insert(
-				mesh.edgeIndices_.end(),
-				{ ringVertex(lastRing, slice), southPole }
-			);
+			mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { ringVertex(lastRing, slice), southPole });
 		}
 
 		for (int ring = 0; ring < ringCount; ++ring) {
 			for (int slice = 0; slice < slices; ++slice) {
-				mesh.edgeIndices_.insert(
-					mesh.edgeIndices_.end(),
-					{
-						ringVertex(ring, slice),
-						ringVertex(ring, slice + 1)
-					}
-				);
+				mesh.edgeIndices_.insert(mesh.edgeIndices_.end(), { ringVertex(ring, slice), ringVertex(ring, slice + 1) });
 			}
 		}
 
@@ -393,15 +439,50 @@ namespace {
 			throw std::runtime_error("MeshRegistry::getDotObj: failed to open file: " + filepath);
 		}
 
+		struct ObjTextureCoord {
+			float u_;
+			float v_;
+		};
+
+		struct ObjFaceVertex {
+			int positionIndex_;
+			int textureIndex_;
+		};
+
 		EngineUtil::Mesh mesh;
+		std::vector<EngineUtil::Vertex> positions;
+		std::vector<ObjTextureCoord> textureCoords;
+		std::vector<ObjFaceVertex> faceCorners;
 		std::unordered_set<std::uint64_t> uniqueEdges;
+
+		auto parseIndex = [](const std::string& text, std::size_t count, int& resolvedIndex) {
+			if (text.empty()) {
+				return false;
+			}
+
+			try {
+				std::size_t consumed = 0;
+				const int objIndex = std::stoi(text, &consumed);
+				if (consumed != text.size()) {
+					return false;
+				}
+
+				resolvedIndex = resolveObjIndex(objIndex, static_cast<int>(count));
+				return resolvedIndex >= 0 && static_cast<std::size_t>(resolvedIndex) < count;
+			}
+			catch (const std::invalid_argument&) {
+				return false;
+			}
+			catch (const std::out_of_range&) {
+				return false;
+			}
+			};
 
 		std::string line;
 
 		while (std::getline(file, line)) {
 			std::istringstream stream(line);
 			std::string type;
-
 			stream >> type;
 
 			if (type.empty() || type[0] == '#') {
@@ -414,55 +495,102 @@ namespace {
 				float z = 0.0f;
 
 				if (stream >> x >> y >> z) {
-					mesh.vertices_.push_back({ x, y, z });
+					positions.push_back({ x, y, z, 0.0f, 0.0f });
 				}
 
 				continue;
 			}
 
-			if (type == "f") {
-				std::vector<unsigned int> polygon;
-				std::string token;
+			if (type == "vt") {
+				float u = 0.0f;
+				float v = 0.0f;
 
-				while (stream >> token) {
-					if (!token.empty() && token[0] == '#') {
+				if (stream >> u >> v) {
+					textureCoords.push_back({ u, v });
+				}
+
+				continue;
+			}
+
+			if (type != "f") {
+				continue;
+			}
+
+			std::vector<ObjFaceVertex> polygon;
+			std::string token;
+			bool validPolygon = true;
+
+			while (stream >> token) {
+				if (!token.empty() && token[0] == '#') {
+					break;
+				}
+
+				const std::size_t firstSlash = token.find('/');
+				const int positionCount = static_cast<int>(positions.size());
+				int positionIndex = -1;
+
+				if (!parsePositionIndex(token, positionCount, positionIndex)) {
+					validPolygon = false;
+					break;
+				}
+
+				int textureIndex = -1;
+				if (firstSlash != std::string::npos) {
+					const std::size_t textureStart = firstSlash + 1;
+					const std::size_t secondSlash = token.find('/', textureStart);
+					const std::size_t textureEnd = secondSlash == std::string::npos ? token.size() : secondSlash;
+
+					if (textureEnd > textureStart &&
+						!parseIndex(token.substr(textureStart, textureEnd - textureStart), textureCoords.size(), textureIndex)) {
+						validPolygon = false;
 						break;
 					}
-
-					int vertexIndex = -1;
-					if (!parsePositionIndex(token, static_cast<int>(mesh.vertices_.size()), vertexIndex)) {
-						polygon.clear();
-						break;
-					}
-					polygon.push_back(static_cast<unsigned int>(vertexIndex));
 				}
 
-				if (polygon.size() < 3) {
-					continue;
-				}
+				polygon.push_back({ positionIndex, textureIndex });
+			}
 
-				// Boundary edges from original polygon.
-				for (std::size_t i = 0; i < polygon.size(); ++i) {
-					const unsigned int first = polygon[i];
-					const unsigned int second = polygon[(i + 1) % polygon.size()];
-					addEdgeUnique(mesh, uniqueEdges, first, second);
-				}
+			if (!validPolygon || polygon.size() < 3) {
+				continue;
+			}
 
-				// Triangle fan
-				for (std::size_t i = 1; i + 1 < polygon.size(); ++i) {
-					mesh.faceIndices_.push_back(polygon[0]);
-					mesh.faceIndices_.push_back(polygon[i]);
-					mesh.faceIndices_.push_back(polygon[i + 1]);
-				}
+			for (std::size_t i = 0; i < polygon.size(); ++i) {
+				const unsigned int first = static_cast<unsigned int>(polygon[i].positionIndex_);
+				const unsigned int second = static_cast<unsigned int>(polygon[(i + 1) % polygon.size()].positionIndex_);
+				addEdgeUnique(mesh, uniqueEdges, first, second);
+			}
+
+			for (std::size_t i = 1; i + 1 < polygon.size(); ++i) {
+				faceCorners.push_back(polygon[0]);
+				faceCorners.push_back(polygon[i]);
+				faceCorners.push_back(polygon[i + 1]);
 			}
 		}
 
-		if (mesh.vertices_.empty()) {
+		if (positions.empty()) {
 			throw std::runtime_error("MeshRegistry::getDotObj: file contains no vertices: " + filepath);
 		}
 
-		if (mesh.faceIndices_.empty()) {
+		if (faceCorners.empty()) {
 			throw std::runtime_error("MeshRegistry::getDotObj: file contains no valid faces: " + filepath);
+		}
+
+		mesh.vertices_ = positions;
+		mesh.vertices_.reserve(positions.size() + faceCorners.size());
+
+		for (const ObjFaceVertex& corner : faceCorners) {
+			const EngineUtil::Vertex& position = positions[corner.positionIndex_];
+			float u = 0.0f;
+			float v = 0.0f;
+
+			if (corner.textureIndex_ >= 0) {
+				u = textureCoords[corner.textureIndex_].u_;
+				v = textureCoords[corner.textureIndex_].v_;
+			}
+
+			const unsigned int index = static_cast<unsigned int>(mesh.vertices_.size());
+			mesh.vertices_.push_back({ position.x_, position.y_, position.z_, u, v });
+			mesh.faceIndices_.push_back(index);
 		}
 
 		return mesh;

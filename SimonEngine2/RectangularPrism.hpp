@@ -5,13 +5,8 @@
 
 class RectangularPrism : public Primitive {
     public:
-        RectangularPrism() : RectangularPrism(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
-        RectangularPrism(
-            const EngineMath::Transform& localTransform,
-            const EngineUtil::ColorRGB& color,
-            const std::string& vertPath = "../Shaders/Basic.vert",
-            const std::string& fragPath = "../Shaders/Color.frag"
-        );
+        RectangularPrism() : RectangularPrism(EngineMath::Transform{}) {}
+        RectangularPrism(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {});
     
     private:
         virtual const void resolveMeshes() override;

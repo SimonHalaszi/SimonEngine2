@@ -26,7 +26,7 @@ void Limb::onStart() {
             EngineMath::Quaternion::identity(),
             halfSize
         ),
-        color_
+        EngineRender::Material(color_)
     );
     upperHalf_ = upperMesh.get();
     highJoint_->addChild(std::move(upperMesh));
@@ -42,7 +42,7 @@ void Limb::onStart() {
             EngineMath::Quaternion::identity(),
             halfSize
         ),
-        color_
+        EngineRender::Material(color_)
     );
     lowerHalf_ = lowerMesh.get();
     middleJoint_->addChild(std::move(lowerMesh));
@@ -51,10 +51,10 @@ void Limb::onStart() {
 void Limb::setColor(EngineUtil::ColorRGB color) {
     color_ = color;
     if (upperHalf_) {
-        upperHalf_->setColor(color);
+        upperHalf_->setMaterial(EngineRender::Material(color));
     }
     if (lowerHalf_) {
-        lowerHalf_->setColor(color);
+        lowerHalf_->setMaterial(EngineRender::Material(color));
     }
 }
 

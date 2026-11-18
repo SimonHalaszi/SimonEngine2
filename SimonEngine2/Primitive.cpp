@@ -1,21 +1,18 @@
 #include "Primitive.hpp"
 
-Primitive::Primitive(
-    const EngineMath::Transform& localTransform,
-    const EngineUtil::ColorRGB& color,
-    const std::string& vertPath,
-    const std::string& fragPath
-) {
-	vertPath_ = vertPath;
-	fragPath_ = fragPath;
+Primitive::Primitive(const EngineMath::Transform& localTransform, EngineRender::Material material)
+: material_(std::move(material)) {
 	localTransform_ = localTransform;
-    material_.color_ = color;
-	edgeMaterial_.color_ = { 255,255,255 };
+}
+
+void Primitive::setMaterial(EngineRender::Material material) {
+	material.init();
+	material_ = std::move(material);
 }
 
 void Primitive::onStart() {
-	material_.shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
-	edgeMaterial_.shader_ = Renderer::getInstance().getOrLoadShader("../Shaders/Basic.vert", "../Shaders/Color.frag");
+	material_.init();
+	edgeMaterial_.init();
 
 	resolveMeshes();
 }

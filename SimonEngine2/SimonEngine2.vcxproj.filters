@@ -150,9 +150,6 @@
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="StressTestScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="EngineShader.cpp">
       <Filter>Source Files\Library</Filter>
     </ClCompile>

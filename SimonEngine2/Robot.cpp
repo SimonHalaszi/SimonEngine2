@@ -34,7 +34,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(torsoWide, torsoTall, torsoThick)
         ),
-        color_
+        EngineRender::Material(color_)
     ));
 
     // Left Arm (Limb)
@@ -112,7 +112,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(headDiameter, headDiameter, headDiameter)
         ),
-        color_,
+        EngineRender::Material(color_),
         12,
         12
     ));
@@ -192,7 +192,7 @@ void Robot::setColor(EngineUtil::ColorRGB color) {
     for (auto& obj : children_) {
         Primitive* primitive = dynamic_cast<Primitive*>(obj.get());
         if (primitive) {
-            primitive->setColor(color);
+            primitive->setMaterial(EngineRender::Material(color));
         }
     }
 }

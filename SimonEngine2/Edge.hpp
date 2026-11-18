@@ -5,13 +5,8 @@
 
 class Edge : public Primitive {
     public:
-        Edge() : Edge(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
-        Edge(
-            const EngineMath::Transform& localTransform,
-            const EngineUtil::ColorRGB& color,
-            const std::string& vertPath = "../Shaders/Basic.vert",
-            const std::string& fragPath = "../Shaders/Color.frag"
-        );
+        Edge() : Edge(EngineMath::Transform{}) {}
+        Edge(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {});
 
         void draw() const override;
 

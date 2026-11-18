@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <map>
 #include <stdexcept>
 
 #include "EngineMath.hpp"
@@ -46,8 +47,10 @@ class Renderer {
 			GLint viewProjLocation_ = -1;
 			GLint modelLocation_ = -1;
 			GLint colorLocation_ = -1;
+			GLint textureLocation_ = -1;
 			GLint timeLocation_ = -1;
 			GLint resolutionLocation_ = -1;
+			GLint uvScaleLocation_ = -1;
 		};
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
@@ -58,6 +61,9 @@ class Renderer {
 		float passResolutionY_ = 1.0f;
 
 		std::unordered_map<std::string, ShaderProgram> programRegistry_;
+
+		mutable std::map<std::pair<GLenum, GLenum>, GLuint> samplerRegistry_;
+		GLuint getOrCreateSampler(GLenum wrapS, GLenum wrapT) const;
 
 		~Renderer() {}
 

@@ -5,15 +5,8 @@
 
 class Ellipsoid : public Primitive {
 	public:
-		Ellipsoid() : Ellipsoid(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
-		Ellipsoid(
-			const EngineMath::Transform& localTransform,
-			const EngineUtil::ColorRGB& color,
-			int slices = 3,
-			int stacks = 2,
-			const std::string& vertPath = "../Shaders/Basic.vert",
-			const std::string& fragPath = "../Shaders/Color.frag"
-		);
+		Ellipsoid() : Ellipsoid(EngineMath::Transform{}) {}
+		Ellipsoid(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, int slices = 3, int stacks = 2);
 
 	private:
 		int slices_;

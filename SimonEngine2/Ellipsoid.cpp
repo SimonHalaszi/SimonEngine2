@@ -2,18 +2,8 @@
 
 #include "MeshRegistry.hpp"
 
-Ellipsoid::Ellipsoid(
-	const EngineMath::Transform& localTransform,
-	const EngineUtil::ColorRGB& color,
-	int slices,
-	int stacks,
-	const std::string& vertPath,
-	const std::string& fragPath
-)
-: Primitive(localTransform, color, vertPath, fragPath) {
-	slices_ = slices;
-	stacks_ = stacks;
-}
+Ellipsoid::Ellipsoid(const EngineMath::Transform& localTransform, const EngineRender::Material& material, int slices, int stacks)
+	: Primitive(localTransform, material), slices_(slices), stacks_(stacks) {}
 
 const void Ellipsoid::resolveMeshes() {
 	mesh_ = MeshRegistry::getInstance().getEllipsoid(slices_, stacks_);

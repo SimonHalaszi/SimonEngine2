@@ -5,14 +5,8 @@
 
 class ObjMesh : public Primitive {
     public:
-        ObjMesh() : ObjMesh(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
-        ObjMesh(
-            const EngineMath::Transform& localTransform,
-            const EngineUtil::ColorRGB& color,
-            const std::string& dotObjfilePath = "../Assets/null.obj",
-            const std::string& vertPath = "../Shaders/Basic.vert",
-            const std::string& fragPath = "../Shaders/Color.frag"
-        );
+        ObjMesh() : ObjMesh(EngineMath::Transform{}) {}
+        ObjMesh(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, const std::string& dotObjfilePath = "../Assets/null.obj");
     
     private:
         std::string filepath_;

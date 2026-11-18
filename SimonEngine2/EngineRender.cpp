@@ -89,6 +89,9 @@ void EngineRender::upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh) 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(EngineUtil::Vertex), reinterpret_cast<void*>(0));
 
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(EngineUtil::Vertex), reinterpret_cast<void*>(offsetof(EngineUtil::Vertex, u_)));
+
 	// Face index buffer
 	if (!CPUMesh.faceIndices_.empty()) {
 		glGenBuffers(1, &outGPUMesh.faceIndexBuffer_);
@@ -115,4 +118,16 @@ void EngineRender::upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh) 
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+#include "Renderer.hpp"
+#include "TextureRegistry.hpp"
+
+void EngineRender::Material::init() {
+	shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);
+
+	albedoTexture_ = 0;
+	if (!albedoTexturePath_.empty()) {
+		albedoTexture_ = TextureRegistry::getInstance().loadTexture(albedoTexturePath_);
+	}
 }

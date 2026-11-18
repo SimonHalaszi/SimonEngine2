@@ -128,20 +128,6 @@ void Object::addChild(std::unique_ptr<Object> child) {
 	}
 }
 
-// Removes a child from any hierarchy (If you want it attached to scene as root do so yourself)
-// Just a public exposure of extractChild
-std::unique_ptr<Object> Object::orphanChild(Object* child) {
-	if (!child) {
-		throw std::invalid_argument("Object::orphanChild: child cannot be null");
-	}
-
-	if (child->parent_ != this) {
-		throw std::runtime_error("Object::orphanChild: object is not a direct child");
-	}
-
-	return extractChild(child);
-}
-
 // Gives a specific Child to another Object
 void Object::reparentChild(Object* child, Object* newParent) {
 	if (!child) {

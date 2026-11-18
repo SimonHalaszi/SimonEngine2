@@ -185,7 +185,6 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Ellipsoid.cpp" />
     <ClCompile Include="Edge.cpp" />
-    <ClCompile Include="StressTestScene.cpp" />
     <ClCompile Include="TextureRegistry.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -14,15 +14,38 @@
 #include "ObjMesh.hpp"
 
 void RobotScene::init() {
+    EngineRender::Material testTexture = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
+        "../Shaders/Basic.vert",
+        "../Shaders/Textured.frag",
+        "../Assets/Textures/test.png",
+        1.0f,
+        1.0f
+    );
+    EngineRender::Material testTexture2 = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
+        "../Shaders/Basic.vert",
+        "../Shaders/Textured.frag",
+        "../Assets/Textures/test2.png",
+        50.0f,
+        50.0f
+    );
+    
     addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(100.0f, 0.0f, 100.0f)
         ),
-        EngineUtil::ColorRGB(255, 255, 255),
+        testTexture2,
         4
     ));
+
+    EngineRender::Material bounceMaterial = EngineRender::Material(
+        EngineUtil::ColorRGB(100, 140, 220),
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    );
 
     addRootObject(std::make_unique<Edge>(
         EngineMath::Transform(
@@ -30,9 +53,15 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        testTexture
+    ));
+    addRootObject(std::make_unique<Edge>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial
     ));
 
     addRootObject(std::make_unique<Cone>(
@@ -41,10 +70,17 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
-        16,
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        testTexture,
+        16
+    ));
+    addRootObject(std::make_unique<Cone>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-6.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial,
+        16
     ));
 
     addRootObject(std::make_unique<Cylinder>(
@@ -53,10 +89,17 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
-        16,
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        testTexture,
+        16
+    ));
+    addRootObject(std::make_unique<Cylinder>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-3.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial,
+        16
     ));
 
     addRootObject(std::make_unique<Ellipsoid>(
@@ -65,11 +108,19 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
+        testTexture,
         16,
+        16
+    ));
+    addRootObject(std::make_unique<Ellipsoid>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial,
         16,
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        16
     ));
 
     addRootObject(std::make_unique<RectangularPrism>(
@@ -78,9 +129,15 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        testTexture
+    ));
+    addRootObject(std::make_unique<RectangularPrism>(
+        EngineMath::Transform(
+            EngineMath::Vector3(3.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial
     ));
 
     addRootObject(std::make_unique<Plane>(
@@ -89,10 +146,17 @@ void RobotScene::init() {
             EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f)),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
-        4,
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        testTexture,
+        4
+    ));
+    addRootObject(std::make_unique<Plane>(
+        EngineMath::Transform(
+            EngineMath::Vector3(6.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f)),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial,
+        4
     ));
 
     addRootObject(std::make_unique<ObjMesh>(
@@ -101,23 +165,31 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB(100, 140, 220),
-		"../Assets/teapot.obj",
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
+        testTexture,
+		"../Assets/Obj/house.obj"
+    ));
+    addRootObject(std::make_unique<ObjMesh>(
+        EngineMath::Transform(
+            EngineMath::Vector3(9.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(0.5f, 0.5f, 0.5f)
+        ),
+        bounceMaterial,
+        "../Assets/Obj/house.obj"
     ));
 
     // I wanted to learn the non srand, rand, time way
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> randomPos(-25.0f, 25.0f);
+    std::uniform_real_distribution<float> randomPosX(-25.0f, 25.0f);
+    std::uniform_real_distribution<float> randomPosY(10.0f, 25.0f);
     std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
     std::uniform_int_distribution<int> randomColor(0, 255);
 
     for (int i = 0; i < 25; ++i) {
         addRootObject(std::make_unique<Robot>(
             EngineMath::Transform(
-                EngineMath::Vector3(randomPos(gen), 2.25f, randomPos(gen)),
+                EngineMath::Vector3(randomPosX(gen), 2.25f, randomPosY(gen)),
                 EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(randomRotation(gen))),
                 EngineMath::Vector3(1.0f, 1.0f, 1.0f)
             ),

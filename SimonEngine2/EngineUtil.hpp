@@ -27,6 +27,7 @@ namespace EngineUtil {
 
 	struct Vertex {
 		float x_, y_, z_;
+		float u_, v_;
 	};
 
 	enum class Axis {

@@ -1,12 +1,7 @@
 #include "Edge.hpp"
 
-Edge::Edge(
-	const EngineMath::Transform& localTransform,
-	const EngineUtil::ColorRGB& color,
-	const std::string& vertPath,
-	const std::string& fragPath
-)
-: Primitive(localTransform, color, vertPath, fragPath) {}
+Edge::Edge(const EngineMath::Transform& localTransform, const EngineRender::Material& material)
+	: Primitive(localTransform, material) {}
 
 const void Edge::resolveMeshes() {
 	mesh_ = MeshRegistry::getInstance().getEdge();

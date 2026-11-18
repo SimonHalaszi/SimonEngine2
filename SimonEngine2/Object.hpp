@@ -38,7 +38,6 @@ class Object {
 		void updateWorldTransform();
 
 		void addChild(std::unique_ptr<Object> child); // Attaches a child to a GameObject
-		std::unique_ptr<Object> orphanChild(Object* child);
 		void reparentChild(Object* child, Object* newParent);
 
 		const std::vector<std::unique_ptr<Object>>& getChildren() const { return children_; }

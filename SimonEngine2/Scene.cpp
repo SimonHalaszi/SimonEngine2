@@ -33,6 +33,7 @@ void Scene::sceneDeInit() {
 
 	MeshRegistry::getInstance().clear();
 	Renderer::getInstance().clear();
+	TextureRegistry::getInstance().clearRegistry();
 }
 
 void Scene::sceneDraw() const {

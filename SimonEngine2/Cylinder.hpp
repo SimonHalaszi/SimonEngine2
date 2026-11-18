@@ -5,14 +5,8 @@
 
 class Cylinder : public Primitive {
     public:
-        Cylinder() : Cylinder(EngineMath::Transform{}, EngineUtil::ColorRGB{}) {}
-        Cylinder(
-            const EngineMath::Transform& localTransform,
-            const EngineUtil::ColorRGB& color,
-            int slices = 3,
-            const std::string& vertPath = "../Shaders/Basic.vert",
-            const std::string& fragPath = "../Shaders/Color.frag"
-        );
+        Cylinder() : Cylinder(EngineMath::Transform{}) {}
+        Cylinder(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, int slices = 3);
 
     private:
         int slices_;

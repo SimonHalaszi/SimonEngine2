@@ -17,7 +17,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineUtil::ColorRGB{ 102, 102, 102 },
+        EngineRender::Material(EngineUtil::ColorRGB{ 102, 102, 102 }),
         16,
         16
     ));
@@ -30,7 +30,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB{ 255, 0, 0 }
+        EngineRender::Material(EngineUtil::ColorRGB{ 255, 0, 0 })
     ));
     first->addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -38,7 +38,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB{ 255, 115, 0 }
+        EngineRender::Material(EngineUtil::ColorRGB{ 255, 115, 0 })
     ));
     first->addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -46,7 +46,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB{ 255, 255, 0 }
+        EngineRender::Material(EngineUtil::ColorRGB{ 255, 255, 0 })
     ));
     first->addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -54,7 +54,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB{ 255, 255, 255 }
+        EngineRender::Material(EngineUtil::ColorRGB{ 255, 255, 255 })
     ));
     first->addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -62,7 +62,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB{ 0, 60, 255 }
+        EngineRender::Material(EngineUtil::ColorRGB{ 0, 60, 255 })
     ));
     first->addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -70,7 +70,7 @@ void MagicCube::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
-        EngineUtil::ColorRGB{ 26, 255, 0 }
+        EngineRender::Material(EngineUtil::ColorRGB{ 26, 255, 0 })
     ));
 }
 

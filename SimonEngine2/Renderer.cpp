@@ -2,34 +2,36 @@
 #include "Camera.hpp"
 
 void Renderer::loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath) {
-	if (programRegistry_.find(name) != programRegistry_.end()) {
-		throw std::runtime_error("Renderer::loadShader: shader name already registered: " + name);
-	}
+    if (programRegistry_.find(name) != programRegistry_.end()) {
+        throw std::runtime_error("Renderer::loadShader: shader name already registered: " + name);
+    }
 
-	ShaderProgram program;
-	program.id_ = EngineShader::loadProgram(vertPath, fragPath);
+    ShaderProgram program;
+    program.id_ = EngineShader::loadProgram(vertPath, fragPath);
 
-	if (program.id_ == 0) {
-		throw std::runtime_error("Renderer::loadShader: failed to load shader: " + name);
-	}
+    if (program.id_ == 0) {
+        throw std::runtime_error("Renderer::loadShader: failed to load shader: " + name);
+    }
 
-	try {
-		program.viewProjLocation_ = glGetUniformLocation(program.id_, "uViewProjection");
-		program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
-		program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
-		program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
-		program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
+    try {
+        program.viewProjLocation_ = glGetUniformLocation(program.id_, "uViewProjection");
+        program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
+        program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
+        program.textureLocation_ = glGetUniformLocation(program.id_, "uTexture");
+        program.uvScaleLocation_ = glGetUniformLocation(program.id_, "uUvScale");
+        program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
+        program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
 
-		if (program.viewProjLocation_ == -1 || program.modelLocation_ == -1) {
-			throw std::runtime_error("Renderer::loadShader: shader must use uViewProjection and uModel: " + name);
-		}
+        if (program.viewProjLocation_ == -1 || program.modelLocation_ == -1) {
+            throw std::runtime_error("Renderer::loadShader: shader must use uViewProjection and uModel: " + name);
+        }
 
-		programRegistry_.emplace(name, program);
-	}
-	catch (...) {
-		glDeleteProgram(program.id_);
-		throw;
-	}
+        programRegistry_.emplace(name, program);
+    }
+    catch (...) {
+        glDeleteProgram(program.id_);
+        throw;
+    }
 }
 
 bool Renderer::beginPass(
@@ -64,6 +66,10 @@ bool Renderer::beginPass(
 void Renderer::endPass() {
 	glBindVertexArray(0);
 	glUseProgram(0);
+
+	glBindSampler(0, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	resetBindingCache();
 	passActive_ = false;
@@ -112,7 +118,6 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 			glUniform2f(program.resolutionLocation_, passResolutionX_, passResolutionY_);
 		}
 
-
 		boundProgram_ = program.id_;
 	}
 
@@ -121,6 +126,23 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 	if (program.colorLocation_ != -1) {
 		glUniform4f(program.colorLocation_, material.color_.r_, material.color_.g_, material.color_.b_, 1.0f);
 	}
+
+	if (program.uvScaleLocation_ != -1) {
+		glUniform2f(program.uvScaleLocation_, material.uvScaleU_, material.uvScaleV_);
+	}
+
+	if (program.textureLocation_ != -1) {
+		glUniform1i(program.textureLocation_, 0);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, material.albedoTexture_);
+
+	GLuint sampler = 0;
+	if (material.albedoTexture_ != 0) {
+		sampler = getOrCreateSampler(material.wrapS_, material.wrapT_);
+	}
+	glBindSampler(0, sampler);
 
 	if (mesh.vao_ != boundVAO_) {
 		glBindVertexArray(mesh.vao_);
@@ -146,14 +168,58 @@ std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::st
 	return key;
 }
 
+GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
+	auto validWrap = [](GLenum wrap) {
+		return wrap == GL_REPEAT || wrap == GL_MIRRORED_REPEAT || wrap == GL_CLAMP_TO_EDGE;
+		};
+
+	if (!validWrap(wrapS) || !validWrap(wrapT)) {
+		throw std::invalid_argument("Renderer::getOrCreateSampler: unsupported wrap mode");
+	}
+
+	const auto key = std::make_pair(wrapS, wrapT);
+	auto it = samplerRegistry_.find(key);
+	if (it != samplerRegistry_.end()) {
+		return it->second;
+	}
+
+	GLuint sampler = 0;
+	glGenSamplers(1, &sampler);
+
+	if (sampler == 0) {
+		throw std::runtime_error("Renderer::getOrCreateSampler: failed to create sampler");
+	}
+
+	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, wrapS);
+	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, wrapT);
+	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	try {
+		samplerRegistry_.emplace(key, sampler);
+	}
+	catch (...) {
+		glDeleteSamplers(1, &sampler);
+		throw;
+	}
+
+	return sampler;
+}
+
 void Renderer::clear() {
 	glUseProgram(0);
+	glBindSampler(0, 0);
 
 	for (const auto& entry : programRegistry_) {
 		glDeleteProgram(entry.second.id_);
 	}
-
 	programRegistry_.clear();
+
+	for (const auto& entry : samplerRegistry_) {
+		glDeleteSamplers(1, &entry.second);
+	}
+	samplerRegistry_.clear();
+
 	resetBindingCache();
 	passActive_ = false;
 }
