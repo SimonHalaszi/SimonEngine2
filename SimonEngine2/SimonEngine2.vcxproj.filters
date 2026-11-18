@@ -162,6 +162,9 @@
     <ClCompile Include="EngineRender.cpp">
       <Filter>Source Files\Library</Filter>
     </ClCompile>
+    <ClCompile Include="TextureRegistry.cpp">
+      <Filter>Source Files\Registries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="EngineRender.hpp">
       <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureRegistry.hpp">
+      <Filter>Header Files\Registries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
