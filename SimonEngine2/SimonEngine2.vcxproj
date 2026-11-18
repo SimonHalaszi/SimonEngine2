@@ -148,7 +148,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)include\glad\;$(ProjectDir)include\KHR\;$(ProjectDir)include\FreeImage\;$(ProjectDir)include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Platform);$(ProjectDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Platform);$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(CoreLibraryDependencies);%(AdditionalDependencies);freeglut_static;freeglut_staticd;FreeImage</AdditionalDependencies>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(CoreLibraryDependencies);%(AdditionalDependencies);freeglut_static;freeglut_staticd;FreeImage</AdditionalDependencies>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(CoreLibraryDependencies);%(AdditionalDependencies);freeglut_static.lib;freeglut_staticd.lib;FreeImage.lib</AdditionalDependencies>
@@ -160,6 +160,7 @@
     <ClCompile Include="EngineRender.cpp" />
     <ClCompile Include="EngineShader.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Limb.cpp" />
     <ClCompile Include="MagicCubeScene.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="EngineRender.hpp" />
     <ClInclude Include="EngineShader.hpp" />
     <ClInclude Include="GraphicsAPI.hpp" />
+    <ClInclude Include="Light.hpp" />
     <ClInclude Include="Limb.hpp" />
     <ClInclude Include="MagicCubeScene.hpp" />
     <ClInclude Include="Plane.hpp" />

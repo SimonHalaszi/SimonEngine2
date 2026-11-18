@@ -166,7 +166,7 @@ void RobotScene::init() {
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
         testTexture,
-		"../Assets/Obj/house.obj"
+		"../Assets/Objs/house.obj"
     ));
     addRootObject(std::make_unique<ObjMesh>(
         EngineMath::Transform(
@@ -175,7 +175,7 @@ void RobotScene::init() {
             EngineMath::Vector3(0.5f, 0.5f, 0.5f)
         ),
         bounceMaterial,
-        "../Assets/Obj/house.obj"
+        "../Assets/Objs/house.obj"
     ));
 
     // I wanted to learn the non srand, rand, time way

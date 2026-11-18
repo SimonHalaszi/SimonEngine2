@@ -55,8 +55,7 @@ void Scene::sceneUpdate() {
 
 	isCurrentlyUpdating_ = false;
 
-	for (auto it = rootObjects_.begin();
-		it != rootObjects_.end();) {
+	for (auto it = rootObjects_.begin(); it != rootObjects_.end();) {
 		Object* rootObject = it->get();
 
 		if (!rootObject->isAlive()) {
@@ -87,4 +86,16 @@ void Scene::processPendingRootObjects() {
 	}
 
 	pendingRootObjects_.clear();
+}
+
+void Scene::addLight(Light* light) {
+	lightObjects_.push_back(light);
+}
+
+void Scene::removeLight(Light* light) {
+	for (auto it = lightObjects_.begin(); it != lightObjects_.end(); ++it) {
+		if (light == *it) {
+			lightObjects_.erase(it);
+		}
+	}
 }

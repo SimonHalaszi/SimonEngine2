@@ -76,6 +76,18 @@
     <Filter Include="Source Files\Library">
       <UniqueIdentifier>{060d438b-55ce-4490-bddf-461bfd81e65b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects\Lights">
+      <UniqueIdentifier>{03707db7-087f-4a1f-9787-5631b75836c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Lights\Source">
+      <UniqueIdentifier>{44461ee0-c899-4a2b-a8a9-31f45a0a97ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Lights">
+      <UniqueIdentifier>{69ce672b-641d-4ec1-9316-3c378b837fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Lights\Source">
+      <UniqueIdentifier>{a9b87a60-39ae-4087-ad7f-4c48d62f96dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -161,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="TextureRegistry.cpp">
       <Filter>Source Files\Registries</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Objects\Lights\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="TextureRegistry.hpp">
       <Filter>Header Files\Registries</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.hpp">
+      <Filter>Header Files\Objects\Lights\Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

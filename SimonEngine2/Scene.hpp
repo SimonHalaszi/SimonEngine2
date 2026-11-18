@@ -6,6 +6,7 @@
 
 #include "WindowConstants.hpp"
 #include "Object.hpp"
+#include "Light.hpp"
 #include "Camera.hpp"
 
 #include "MeshRegistry.hpp"
@@ -56,6 +57,9 @@ class Scene {
 		Camera& getCamera() { return camera_; }
 		const Camera& getCamera() const { return camera_; }
 
+		void addLight(Light* light);
+		void removeLight(Light* light);
+
 	protected:
 		// Scene specific functionalities handled here. GameObjects are updated AUTOMATICALLY based on per GameObject logic
 		virtual void init() {} // Scene specific init (Stuff not attached to GameObjects)
@@ -68,6 +72,9 @@ class Scene {
 		// Scene root GameObjects
 		std::vector<std::unique_ptr<Object>> rootObjects_;
 		std::vector<std::unique_ptr<Object>> pendingRootObjects_;
+		
+		// Non-owning vector to keep track of all light objects so that they can be handled first in rendering pass
+		std::vector<Light*> lightObjects_;
 
 		bool isDrawing_ = true, isUpdating_ = true, isUpdatingAnimations_ = true, pauseFlag_ = false;
 
