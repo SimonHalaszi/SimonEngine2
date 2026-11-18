@@ -7,6 +7,7 @@
 #include <cstddef>
 
 #include "EngineUtil.hpp"
+#include "EngineMath.hpp"
 #include "GraphicsAPI.hpp"
 
 namespace EngineRender {
@@ -91,6 +92,25 @@ namespace EngineRender {
 	};
 
 	void upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh);
+
+	enum class LightType {
+		Directional,
+		Point,
+		Spot
+	};
+
+	struct LightData {
+		LightType type_ = LightType::Directional;
+		EngineUtil::ColorRGB color_;
+		float intensity_ = 1.0f;
+
+		EngineMath::Vector3 position_;
+		EngineMath::Vector3 direction_ = { 0.0f, 0.0f, -1.0f };
+
+		float range_ = 10.0f;
+		float innerConeCos_ = 1.0f;
+		float outerConeCos_ = 1.0f;
+	};
 }
 
 #endif 

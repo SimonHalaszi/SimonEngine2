@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <map>
 #include <stdexcept>
+#include <vector>
+#include <array>
 
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
@@ -32,6 +34,7 @@ class Renderer {
 		void endPass();
 
 		void drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode = DrawMode::Solid) const;
+		void submitLight(const EngineRender::LightData& light);
 
 		void clear();
 
@@ -42,6 +45,35 @@ class Renderer {
 	private:
 		Renderer() = default;
 
+		static constexpr int maxDirectionalLights_ = 2;
+
+		struct DirectionalLightLocations {
+			GLint direction_ = -1;
+			GLint color_ = -1;
+			GLint intensity_ = -1;
+		};
+
+		static constexpr int maxPointLights_ = 8;
+
+		struct PointLightLocations {
+			GLint position_ = -1;
+			GLint color_ = -1;
+			GLint intensity_ = -1;
+			GLint range_ = -1;
+		};
+
+		static constexpr int maxSpotLights_ = 8;
+
+		struct SpotLightLocations {
+			GLint position_ = -1;
+			GLint direction_ = -1;
+			GLint color_ = -1;
+			GLint intensity_ = -1;
+			GLint range_ = -1;
+			GLint innerConeCos_ = -1;
+			GLint outerConeCos_ = -1;
+		};
+
 		struct ShaderProgram {
 			GLuint id_ = 0;
 			GLint viewProjLocation_ = -1;
@@ -51,7 +83,20 @@ class Renderer {
 			GLint timeLocation_ = -1;
 			GLint resolutionLocation_ = -1;
 			GLint uvScaleLocation_ = -1;
+
+			GLint hasTextureLocation_ = -1;
+
+			GLint directionalLightCountLocation_ = -1;
+			std::array<DirectionalLightLocations, maxDirectionalLights_> directionalLightLocations_;
+
+			GLint pointLightCountLocation_ = -1;
+			std::array<PointLightLocations, maxPointLights_> pointLightLocations_;
+
+			GLint spotLightCountLocation_ = -1;
+			std::array<SpotLightLocations, maxSpotLights_> spotLightLocations_;
 		};
+
+		void uploadLights(const ShaderProgram& program) const;
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
 		bool passActive_ = false;
@@ -64,6 +109,8 @@ class Renderer {
 
 		mutable std::map<std::pair<GLenum, GLenum>, GLuint> samplerRegistry_;
 		GLuint getOrCreateSampler(GLenum wrapS, GLenum wrapT) const;
+
+		std::vector<EngineRender::LightData> lights_;
 
 		~Renderer() {}
 

@@ -13,7 +13,45 @@
 #include "RectangularPrism.hpp"
 #include "ObjMesh.hpp"
 
+#include "DirectionalLight.hpp"
+#include "PointLight.hpp"
+#include "SpotLight.hpp"
+
 void RobotScene::init() {
+    addRootObject(std::make_unique<DirectionalLight>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-155.0f)),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        ),
+        EngineUtil::ColorRGB(255, 0, 0),
+        0.4f
+    ));
+
+    addRootObject(std::make_unique<PointLight>(
+        EngineMath::Transform(
+            EngineMath::Vector3(4.0f, 4.0f, -23.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        ),
+        EngineUtil::ColorRGB(0, 255, 0),
+        1.0f,
+        11.0f
+    ));
+
+    addRootObject(std::make_unique<SpotLight>(
+        EngineMath::Transform(
+            EngineMath::Vector3(-4.0f, 6.5f, -21.5f),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-45.0f)),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        ),
+        EngineUtil::ColorRGB(0, 0, 255),
+        1.0f,
+        14.0f,
+        26.0f,
+        42.0f
+    ));
+
     EngineRender::Material testTexture = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         "../Shaders/Basic.vert",
@@ -22,22 +60,30 @@ void RobotScene::init() {
         1.0f,
         1.0f
     );
-    EngineRender::Material testTexture2 = EngineRender::Material(
+    EngineRender::Material testTextureGray = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
-        "../Shaders/Basic.vert",
-        "../Shaders/Textured.frag",
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
         "../Assets/Textures/test2.png",
         50.0f,
         50.0f
+    );
+    EngineRender::Material testTextureLit = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
+        "../Assets/Textures/test.png",
+        1.0f,
+        1.0f
     );
     
     addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(100.0f, 0.0f, 100.0f)
+            EngineMath::Vector3(100.0f, 1.0f, 100.0f)
         ),
-        testTexture2,
+        testTextureGray,
         4
     ));
 
@@ -47,136 +93,30 @@ void RobotScene::init() {
         "../Shaders/Bounce.frag"
     );
 
-    addRootObject(std::make_unique<Edge>(
+    buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 2.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testTexture
-    ));
-    addRootObject(std::make_unique<Edge>(
+        testTextureLit
+    );
+    buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 5.0f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
         bounceMaterial
-    ));
-
-    addRootObject(std::make_unique<Cone>(
+    );
+    buildDemo(
         EngineMath::Transform(
-            EngineMath::Vector3(-6.0f, 2.5f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testTexture,
-        16
-    ));
-    addRootObject(std::make_unique<Cone>(
-        EngineMath::Transform(
-            EngineMath::Vector3(-6.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        bounceMaterial,
-        16
-    ));
-
-    addRootObject(std::make_unique<Cylinder>(
-        EngineMath::Transform(
-            EngineMath::Vector3(-3.0f, 2.5f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testTexture,
-        16
-    ));
-    addRootObject(std::make_unique<Cylinder>(
-        EngineMath::Transform(
-            EngineMath::Vector3(-3.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        bounceMaterial,
-        16
-    ));
-
-    addRootObject(std::make_unique<Ellipsoid>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 2.5f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testTexture,
-        16,
-        16
-    ));
-    addRootObject(std::make_unique<Ellipsoid>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        bounceMaterial,
-        16,
-        16
-    ));
-
-    addRootObject(std::make_unique<RectangularPrism>(
-        EngineMath::Transform(
-            EngineMath::Vector3(3.0f, 2.5f, -25.5f),
+            EngineMath::Vector3(-9.0f, 7.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
         testTexture
-    ));
-    addRootObject(std::make_unique<RectangularPrism>(
-        EngineMath::Transform(
-            EngineMath::Vector3(3.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        bounceMaterial
-    ));
-
-    addRootObject(std::make_unique<Plane>(
-        EngineMath::Transform(
-            EngineMath::Vector3(6.0f, 2.5f, -25.5f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f)),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testTexture,
-        4
-    ));
-    addRootObject(std::make_unique<Plane>(
-        EngineMath::Transform(
-            EngineMath::Vector3(6.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f)),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        bounceMaterial,
-        4
-    ));
-
-    addRootObject(std::make_unique<ObjMesh>(
-        EngineMath::Transform(
-            EngineMath::Vector3(9.0f, 2.5f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(0.5f, 0.5f, 0.5f)
-        ),
-        testTexture,
-		"../Assets/Objs/house.obj"
-    ));
-    addRootObject(std::make_unique<ObjMesh>(
-        EngineMath::Transform(
-            EngineMath::Vector3(9.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(0.5f, 0.5f, 0.5f)
-        ),
-        bounceMaterial,
-        "../Assets/Objs/house.obj"
-    ));
+    );
 
     // I wanted to learn the non srand, rand, time way
     std::random_device rd;
@@ -239,4 +179,63 @@ void RobotScene::draw() const {
 
 void RobotScene::deInit() {
 
+}
+
+void RobotScene::buildDemo(EngineMath::Transform transform, EngineRender::Material material) {
+    addRootObject(std::make_unique<Edge>(
+        transform,
+        material
+    ));
+
+    transform.position_.x_ += 3.0f;
+
+    addRootObject(std::make_unique<Cone>(
+        transform,
+        material,
+        16
+    ));
+
+    transform.position_.x_ += 3.0f;
+
+    addRootObject(std::make_unique<Cylinder>(
+        transform,
+        material,
+        16
+    ));
+
+    transform.position_.x_ += 3.0f;
+
+    addRootObject(std::make_unique<Ellipsoid>(
+        transform,
+        material,
+        16,
+        16
+    ));
+
+    transform.position_.x_ += 3.0f;
+
+    addRootObject(std::make_unique<RectangularPrism>(
+        transform,
+        material
+    ));
+
+    transform.position_.x_ += 3.0f;
+    transform.scale_.y_ = 1.0f;
+    transform.rotation_ = EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(45.0f));
+
+    addRootObject(std::make_unique<Plane>(
+        transform,
+        material,
+        4
+    ));
+
+    transform.position_.x_ += 3.0f;
+    transform.scale_ = EngineMath::Vector3(0.5f, 0.5f, 0.5f);
+    transform.rotation_ = EngineMath::Quaternion::identity();
+
+    addRootObject(std::make_unique<ObjMesh>(
+        transform,
+        material,
+        "../Assets/Objs/house.obj"
+    ));
 }

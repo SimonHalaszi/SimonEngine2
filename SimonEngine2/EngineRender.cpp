@@ -89,8 +89,13 @@ void EngineRender::upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh) 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(EngineUtil::Vertex), reinterpret_cast<void*>(0));
 
+	// Attribute 1 = vec2 texture coordinates
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(EngineUtil::Vertex), reinterpret_cast<void*>(offsetof(EngineUtil::Vertex, u_)));
+
+	// Attribute 2 = vec3 normal
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(EngineUtil::Vertex), reinterpret_cast<void*>(offsetof(EngineUtil::Vertex, nx_)));
 
 	// Face index buffer
 	if (!CPUMesh.faceIndices_.empty()) {

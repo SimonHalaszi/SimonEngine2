@@ -12,14 +12,23 @@
 class Light : public Object {
 	public:
 		Light() = default;
-		Light(const EngineMath::Transform& localTransform) { localTransform_ = localTransform; };
+		Light(const EngineMath::Transform& localTransform, const EngineUtil::ColorRGB& color = {}, float intensity = 1.0f)
+			: color_(color), intensity_(intensity) {
+			localTransform_ = localTransform;
+		}
 
 		void draw() const override final {};
 		void update() override final {};
 
-		virtual void sendLightInfo() const = 0;
+		void setColor(const EngineUtil::ColorRGB& color) { color_ = color; }
+		void setIntensity(float intensity) { intensity_ = intensity; }
+
+		virtual void submitLightInfo() const = 0;
 
 	protected:
+		EngineUtil::ColorRGB color_;
+		float intensity_ = 1.0f;
+
 		void onStart() override;
 		void onDestruction() override;
 };

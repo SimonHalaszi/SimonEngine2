@@ -37,6 +37,12 @@ void Scene::sceneDeInit() {
 }
 
 void Scene::sceneDraw() const {
+	for (Light* light : lightObjects_) {
+		if (light->isAlive()) {
+			light->submitLightInfo();
+		}
+	}
+
 	draw();
 
 	for (auto& rootObject : rootObjects_) {
@@ -96,6 +102,7 @@ void Scene::removeLight(Light* light) {
 	for (auto it = lightObjects_.begin(); it != lightObjects_.end(); ++it) {
 		if (light == *it) {
 			lightObjects_.erase(it);
+			return;
 		}
 	}
 }

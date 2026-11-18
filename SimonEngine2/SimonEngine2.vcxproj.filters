@@ -88,6 +88,12 @@
     <Filter Include="Source Files\Objects\Lights\Source">
       <UniqueIdentifier>{a9b87a60-39ae-4087-ad7f-4c48d62f96dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects\Custom">
+      <UniqueIdentifier>{e4321493-c5e6-47ea-bcd0-074a821c3c2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Custom">
+      <UniqueIdentifier>{173efc0c-faac-4f73-9b34-3532afc64014}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -111,9 +117,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="MagicCube.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="RectangularPrism.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
@@ -123,17 +126,11 @@
     <ClCompile Include="Edge.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="AxisDisplay.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Cylinder.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="Cone.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="Robot.cpp">
-      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
       <Filter>Source Files\Objects\Primitives\Source</Filter>
@@ -153,12 +150,6 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files\glad</Filter>
     </ClCompile>
-    <ClCompile Include="Limb.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraMan.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
@@ -176,6 +167,30 @@
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\Objects\Lights\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicCube.cpp">
+      <Filter>Source Files\Objects\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>Source Files\Objects\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisDisplay.cpp">
+      <Filter>Source Files\Objects\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraMan.cpp">
+      <Filter>Source Files\Objects\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="Limb.cpp">
+      <Filter>Source Files\Objects\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files\Objects\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files\Objects\Lights</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,12 +221,6 @@
     <ClInclude Include="Camera.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="MagicCube.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="AxisDisplay.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="RectangularPrism.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
@@ -227,9 +236,6 @@
     <ClInclude Include="Cone.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="Robot.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Primitive.hpp">
       <Filter>Header Files\Objects\Primitives\Source</Filter>
     </ClInclude>
@@ -244,12 +250,6 @@
     </ClInclude>
     <ClInclude Include="MeshRegistry.hpp">
       <Filter>Header Files\Registries</Filter>
-    </ClInclude>
-    <ClInclude Include="Limb.hpp">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraMan.hpp">
-      <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Plane.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
@@ -274,6 +274,30 @@
     </ClInclude>
     <ClInclude Include="Light.hpp">
       <Filter>Header Files\Objects\Lights\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.hpp">
+      <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisDisplay.hpp">
+      <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraMan.hpp">
+      <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="Limb.hpp">
+      <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicCube.hpp">
+      <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.hpp">
+      <Filter>Header Files\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.hpp">
+      <Filter>Header Files\Objects\Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.hpp">
+      <Filter>Header Files\Objects\Lights</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

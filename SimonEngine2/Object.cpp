@@ -53,9 +53,9 @@ void Object::rootDraw() {
 		return;
 	}
 
-	if (isWorldTransformOutDated_) {
-		updateWorldTransform();
-	}
+	//if (isWorldTransformOutDated_) {
+	//	updateWorldTransform();
+	//}
 
 	draw();
 

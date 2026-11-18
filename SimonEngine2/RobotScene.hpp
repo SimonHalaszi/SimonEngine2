@@ -29,6 +29,8 @@ class RobotScene : public Scene {
 		virtual void update() override final;
 
 		virtual void deInit() override final;
+
+		void buildDemo(EngineMath::Transform transform, EngineRender::Material material);
 };
 
 #endif

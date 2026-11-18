@@ -2,44 +2,79 @@
 #include "Camera.hpp"
 
 void Renderer::loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath) {
-    if (programRegistry_.find(name) != programRegistry_.end()) {
-        throw std::runtime_error("Renderer::loadShader: shader name already registered: " + name);
-    }
+	if (programRegistry_.find(name) != programRegistry_.end()) {
+		throw std::runtime_error("Renderer::loadShader: shader name already registered: " + name);
+	}
 
-    ShaderProgram program;
-    program.id_ = EngineShader::loadProgram(vertPath, fragPath);
+	ShaderProgram program;
+	program.id_ = EngineShader::loadProgram(vertPath, fragPath);
 
-    if (program.id_ == 0) {
-        throw std::runtime_error("Renderer::loadShader: failed to load shader: " + name);
-    }
+	if (program.id_ == 0) {
+		throw std::runtime_error("Renderer::loadShader: failed to load shader: " + name);
+	}
 
-    try {
-        program.viewProjLocation_ = glGetUniformLocation(program.id_, "uViewProjection");
-        program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
-        program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
-        program.textureLocation_ = glGetUniformLocation(program.id_, "uTexture");
-        program.uvScaleLocation_ = glGetUniformLocation(program.id_, "uUvScale");
-        program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
-        program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
+	try {
+		program.viewProjLocation_ = glGetUniformLocation(program.id_, "uViewProjection");
+		program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
+		program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
+		program.textureLocation_ = glGetUniformLocation(program.id_, "uTexture");
+		program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
+		program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
+		program.uvScaleLocation_ = glGetUniformLocation(program.id_, "uUvScale");
+		program.hasTextureLocation_ = glGetUniformLocation(program.id_, "uHasTexture");
 
-        if (program.viewProjLocation_ == -1 || program.modelLocation_ == -1) {
-            throw std::runtime_error("Renderer::loadShader: shader must use uViewProjection and uModel: " + name);
-        }
+		program.directionalLightCountLocation_ = glGetUniformLocation(program.id_, "uDirectionalLightCount");
+		for (int i = 0; i < maxDirectionalLights_; ++i) {
+			const std::string prefix = "uDirectionalLights[" + std::to_string(i) + "].";
+			auto& locations = program.directionalLightLocations_[i];
 
-        programRegistry_.emplace(name, program);
-    }
-    catch (...) {
-        glDeleteProgram(program.id_);
-        throw;
-    }
+			locations.direction_ = glGetUniformLocation(program.id_, (prefix + "direction").c_str());
+			locations.color_ = glGetUniformLocation(program.id_, (prefix + "color").c_str());
+			locations.intensity_ = glGetUniformLocation(program.id_, (prefix + "intensity").c_str());
+		}
+
+		program.pointLightCountLocation_ = glGetUniformLocation(program.id_, "uPointLightCount");
+		if (program.pointLightCountLocation_ != -1) {
+			for (int i = 0; i < maxPointLights_; ++i) {
+				const std::string prefix = "uPointLights[" + std::to_string(i) + "].";
+				auto& locations = program.pointLightLocations_[i];
+
+				locations.position_ = glGetUniformLocation(program.id_, (prefix + "position").c_str());
+				locations.color_ = glGetUniformLocation(program.id_, (prefix + "color").c_str());
+				locations.intensity_ = glGetUniformLocation(program.id_, (prefix + "intensity").c_str());
+				locations.range_ = glGetUniformLocation(program.id_, (prefix + "range").c_str());
+			}
+		}
+
+		program.spotLightCountLocation_ = glGetUniformLocation(program.id_, "uSpotLightCount");
+		if (program.spotLightCountLocation_ != -1) {
+			for (int i = 0; i < maxSpotLights_; ++i) {
+				const std::string prefix = "uSpotLights[" + std::to_string(i) + "].";
+				auto& locations = program.spotLightLocations_[i];
+
+				locations.position_ = glGetUniformLocation(program.id_, (prefix + "position").c_str());
+				locations.direction_ = glGetUniformLocation(program.id_, (prefix + "direction").c_str());
+				locations.color_ = glGetUniformLocation(program.id_, (prefix + "color").c_str());
+				locations.intensity_ = glGetUniformLocation(program.id_, (prefix + "intensity").c_str());
+				locations.range_ = glGetUniformLocation(program.id_, (prefix + "range").c_str());
+				locations.innerConeCos_ = glGetUniformLocation(program.id_, (prefix + "innerConeCos").c_str());
+				locations.outerConeCos_ = glGetUniformLocation(program.id_, (prefix + "outerConeCos").c_str());
+			}
+		}
+
+		if (program.viewProjLocation_ == -1 || program.modelLocation_ == -1) {
+			throw std::runtime_error("Renderer::loadShader: shader must use uViewProjection and uModel: " + name);
+		}
+
+		programRegistry_.emplace(name, program);
+	}
+	catch (...) {
+		glDeleteProgram(program.id_);
+		throw;
+	}
 }
 
-bool Renderer::beginPass(
-	const Camera& camera,
-	int x, int y,
-	int width, int height,
-	float time
-) {
+bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int height, float time) {
 	if (passActive_) {
 		throw std::logic_error("Renderer::beginPass: a pass is already active");
 	}
@@ -51,13 +86,13 @@ bool Renderer::beginPass(
 	const float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 	viewProjection_ = camera.getViewProjectionMatrix(aspect);
-
 	passTime_ = time;
 	passResolutionX_ = static_cast<float>(width);
 	passResolutionY_ = static_cast<float>(height);
 
 	glViewport(x, y, width, height);
 
+	lights_.clear();
 	resetBindingCache();
 	passActive_ = true;
 	return true;
@@ -118,6 +153,8 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 			glUniform2f(program.resolutionLocation_, passResolutionX_, passResolutionY_);
 		}
 
+		uploadLights(program);
+
 		boundProgram_ = program.id_;
 	}
 
@@ -129,6 +166,10 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 
 	if (program.uvScaleLocation_ != -1) {
 		glUniform2f(program.uvScaleLocation_, material.uvScaleU_, material.uvScaleV_);
+	}
+
+	if (program.hasTextureLocation_ != -1) {
+		glUniform1i(program.hasTextureLocation_, material.albedoTexture_ != 0 ? GL_TRUE : GL_FALSE);
 	}
 
 	if (program.textureLocation_ != -1) {
@@ -166,6 +207,85 @@ std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::st
 	}
 
 	return key;
+}
+
+void Renderer::uploadLights(const ShaderProgram& program) const {
+	const bool hasDirectionalLights = program.directionalLightCountLocation_ != -1;
+	const bool hasPointLights = program.pointLightCountLocation_ != -1;
+	const bool hasSpotLights = program.spotLightCountLocation_ != -1;
+
+	if (!hasDirectionalLights && !hasPointLights && !hasSpotLights) {
+		return;
+	}
+
+	int directionalLightCount = 0;
+	int pointLightCount = 0;
+	int spotLightCount = 0;
+
+	for (const EngineRender::LightData& light : lights_) {
+		if (light.type_ == EngineRender::LightType::Directional) {
+			++directionalLightCount;
+		}
+		else if (light.type_ == EngineRender::LightType::Point) {
+			++pointLightCount;
+		}
+		else if (light.type_ == EngineRender::LightType::Spot) {
+			++spotLightCount;
+		}
+	}
+
+	if (hasDirectionalLights && directionalLightCount > maxDirectionalLights_) {
+		throw std::runtime_error("Renderer::uploadLights: directional light count exceeds shader capacity");
+	}
+	if (hasPointLights && pointLightCount > maxPointLights_) {
+		throw std::runtime_error("Renderer::uploadLights: point light count exceeds shader capacity");
+	}
+	if (hasSpotLights && spotLightCount > maxSpotLights_) {
+		throw std::runtime_error("Renderer::uploadLights: spotlight count exceeds shader capacity");
+	}
+
+	int directionalIndex = 0;
+	int pointIndex = 0;
+	int spotIndex = 0;
+
+	for (const EngineRender::LightData& light : lights_) {
+		if (hasDirectionalLights && light.type_ == EngineRender::LightType::Directional) {
+			const auto& locations = program.directionalLightLocations_[directionalIndex++];
+
+			glUniform3f(locations.direction_, light.direction_.x_, light.direction_.y_, light.direction_.z_);
+			glUniform3f(locations.color_, light.color_.r_, light.color_.g_, light.color_.b_);
+			glUniform1f(locations.intensity_, light.intensity_);
+		}
+		else if (hasPointLights && light.type_ == EngineRender::LightType::Point) {
+			const auto& locations = program.pointLightLocations_[pointIndex++];
+
+			glUniform3f(locations.position_, light.position_.x_, light.position_.y_, light.position_.z_);
+			glUniform3f(locations.color_, light.color_.r_, light.color_.g_, light.color_.b_);
+			glUniform1f(locations.intensity_, light.intensity_);
+			glUniform1f(locations.range_, light.range_);
+		}
+		else if (hasSpotLights && light.type_ == EngineRender::LightType::Spot) {
+			const auto& locations = program.spotLightLocations_[spotIndex++];
+
+			glUniform3f(locations.position_, light.position_.x_, light.position_.y_, light.position_.z_);
+			glUniform3f(locations.direction_, light.direction_.x_, light.direction_.y_, light.direction_.z_);
+			glUniform3f(locations.color_, light.color_.r_, light.color_.g_, light.color_.b_);
+			glUniform1f(locations.intensity_, light.intensity_);
+			glUniform1f(locations.range_, light.range_);
+			glUniform1f(locations.innerConeCos_, light.innerConeCos_);
+			glUniform1f(locations.outerConeCos_, light.outerConeCos_);
+		}
+	}
+
+	if (hasDirectionalLights) {
+		glUniform1i(program.directionalLightCountLocation_, directionalLightCount);
+	}
+	if (hasPointLights) {
+		glUniform1i(program.pointLightCountLocation_, pointLightCount);
+	}
+	if (hasSpotLights) {
+		glUniform1i(program.spotLightCountLocation_, spotLightCount);
+	}
 }
 
 GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
@@ -222,4 +342,12 @@ void Renderer::clear() {
 
 	resetBindingCache();
 	passActive_ = false;
+}
+
+void Renderer::submitLight(const EngineRender::LightData& light) {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::submitLight: no active render pass");
+	}
+
+	lights_.push_back(light);
 }
