@@ -27,6 +27,15 @@ Robot::Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB c
 }
 
 void Robot::onStart() {
+    EngineRender::Material material = EngineRender::Material(
+        color_,
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
+        "../Assets/Textures/test.png",
+        1.0f,
+        1.0f
+    );
+
     // Body
     addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -34,7 +43,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(torsoWide, torsoTall, torsoThick)
         ),
-        EngineRender::Material(color_)
+        material
     ));
 
     // Left Arm (Limb)
@@ -112,7 +121,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(headDiameter, headDiameter, headDiameter)
         ),
-        EngineRender::Material(color_),
+        material,
         12,
         12
     ));

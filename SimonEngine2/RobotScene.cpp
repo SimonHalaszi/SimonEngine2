@@ -21,11 +21,11 @@ void RobotScene::init() {
     addRootObject(std::make_unique<DirectionalLight>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-155.0f)),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-120.0f)),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineUtil::ColorRGB(255, 0, 0),
-        0.4f
+        EngineUtil::ColorRGB(255, 255, 255),
+        0.7f
     ));
 
     addRootObject(std::make_unique<PointLight>(

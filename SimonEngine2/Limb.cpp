@@ -12,6 +12,15 @@ Limb::Limb(
 }
 
 void Limb::onStart() {
+    EngineRender::Material material = EngineRender::Material(
+        color_,
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
+        "../Assets/Textures/test.png",
+        1.0f,
+        1.0f
+    );
+
     std::unique_ptr<Object> highJoint = std::make_unique<Object>();
     highJoint->setPosition(EngineMath::Vector3(0.0f, size_.y_ * 0.5f, 0.0f));
     highJoint_ = highJoint.get();
@@ -26,7 +35,7 @@ void Limb::onStart() {
             EngineMath::Quaternion::identity(),
             halfSize
         ),
-        EngineRender::Material(color_)
+        material
     );
     upperHalf_ = upperMesh.get();
     highJoint_->addChild(std::move(upperMesh));
@@ -42,7 +51,7 @@ void Limb::onStart() {
             EngineMath::Quaternion::identity(),
             halfSize
         ),
-        EngineRender::Material(color_)
+        material
     );
     lowerHalf_ = lowerMesh.get();
     middleJoint_->addChild(std::move(lowerMesh));
