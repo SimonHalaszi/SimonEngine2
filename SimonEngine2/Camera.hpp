@@ -18,6 +18,7 @@ class Camera {
 		void setPosition(const EngineMath::Vector3& position);
 		void setTarget(const EngineMath::Vector3& target);
 		void setTransform(const EngineMath::Transform& transform);
+		const EngineMath::Vector3& getPosition() const { return position_; }
 
 		EngineMath::Matrix4 getViewMatrix() const;
 		EngineMath::Matrix4 getProjectionMatrix(float aspectRatio) const;

@@ -21,11 +21,11 @@ void RobotScene::init() {
     addRootObject(std::make_unique<DirectionalLight>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-120.0f)),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB(255, 255, 255),
-        0.7f
+        2.0f
     ));
 
     addRootObject(std::make_unique<PointLight>(
@@ -35,7 +35,7 @@ void RobotScene::init() {
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB(0, 255, 0),
-        1.0f,
+        5.0f,
         11.0f
     ));
 
@@ -46,7 +46,7 @@ void RobotScene::init() {
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB(0, 0, 255),
-        1.0f,
+        5.0f,
         14.0f,
         26.0f,
         42.0f
@@ -54,27 +54,53 @@ void RobotScene::init() {
 
     EngineRender::Material testTexture = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
+        0.5f,
+        0.0f,
         "../Shaders/Basic.vert",
         "../Shaders/Textured.frag",
-        "../Assets/Textures/test.png",
-        1.0f,
-        1.0f
+        "../Assets/Textures/test.png"
     );
     EngineRender::Material testTextureGray = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
+        0.5f,
+        0.0f,
         "../Shaders/Lit.vert",
         "../Shaders/Lit.frag",
         "../Assets/Textures/test2.png",
+        {},
+        {},
+        {},
         50.0f,
         50.0f
     );
     EngineRender::Material testTextureLit = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
+        0.5f,
+        0.0f,
         "../Shaders/Lit.vert",
         "../Shaders/Lit.frag",
-        "../Assets/Textures/test.png",
+        "../Assets/Textures/test.png"
+    );
+    EngineRender::Material testNormalRoughness = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
         1.0f,
-        1.0f
+        0.0f,
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
+        "../Assets/Textures/greenTile.png",
+        "../Assets/Textures/greenTileNormal.png",
+        "../Assets/Textures/greenTileRoughness.png"
+    );
+    EngineRender::Material testNormalMetalness = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
+        1.0f,
+        0.25f,
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
+        "../Assets/Textures/metalColor.png",
+        "../Assets/Textures/metalNormal.png",
+        "../Assets/Textures/metalRoughness.png",
+        "../Assets/Textures/metalMetalness.png"
     );
     
     addRootObject(std::make_unique<Plane>(
@@ -89,6 +115,8 @@ void RobotScene::init() {
 
     EngineRender::Material bounceMaterial = EngineRender::Material(
         EngineUtil::ColorRGB(100, 140, 220),
+        0.5f,
+        0.0f,
         "../Shaders/Basic.vert",
         "../Shaders/Bounce.frag"
     );
@@ -107,7 +135,7 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        bounceMaterial
+        testNormalRoughness
     );
     buildDemo(
         EngineMath::Transform(
@@ -115,8 +143,25 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
+        testNormalMetalness
+    );
+    buildDemo(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 10.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial
+    );
+    buildDemo(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 12.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
         testTexture
     );
+
 
     // I wanted to learn the non srand, rand, time way
     std::random_device rd;

@@ -14,11 +14,10 @@ Limb::Limb(
 void Limb::onStart() {
     EngineRender::Material material = EngineRender::Material(
         color_,
+        0.5f,
+        0.0f,
         "../Shaders/Lit.vert",
-        "../Shaders/Lit.frag",
-        "../Assets/Textures/test.png",
-        1.0f,
-        1.0f
+        "../Shaders/Lit.frag"
     );
 
     std::unique_ptr<Object> highJoint = std::make_unique<Object>();

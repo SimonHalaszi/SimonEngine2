@@ -80,11 +80,19 @@ class Renderer {
 			GLint modelLocation_ = -1;
 			GLint colorLocation_ = -1;
 			GLint textureLocation_ = -1;
+			GLint normalTextureLocation_ = -1;
+			GLint roughnessTextureLocation_ = -1;
+			GLint metallicTextureLocation_ = -1;
 			GLint timeLocation_ = -1;
 			GLint resolutionLocation_ = -1;
 			GLint uvScaleLocation_ = -1;
-
 			GLint hasTextureLocation_ = -1;
+			GLint hasNormalTextureLocation_ = -1;
+			GLint hasRoughnessTextureLocation_ = -1;
+			GLint hasMetallicTextureLocation_ = -1;
+			GLint roughnessLocation_ = -1;
+			GLint metallicLocation_ = -1;
+			GLint viewPositionLocation_ = -1;
 
 			GLint directionalLightCountLocation_ = -1;
 			std::array<DirectionalLightLocations, maxDirectionalLights_> directionalLightLocations_;
@@ -99,6 +107,7 @@ class Renderer {
 		void uploadLights(const ShaderProgram& program) const;
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
+		EngineMath::Vector3 viewPosition_;
 		bool passActive_ = false;
 
 		float passTime_ = 0.0f;

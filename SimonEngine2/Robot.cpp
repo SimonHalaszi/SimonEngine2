@@ -29,11 +29,10 @@ Robot::Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB c
 void Robot::onStart() {
     EngineRender::Material material = EngineRender::Material(
         color_,
+        0.5f,
+        0.0f,
         "../Shaders/Lit.vert",
-        "../Shaders/Lit.frag",
-        "../Assets/Textures/test.png",
-        1.0f,
-        1.0f
+        "../Shaders/Lit.frag"
     );
 
     // Body

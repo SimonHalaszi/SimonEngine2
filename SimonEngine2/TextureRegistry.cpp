@@ -8,15 +8,13 @@ GLuint TextureRegistry::loadTexture(std::string filepath) {
 		return it->second;
 	}
 
-	void* imgData = nullptr; // Pointer to image color data read from the file.
-	int imgWidth = 0; // The width of the image that was read.
-	int imgHeight = 0; // The height.
 	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filepath.c_str());
 	if (format == FIF_UNKNOWN) {
 		std::cout << "TextureRegistry::loadTexture : Unknown file path type for texture image file " << filepath << std::endl;
 		return 0;
 	}
-	FIBITMAP* imageFile = FreeImage_Load(format, filepath.c_str(), 0); // Read image from file.
+
+	FIBITMAP* imageFile = FreeImage_Load(format, filepath.c_str(), 0);
 	if (!imageFile) {
 		std::cout << "TextureRegistry::loadTexture : Failed to load image " << filepath << std::endl;
 		return 0;
@@ -25,36 +23,43 @@ GLuint TextureRegistry::loadTexture(std::string filepath) {
 	FIBITMAP* image32bit = FreeImage_ConvertTo32Bits(imageFile);
 	FreeImage_Unload(imageFile);
 
+	if (!image32bit) {
+		std::cout << "TextureRegistry::loadTexture : Failed to convert image " << filepath << std::endl;
+		return 0;
+	}
+
 	int width = FreeImage_GetWidth(image32bit);
 	int height = FreeImage_GetHeight(image32bit);
+	BYTE* pixels = FreeImage_GetBits(image32bit);
 
-	BYTE* pixels = FreeImage_GetBits(image32bit); // Internal pixel data of image32bit
+	if (!pixels || width <= 0 || height <= 0) {
+		std::cout << "TextureRegistry::loadTexture : Invalid texture data from file path " << filepath << std::endl;
+		FreeImage_Unload(image32bit);
+		return 0;
+	}
 
-	GLuint texID;
+	GLuint texID = 0;
 	glGenTextures(1, &texID);
+
+	if (texID == 0) {
+		std::cout << "TextureRegistry::loadTexture : Failed to create texture for " << filepath << std::endl;
+		FreeImage_Unload(image32bit);
+		return 0;
+	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glBindTexture(GL_TEXTURE_2D, texID);
-
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if (pixels) {
-		std::cout << "TextureRegistry::loadTexture : Texture image loaded from file path " << filepath << " " << width << " X " << height << std::endl;
+	FreeImage_Unload(image32bit);
 
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	}
-	else {
-		std::cout << "TextureRegistry::loadTexture : Failed to get texture data from file path " << filepath << std::endl;
-	}
+	std::cout << "TextureRegistry::loadTexture : Texture image loaded from file path " << filepath << " " << width << " X " << height << std::endl;
 
-	FreeImage_Unload(image32bit); // Also cleans up pixels
-
-	// Get added to textureMap registry
 	textureMap_[filepath] = texID;
-	// Also returned
 	return texID;
 }
 

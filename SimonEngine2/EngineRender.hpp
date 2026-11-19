@@ -66,27 +66,44 @@ namespace EngineRender {
 		std::string vertPath_;
 		std::string fragPath_;
 		std::string albedoTexturePath_;
+		std::string normalTexturePath_;
+		std::string roughnessTexturePath_;
+		std::string metallicTexturePath_;
 
 		std::string shader_;
 		GLuint albedoTexture_ = 0;
+		GLuint normalTexture_ = 0;
+		GLuint roughnessTexture_ = 0;
+		GLuint metallicTexture_ = 0;
 		float uvScaleU_ = 1.0f;
 		float uvScaleV_ = 1.0f;
+		float roughness_ = 0.5f;
+		float metallic_ = 0.0f;
 		GLenum wrapS_ = GL_REPEAT;
 		GLenum wrapT_ = GL_REPEAT;
 
 		Material(
 			const EngineUtil::ColorRGB& color = { 255, 255, 255 },
+			float roughness = 0.5f,
+			float metallic = 0.0f,
 			const std::string& vertPath = "../Shaders/Basic.vert",
 			const std::string& fragPath = "../Shaders/Color.frag",
 			const std::string& albedoTexturePath = {},
+			const std::string& normalTexturePath = {},
+			const std::string& roughnessTexturePath = {},
+			const std::string& metallicTexturePath = {},
 			float scaleU = 1.0f,
 			float scaleV = 1.0f,
 			GLenum wrapS = GL_REPEAT,
 			GLenum wrapT = GL_REPEAT
 		)
-			: color_(color), vertPath_(vertPath), fragPath_(fragPath), albedoTexturePath_(albedoTexturePath),
-			uvScaleU_(scaleU), uvScaleV_(scaleV), wrapS_(wrapS), wrapT_(wrapT) {
-		}
+			: 
+			color_(color), roughness_(roughness), metallic_(metallic),
+			vertPath_(vertPath), fragPath_(fragPath),
+			albedoTexturePath_(albedoTexturePath), normalTexturePath_(normalTexturePath),
+			roughnessTexturePath_(roughnessTexturePath), metallicTexturePath_(metallicTexturePath),
+			uvScaleU_(scaleU), uvScaleV_(scaleV), wrapS_(wrapS), wrapT_(wrapT) 
+		{}
 
 		void init();
 	};

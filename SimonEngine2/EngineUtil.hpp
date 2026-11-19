@@ -31,6 +31,10 @@ namespace EngineUtil {
 		float nx_ = 0.0f;
 		float ny_ = 0.0f;
 		float nz_ = 0.0f;
+		float tx_ = 0.0f;
+		float ty_ = 0.0f;
+		float tz_ = 0.0f;
+		float tw_ = 1.0f;
 	};
 
 	enum class Axis {

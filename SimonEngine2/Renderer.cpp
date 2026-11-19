@@ -18,10 +18,19 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 		program.modelLocation_ = glGetUniformLocation(program.id_, "uModel");
 		program.colorLocation_ = glGetUniformLocation(program.id_, "uColor");
 		program.textureLocation_ = glGetUniformLocation(program.id_, "uTexture");
+		program.normalTextureLocation_ = glGetUniformLocation(program.id_, "uNormalTexture");
+		program.roughnessTextureLocation_ = glGetUniformLocation(program.id_, "uRoughnessTexture");
+		program.metallicTextureLocation_ = glGetUniformLocation(program.id_, "uMetallicTexture");
 		program.timeLocation_ = glGetUniformLocation(program.id_, "uTime");
 		program.resolutionLocation_ = glGetUniformLocation(program.id_, "uResolution");
 		program.uvScaleLocation_ = glGetUniformLocation(program.id_, "uUvScale");
 		program.hasTextureLocation_ = glGetUniformLocation(program.id_, "uHasTexture");
+		program.hasNormalTextureLocation_ = glGetUniformLocation(program.id_, "uHasNormalTexture");
+		program.hasRoughnessTextureLocation_ = glGetUniformLocation(program.id_, "uHasRoughnessTexture");
+		program.hasMetallicTextureLocation_ = glGetUniformLocation(program.id_, "uHasMetallicTexture");
+		program.roughnessLocation_ = glGetUniformLocation(program.id_, "uRoughness");
+		program.metallicLocation_ = glGetUniformLocation(program.id_, "uMetallic");
+		program.viewPositionLocation_ = glGetUniformLocation(program.id_, "uViewPosition");
 
 		program.directionalLightCountLocation_ = glGetUniformLocation(program.id_, "uDirectionalLightCount");
 		for (int i = 0; i < maxDirectionalLights_; ++i) {
@@ -86,6 +95,7 @@ bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int heig
 	const float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 	viewProjection_ = camera.getViewProjectionMatrix(aspect);
+	viewPosition_ = camera.getPosition();
 	passTime_ = time;
 	passResolutionX_ = static_cast<float>(width);
 	passResolutionY_ = static_cast<float>(height);
@@ -102,9 +112,12 @@ void Renderer::endPass() {
 	glBindVertexArray(0);
 	glUseProgram(0);
 
-	glBindSampler(0, 0);
+	for (GLuint unit = 0; unit < 4; ++unit) {
+		glBindSampler(unit, 0);
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 
 	resetBindingCache();
 	passActive_ = false;
@@ -145,6 +158,10 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 		glUseProgram(program.id_);
 		glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, viewProjection_.data());
 
+		if (program.viewPositionLocation_ != -1) {
+			glUniform3f(program.viewPositionLocation_, viewPosition_.x_, viewPosition_.y_, viewPosition_.z_);
+		}
+
 		if (program.timeLocation_ != -1) {
 			glUniform1f(program.timeLocation_, passTime_);
 		}
@@ -176,14 +193,56 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 		glUniform1i(program.textureLocation_, 0);
 	}
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, material.albedoTexture_);
+	if (program.hasNormalTextureLocation_ != -1) {
+		glUniform1i(program.hasNormalTextureLocation_, material.normalTexture_ != 0 ? GL_TRUE : GL_FALSE);
+	}
+
+	if (program.normalTextureLocation_ != -1) {
+		glUniform1i(program.normalTextureLocation_, 1);
+	}
+
+	if (program.hasRoughnessTextureLocation_ != -1) {
+		glUniform1i(program.hasRoughnessTextureLocation_, material.roughnessTexture_ != 0 ? GL_TRUE : GL_FALSE);
+	}
+
+	if (program.roughnessTextureLocation_ != -1) {
+		glUniform1i(program.roughnessTextureLocation_, 2);
+	}
+
+	if (program.hasMetallicTextureLocation_ != -1) {
+		glUniform1i(program.hasMetallicTextureLocation_, material.metallicTexture_ != 0 ? GL_TRUE : GL_FALSE);
+	}
+
+	if (program.metallicTextureLocation_ != -1) {
+		glUniform1i(program.metallicTextureLocation_, 3);
+	}
+
+	if (program.roughnessLocation_ != -1) {
+		glUniform1f(program.roughnessLocation_, material.roughness_);
+	}
+
+	if (program.metallicLocation_ != -1) {
+		glUniform1f(program.metallicLocation_, material.metallic_);
+	}
+
+	const GLuint textures[] = {
+		material.albedoTexture_,
+		material.normalTexture_,
+		material.roughnessTexture_,
+		material.metallicTexture_
+	};
 
 	GLuint sampler = 0;
-	if (material.albedoTexture_ != 0) {
-		sampler = getOrCreateSampler(material.wrapS_, material.wrapT_);
+	for (GLuint unit = 0; unit < 4; ++unit) {
+		if (textures[unit] != 0 && sampler == 0) {
+			sampler = getOrCreateSampler(material.wrapS_, material.wrapT_);
+		}
+
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, textures[unit]);
+		glBindSampler(unit, textures[unit] != 0 ? sampler : 0);
 	}
-	glBindSampler(0, sampler);
+	glActiveTexture(GL_TEXTURE0);
 
 	if (mesh.vao_ != boundVAO_) {
 		glBindVertexArray(mesh.vao_);
@@ -312,8 +371,24 @@ GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
 
 	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, wrapS);
 	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, wrapT);
-	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	const bool supportsAnisotropy =
+		glutExtensionSupported("GL_EXT_texture_filter_anisotropic") ||
+		glutExtensionSupported("GL_ARB_texture_filter_anisotropic");
+
+	if (supportsAnisotropy) {
+		// These extension constants are absent from the bundled GLAD header.
+		constexpr GLenum textureMaxAnisotropy = 0x84FE;
+		constexpr GLenum maxTextureMaxAnisotropy = 0x84FF;
+
+		GLfloat maximumAnisotropy = 1.0f;
+		glGetFloatv(maxTextureMaxAnisotropy, &maximumAnisotropy);
+
+		const GLfloat anisotropy = maximumAnisotropy < 8.0f ? maximumAnisotropy : 8.0f;
+		glSamplerParameterf(sampler, textureMaxAnisotropy, anisotropy);
+	}
 
 	try {
 		samplerRegistry_.emplace(key, sampler);

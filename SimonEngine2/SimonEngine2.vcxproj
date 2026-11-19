@@ -163,7 +163,6 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Limb.cpp" />
-    <ClCompile Include="MagicCubeScene.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -176,12 +175,10 @@
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="MagicCube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshRegistry.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjMesh.cpp" />
-    <ClCompile Include="ObjScene.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="RectangularPrism.cpp" />
     <ClCompile Include="Robot.cpp" />
@@ -200,7 +197,6 @@
     <ClInclude Include="GraphicsAPI.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Limb.hpp" />
-    <ClInclude Include="MagicCubeScene.hpp" />
     <ClInclude Include="Plane.hpp" />
     <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Renderer.hpp" />
@@ -212,18 +208,15 @@
     <ClInclude Include="EngineMath.hpp" />
     <ClInclude Include="EngineUtil.hpp" />
     <ClInclude Include="InputManager.hpp" />
-    <ClInclude Include="MagicCube.hpp" />
     <ClInclude Include="MeshRegistry.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjMesh.hpp" />
-    <ClInclude Include="ObjScene.hpp" />
     <ClInclude Include="Primitive.hpp" />
     <ClInclude Include="RectangularPrism.hpp" />
     <ClInclude Include="Robot.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Ellipsoid.hpp" />
     <ClInclude Include="SpotLight.hpp" />
-    <ClInclude Include="StressTestScene.hpp" />
     <ClInclude Include="TextureRegistry.hpp" />
     <ClInclude Include="WindowConstants.hpp" />
     <ClInclude Include="Edge.hpp" />

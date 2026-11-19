@@ -138,12 +138,6 @@
     <ClCompile Include="ObjMesh.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="ObjScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="MagicCubeScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="MeshRegistry.cpp">
       <Filter>Source Files\Registries</Filter>
     </ClCompile>
@@ -167,9 +161,6 @@
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\Objects\Lights\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="MagicCube.cpp">
-      <Filter>Source Files\Objects\Custom</Filter>
     </ClCompile>
     <ClCompile Include="Robot.cpp">
       <Filter>Source Files\Objects\Custom</Filter>
@@ -242,20 +233,11 @@
     <ClInclude Include="ObjMesh.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="ObjScene.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="MagicCubeScene.hpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="MeshRegistry.hpp">
       <Filter>Header Files\Registries</Filter>
     </ClInclude>
     <ClInclude Include="Plane.hpp">
       <Filter>Header Files\Objects\Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="StressTestScene.hpp">
-      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="EngineShader.hpp">
       <Filter>Header Files\Library</Filter>
@@ -285,9 +267,6 @@
       <Filter>Header Files\Objects\Custom</Filter>
     </ClInclude>
     <ClInclude Include="Limb.hpp">
-      <Filter>Header Files\Objects\Custom</Filter>
-    </ClInclude>
-    <ClInclude Include="MagicCube.hpp">
       <Filter>Header Files\Objects\Custom</Filter>
     </ClInclude>
     <ClInclude Include="DirectionalLight.hpp">
