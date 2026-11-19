@@ -81,7 +81,7 @@ void RobotScene::init() {
         "../Shaders/Lit.frag",
         "../Assets/Textures/test.png"
     );
-    EngineRender::Material testNormalRoughness = EngineRender::Material(
+    EngineRender::Material testNormal = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         1.0f,
         0.0f,
@@ -91,13 +91,23 @@ void RobotScene::init() {
         "../Assets/Textures/greenTileNormal.png",
         "../Assets/Textures/greenTileRoughness.png"
     );
+    EngineRender::Material testNormalRoughness = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
+        1.0f,
+        0.0f,
+        "../Shaders/Lit.vert",
+        "../Shaders/Lit.frag",
+        "../Assets/Textures/ice.png",
+        "../Assets/Textures/iceNormal.png",
+        "../Assets/Textures/iceRoughness.png"
+    );
     EngineRender::Material testNormalMetalness = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         1.0f,
         0.25f,
         "../Shaders/Lit.vert",
         "../Shaders/Lit.frag",
-        "../Assets/Textures/metalColor.png",
+        "../Assets/Textures/metal.png",
         "../Assets/Textures/metalNormal.png",
         "../Assets/Textures/metalRoughness.png",
         "../Assets/Textures/metalMetalness.png"
@@ -135,7 +145,7 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testNormalRoughness
+        testNormal
     );
     buildDemo(
         EngineMath::Transform(
@@ -143,7 +153,7 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testNormalMetalness
+        testNormalRoughness
     );
     buildDemo(
         EngineMath::Transform(
@@ -151,11 +161,19 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        bounceMaterial
+        testNormalMetalness
     );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 12.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        bounceMaterial
+    );
+    buildDemo(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 15.0f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
