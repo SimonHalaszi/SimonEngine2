@@ -17,12 +17,12 @@ class Primitive : public Object {
 		Primitive() = default;
 		Primitive(const EngineMath::Transform& localTransform, EngineRender::Material material);
 
-		void draw() const override;
-		void update() override final;
-
 		void setMaterial(EngineRender::Material material);
 
 	protected:
+		void draw() const override;
+		void update() override final;
+
 		bool drawAsSolid_ = true;
 		
 		const EngineUtil::Mesh* mesh_ = nullptr;

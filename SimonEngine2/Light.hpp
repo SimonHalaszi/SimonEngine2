@@ -17,19 +17,20 @@ class Light : public Object {
 			localTransform_ = localTransform;
 		}
 
-		void draw() const override final {};
-		void update() override final {};
-
 		void setColor(const EngineUtil::ColorRGB& color) { color_ = color; }
 		void setIntensity(float intensity) { intensity_ = intensity; }
 
 		virtual void submitLightInfo() const = 0;
 
 	protected:
+		void draw() const override final {};
+		void update() override final {};
+
 		EngineUtil::ColorRGB color_;
 		float intensity_ = 1.0f;
 
 		void onStart() override;
 		void onDestruction() override;
 };
+
 #endif

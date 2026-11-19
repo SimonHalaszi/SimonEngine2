@@ -11,11 +11,11 @@ class Robot : public Object {
 	public:
 		Robot() = default;
 		Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB color);
+		void toggleAnimation() { isAnimating_ = !isAnimating_; }
 
+	protected:
 		void onStart() override final;
 		void update() override final;
-
-		void setColor(EngineUtil::ColorRGB);
 
 	private:
 		Limb* leftArm_ = nullptr;
@@ -23,6 +23,8 @@ class Robot : public Object {
 		Limb* leftLeg_ = nullptr;
 		Limb* rightLeg_ = nullptr;
 		EngineUtil::ColorRGB color_;
+
+		bool isAnimating_;
 
 		float rotationStep_;
 };

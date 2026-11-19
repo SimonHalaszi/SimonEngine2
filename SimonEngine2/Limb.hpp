@@ -7,37 +7,36 @@
 #include "Primitive.hpp"
 
 class Limb : public Object {
-public:
-    Limb() = default;
-    Limb(
-        const EngineMath::Transform& localTransform,
-        EngineUtil::ColorRGB color,
-        const EngineMath::Vector3& size
-    );
+    public:
+        Limb() = default;
+        Limb(
+            const EngineMath::Transform& localTransform,
+            EngineUtil::ColorRGB color,
+            const EngineMath::Vector3& size
+        );
 
-    void onStart() override final;
-    void update() override final {}
+        void onStart() override final;
+        void update() override final {}
 
-    void setColor(EngineUtil::ColorRGB color);
+        // Shoulder / Pelvis joint
+        void pivotHigh(float radians);
+        void setHighAngle(float radians);
+        // Elbow / Knee joint
+        void pivotMiddle(float radians);
+        void setMiddleAngle(float radians);
 
-    // Shoulder / Pelvis joint
-    void pivotHigh(float radians);
+    private:
+        Object* highJoint_ = nullptr;
+        Object* middleJoint_ = nullptr;
 
-    // Elbow / Knee joint
-    void pivotMiddle(float radians);
+        Primitive* upperHalf_ = nullptr;
+        Primitive* lowerHalf_ = nullptr;
 
-private:
-    Object* highJoint_ = nullptr;
-    Object* middleJoint_ = nullptr;
+        EngineMath::Vector3 size_ = { 1.0f, 1.0f, 1.0f };
+        EngineUtil::ColorRGB color_;
 
-    Primitive* upperHalf_ = nullptr;
-    Primitive* lowerHalf_ = nullptr;
-
-    EngineMath::Vector3 size_ = { 1.0f, 1.0f, 1.0f };
-    EngineUtil::ColorRGB color_;
-
-    float highAngle_ = 0.0f;
-    float middleAngle_ = 0.0f;
+        float highAngle_ = 0.0f;
+        float middleAngle_ = 0.0f;
 };
 
 #endif

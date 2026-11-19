@@ -56,16 +56,6 @@ void Limb::onStart() {
     middleJoint_->addChild(std::move(lowerMesh));
 }
 
-void Limb::setColor(EngineUtil::ColorRGB color) {
-    color_ = color;
-    if (upperHalf_) {
-        upperHalf_->setMaterial(EngineRender::Material(color));
-    }
-    if (lowerHalf_) {
-        lowerHalf_->setMaterial(EngineRender::Material(color));
-    }
-}
-
 void Limb::pivotHigh(float radians) {
     if (!highJoint_) {
         return;
@@ -77,6 +67,10 @@ void Limb::pivotHigh(float radians) {
     );
 }
 
+void Limb::setHighAngle(float radians) {
+    pivotHigh(radians - highAngle_);
+}
+
 void Limb::pivotMiddle(float radians) {
     if (!middleJoint_) {
         return;
@@ -86,4 +80,8 @@ void Limb::pivotMiddle(float radians) {
     middleJoint_->setRotation(
         EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), middleAngle_)
     );
+}
+
+void Limb::setMiddleAngle(float radians) {
+    pivotMiddle(radians - middleAngle_);
 }

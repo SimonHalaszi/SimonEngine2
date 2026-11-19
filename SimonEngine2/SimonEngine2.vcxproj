@@ -163,6 +163,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Limb.cpp" />
+    <ClCompile Include="PathedParent.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="GraphicsAPI.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Limb.hpp" />
+    <ClInclude Include="PathedParent.hpp" />
     <ClInclude Include="Plane.hpp" />
     <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Renderer.hpp" />

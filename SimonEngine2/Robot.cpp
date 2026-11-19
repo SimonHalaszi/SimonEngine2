@@ -1,5 +1,7 @@
 #include "Robot.hpp"
 
+#include <cmath>
+
 #include "Engine.hpp"
 
 #include "Limb.hpp"
@@ -21,6 +23,7 @@ namespace {
 }
 
 Robot::Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB color) {
+    isAnimating_ = true;
     localTransform_ = localTransform;
     color_ = color;
     rotationStep_ = 5.0f;
@@ -127,80 +130,44 @@ void Robot::onStart() {
 }
 
 void Robot::update() {
-    if (InputManager::getInstance().isPressed('4')) {
-        if (leftArm_) {
-            leftArm_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
-        }
-        if (rightArm_) {
-            rightArm_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
-        }
-    }
-    if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F4))) {
-        if (leftArm_) {
-            leftArm_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
-        }
-        if (rightArm_) {
-            rightArm_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
-        }
+    const Scene* scene = Engine::getInstance().getCurrentScene();
+    if (!scene) {
+        return;
     }
 
-    if (InputManager::getInstance().isPressed('5')) {
+    if (InputManager::getInstance().isPressed('a')) {
+        toggleAnimation();
+    }
+
+    if (isAnimating_) {
+        constexpr int framesPerCycle = 12;
+        const float maxSwing = EngineMath::degreesToRadians(45.0f);
+        const float maxBend = EngineMath::degreesToRadians(45.0f);
+
+        const float phase = 2.0f * EngineMath::PI * (scene->getAnimationFrame() % framesPerCycle) / framesPerCycle;
+        const float swing = std::sin(phase);
+
+        const float leftBend = maxBend * (swing > 0.0f ? swing : 0.0f);
+        const float rightBend = maxBend * (swing < 0.0f ? -swing : 0.0f);
+
         if (leftArm_) {
-            leftArm_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
+            leftArm_->setHighAngle(maxSwing * swing);
+            leftArm_->setMiddleAngle(leftBend);
         }
+
+        if (rightLeg_) {
+            rightLeg_->setHighAngle(maxSwing * swing);
+            rightLeg_->setMiddleAngle(-leftBend);
+        }
+
         if (rightArm_) {
-            rightArm_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
+            rightArm_->setHighAngle(-maxSwing * swing);
+            rightArm_->setMiddleAngle(rightBend);
         }
-    }
-    if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F5))) {
-        if (leftArm_) {
-            leftArm_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
-        }
-        if (rightArm_) {
-            rightArm_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
-        }
-    }
 
-    if (InputManager::getInstance().isPressed('7')) {
         if (leftLeg_) {
-            leftLeg_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
-        }
-        if (rightLeg_) {
-            rightLeg_->pivotMiddle(EngineMath::degreesToRadians(rotationStep_));
-        }
-    }
-    if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F7))) {
-        if (leftLeg_) {
-            leftLeg_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
-        }
-        if (rightLeg_) {
-            rightLeg_->pivotMiddle(EngineMath::degreesToRadians(-rotationStep_));
-        }
-    }
-
-    if (InputManager::getInstance().isPressed('6')) {
-        if (leftLeg_) {
-            leftLeg_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
-        }
-        if (rightLeg_) {
-            rightLeg_->pivotHigh(EngineMath::degreesToRadians(rotationStep_));
-        }
-    }
-    if (InputManager::getInstance().isSpecialKeyPressed(mapSpecialKey(GLUT_KEY_F6))) {
-        if (leftLeg_) {
-            leftLeg_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
-        }
-        if (rightLeg_) {
-            rightLeg_->pivotHigh(EngineMath::degreesToRadians(-rotationStep_));
-        }
-    }
-}
-
-void Robot::setColor(EngineUtil::ColorRGB color) {
-    for (auto& obj : children_) {
-        Primitive* primitive = dynamic_cast<Primitive*>(obj.get());
-        if (primitive) {
-            primitive->setMaterial(EngineRender::Material(color));
+            leftLeg_->setHighAngle(-maxSwing * swing);
+            leftLeg_->setMiddleAngle(-rightBend);
         }
     }
 }

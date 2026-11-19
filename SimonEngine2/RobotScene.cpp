@@ -4,6 +4,7 @@
 #include "Robot.hpp"
 #include "AxisDisplay.hpp"
 #include "CameraMan.hpp"
+#include "PathedParent.hpp"
 
 #include "Edge.hpp"
 #include "Cone.hpp"
@@ -181,24 +182,48 @@ void RobotScene::init() {
     );
 
 
-    // I wanted to learn the non srand, rand, time way
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> randomPosX(-25.0f, 25.0f);
-    std::uniform_real_distribution<float> randomPosY(10.0f, 25.0f);
-    std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
-    std::uniform_int_distribution<int> randomColor(0, 255);
+    //// I wanted to learn the non srand, rand, time way
+    //std::random_device rd;
+    //std::mt19937 gen(rd());
+    //std::uniform_real_distribution<float> randomPosX(-25.0f, 25.0f);
+    //std::uniform_real_distribution<float> randomPosY(10.0f, 25.0f);
+    //std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
+    //std::uniform_int_distribution<int> randomColor(0, 255);
 
-    for (int i = 0; i < 25; ++i) {
-        addRootObject(std::make_unique<Robot>(
+    //for (int i = 0; i < 25; ++i) {
+    //    addRootObject(std::make_unique<Robot>(
+    //        EngineMath::Transform(
+    //            EngineMath::Vector3(randomPosX(gen), 2.25f, randomPosY(gen)),
+    //            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(randomRotation(gen))),
+    //            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    //        ),
+    //        EngineUtil::ColorRGB(randomColor(gen), randomColor(gen), randomColor(gen))
+    //    ));
+    //}
+
+    constexpr int pointCount = 16;
+    constexpr float radius = 5.0f;
+
+    std::vector<EngineMath::Vector3> positions;
+    positions.reserve(pointCount);
+
+    for (int i = 0; i < pointCount; ++i) {
+        const float angle = 2.0f * EngineMath::PI * i / pointCount;
+        positions.emplace_back(radius * std::cos(angle), 2.25f, radius * std::sin(angle));
+    }
+
+    addRootObject(std::make_unique<PathedParent>(
+        std::make_unique<Robot>(
             EngineMath::Transform(
-                EngineMath::Vector3(randomPosX(gen), 2.25f, randomPosY(gen)),
-                EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(randomRotation(gen))),
+                EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+                EngineMath::Quaternion::identity(),
                 EngineMath::Vector3(1.0f, 1.0f, 1.0f)
             ),
-            EngineUtil::ColorRGB(randomColor(gen), randomColor(gen), randomColor(gen))
-        ));
-    }
+            EngineUtil::ColorRGB(255, 255, 255)
+        ),
+        positions,
+        10.0f
+    ));
 
     addRootObject(std::make_unique<AxisDisplay>());
 

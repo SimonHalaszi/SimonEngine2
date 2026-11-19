@@ -18,11 +18,15 @@ void Object::rootOnStart() {
 
 // Runs once per update of the Scene
 void Object::rootUpdate() {
+	if (!isUpdating_) {
+		return;
+	}
+	
 	if (isWorldTransformOutDated_ || (parent_ && parent_->isWorldTransformOutDated_)) {
 		updateWorldTransform();
 	}
 
-	if (isAlive_ && isUpdating_) {
+	if (isAlive_) {
 		update();
 	}
 
@@ -52,10 +56,6 @@ void Object::rootDraw() {
 	if (!isDrawing_) {
 		return;
 	}
-
-	//if (isWorldTransformOutDated_) {
-	//	updateWorldTransform();
-	//}
 
 	draw();
 
