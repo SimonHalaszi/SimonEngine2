@@ -1,6 +1,6 @@
 #include "ObjMesh.hpp"
 
-ObjMesh::ObjMesh(const EngineMath::Transform& localTransform, const EngineRender::Material& material, const std::string& dotObjfilePath)
+ObjMesh::ObjMesh(const EngineMath::Transform& localTransform, const EngineRender::Material* material, const std::string& dotObjfilePath)
 	: Primitive(localTransform, material), filepath_(dotObjfilePath) {}
 
 const void ObjMesh::resolveMeshes() {

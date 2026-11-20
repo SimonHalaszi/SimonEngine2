@@ -1,6 +1,6 @@
 #include "Plane.hpp"
 
-Plane::Plane(const EngineMath::Transform& localTransform, const EngineRender::Material& material, int subdivisions)
+Plane::Plane(const EngineMath::Transform& localTransform, const EngineRender::Material* material, int subdivisions)
 	: Primitive(localTransform, material), subdivisions_(subdivisions) {}
 
 const void Plane::resolveMeshes() {

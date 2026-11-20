@@ -189,6 +189,9 @@
     <ClCompile Include="ArcballCamera.cpp">
       <Filter>Source Files\Objects\Custom</Filter>
     </ClCompile>
+    <ClCompile Include="MaterialRegistry.cpp">
+      <Filter>Source Files\Registries</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="ArcballCamera.hpp">
       <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialRegistry.hpp">
+      <Filter>Header Files\Registries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 
 #include "MeshRegistry.hpp"
 
-Ellipsoid::Ellipsoid(const EngineMath::Transform& localTransform, const EngineRender::Material& material, int slices, int stacks)
+Ellipsoid::Ellipsoid(const EngineMath::Transform& localTransform, const EngineRender::Material* material, int slices, int stacks)
 	: Primitive(localTransform, material), slices_(slices), stacks_(stacks) {}
 
 const void Ellipsoid::resolveMeshes() {

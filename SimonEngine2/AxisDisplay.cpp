@@ -13,13 +13,18 @@ AxisDisplay::AxisDisplay() {
 }
 
 void AxisDisplay::onStart() {
+    const EngineRender::Material* red = MaterialRegistry::getInstance().getOrCreate("Red", EngineRender::Material(EngineUtil::ColorRGB(255, 0, 0)));
+    const EngineRender::Material* green = MaterialRegistry::getInstance().getOrCreate("Green", EngineRender::Material(EngineUtil::ColorRGB(0, 255, 0)));
+    const EngineRender::Material* blue = MaterialRegistry::getInstance().getOrCreate("Blue", EngineRender::Material(EngineUtil::ColorRGB(0, 0, 255)));
+
+
     addChild(std::make_unique<Edge>(
         EngineMath::Transform(
             EngineMath::Vector3(0.5f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineRender::Material(EngineUtil::ColorRGB{ 255, 0, 0 })
+        red
     ));
     auto obj = std::prev(children_.end());
     (*obj)->addChild(std::make_unique<Cone>(
@@ -28,7 +33,7 @@ void AxisDisplay::onStart() {
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
-        EngineRender::Material(EngineUtil::ColorRGB{ 255, 0, 0 }),
+        red,
         8
     ));
 
@@ -38,7 +43,7 @@ void AxisDisplay::onStart() {
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(90.0f)),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineRender::Material(EngineUtil::ColorRGB{ 0, 255, 0 })
+        green
     ));
     obj = std::prev(children_.end());
     (*obj)->addChild(std::make_unique<Cone>(
@@ -47,7 +52,7 @@ void AxisDisplay::onStart() {
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
-        EngineRender::Material(EngineUtil::ColorRGB{ 0, 255, 0 }),
+        green,
         8
     ));
 
@@ -57,7 +62,7 @@ void AxisDisplay::onStart() {
             EngineMath::Quaternion::fromXYZ(0.0f, EngineMath::degreesToRadians(-90.0f), 0.0f),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineRender::Material(EngineUtil::ColorRGB{ 0, 0, 255 })
+        blue
     ));
     obj = std::prev(children_.end());
     (*obj)->addChild(std::make_unique<Cone>(
@@ -66,7 +71,7 @@ void AxisDisplay::onStart() {
             EngineMath::Quaternion::fromXYZ(0.0f, 0.0f, EngineMath::degreesToRadians(-90.0f)),
             EngineMath::Vector3(0.0625f, 0.0625f, 0.0625f)
         ),
-        EngineRender::Material(EngineUtil::ColorRGB{ 0, 0, 255 }),
+        blue,
         8
     ));
 }

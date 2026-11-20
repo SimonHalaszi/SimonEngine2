@@ -9,6 +9,7 @@
 #include "Light.hpp"
 #include "Camera.hpp"
 
+#include "MaterialRegistry.hpp"
 #include "MeshRegistry.hpp"
 #include "TextureRegistry.hpp"
 #include "Renderer.hpp"

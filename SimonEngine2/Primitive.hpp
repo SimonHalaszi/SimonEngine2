@@ -15,9 +15,9 @@
 class Primitive : public Object {
 	public:
 		Primitive() = default;
-		Primitive(const EngineMath::Transform& localTransform, EngineRender::Material material);
+		Primitive(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr);
 
-		void setMaterial(EngineRender::Material material);
+		void setMaterial(const EngineRender::Material* material);
 
 	protected:
 		void draw() const override;
@@ -28,8 +28,8 @@ class Primitive : public Object {
 		const EngineUtil::Mesh* mesh_ = nullptr;
 		const EngineRender::GPUMesh* GPUMesh_ = nullptr;
 		
-		EngineRender::Material material_;
-		EngineRender::Material edgeMaterial_;
+		const EngineRender::Material* material_;
+		const EngineRender::Material* edgeMaterial_;
 
 		virtual const void resolveMeshes() = 0;
 		void onStart() override;

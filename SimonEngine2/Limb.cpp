@@ -1,7 +1,13 @@
 #include "Limb.hpp"
 #include "RectangularPrism.hpp"
 
-Limb::Limb(const EngineMath::Transform& localTransform, const EngineRender::Material& material, const EngineMath::Vector3& size) {
+#include "MaterialRegistry.hpp"
+
+Limb::Limb(const EngineMath::Transform& localTransform, const EngineRender::Material* material, const EngineMath::Vector3& size) {
+    if (material == nullptr) {
+        material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+
     localTransform_ = localTransform;
     material_ = material;
     size_ = size;

@@ -6,7 +6,7 @@
 class RectangularPrism : public Primitive {
     public:
         RectangularPrism() : RectangularPrism(EngineMath::Transform{}) {}
-        RectangularPrism(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {});
+        RectangularPrism(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr);
     
     private:
         virtual const void resolveMeshes() override;

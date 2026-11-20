@@ -1,19 +1,25 @@
 #include "Primitive.hpp"
 
-Primitive::Primitive(const EngineMath::Transform& localTransform, EngineRender::Material material)
-: material_(std::move(material)) {
+#include "MaterialRegistry.hpp"
+
+Primitive::Primitive(const EngineMath::Transform& localTransform, const EngineRender::Material* material) {
+	if (material == nullptr) {
+		material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+	}
+
+	material_ = material;
+	edgeMaterial_ = MaterialRegistry::getInstance().getOrCreate("Edge", EngineRender::Material());
 	localTransform_ = localTransform;
 }
 
-void Primitive::setMaterial(EngineRender::Material material) {
-	material.init();
-	material_ = std::move(material);
+void Primitive::setMaterial(const EngineRender::Material* material) {
+	if (material == nullptr) {
+		material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+	}
+	material_ = material;
 }
 
 void Primitive::onStart() {
-	material_.init();
-	edgeMaterial_.init();
-
 	resolveMeshes();
 }
 
@@ -25,7 +31,7 @@ void Primitive::draw() const {
 	if (drawAsSolid_) {
 		Renderer::getInstance().drawMesh(
 			*GPUMesh_,
-			material_,
+			*material_,
 			getWorldMatrix(),
 			Renderer::DrawMode::Solid
 		);
@@ -33,7 +39,7 @@ void Primitive::draw() const {
 	else {
 		Renderer::getInstance().drawMesh(
 			*GPUMesh_,
-			edgeMaterial_,
+			*edgeMaterial_,
 			getWorldMatrix(),
 			Renderer::DrawMode::Edges
 		);
@@ -52,4 +58,5 @@ void Primitive::update() {
 void Primitive::onDestruction() {
 	mesh_ = nullptr;
 	GPUMesh_ = nullptr;
+	material_ = nullptr;
 }

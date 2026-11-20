@@ -56,6 +56,8 @@ void RobotScene::init() {
         2.0f
     ));
 
+    const EngineRender::Material* green = MaterialRegistry::getInstance().getOrCreate("Green", EngineRender::Material(EngineUtil::ColorRGB(0, 255, 0)));
+
     addRootObject(std::make_unique<PathedParent>(
         std::make_unique<PointLight>(
             EngineMath::Transform(
@@ -69,8 +71,10 @@ void RobotScene::init() {
         ),
         buildLinePath(EngineMath::Vector3(-12.0f, 2.5f, -23.5f), EngineMath::Vector3(12.0f, 7.5f, -23.5f)),
         5.0f,
-        EngineRender::Material(EngineUtil::ColorRGB(0, 255, 0))
+        green
     ));
+
+    const EngineRender::Material* blue = MaterialRegistry::getInstance().getOrCreate("Blue", EngineRender::Material(EngineUtil::ColorRGB(0, 0, 255)));
 
     addRootObject(std::make_unique<PathedParent>(
         std::make_unique<SpotLight>(
@@ -87,30 +91,32 @@ void RobotScene::init() {
         ),
         buildLinePath(EngineMath::Vector3(12.0f, 2.5f, -23.5f), EngineMath::Vector3(-12.0f, 7.5f, -23.5f)),
         5.0f,
-        EngineRender::Material(EngineUtil::ColorRGB(0, 0, 255))
+        blue
     ));
 
-    EngineRender::Material testTextureGray = EngineRender::Material(
-        EngineUtil::ColorRGB(255, 255, 255),
-        0.5f,
-        0.0f,
-        "../Shaders/Lit.vert",
-        "../Shaders/Lit.frag",
-        "../Assets/Textures/test2.png",
-        {},
-        {},
-        {},
-        50.0f,
-        50.0f
+    const EngineRender::Material* initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testTextureGray", 
+        EngineRender::Material(
+            EngineUtil::ColorRGB(255, 255, 255),
+            0.5f,
+            0.0f,
+            "../Shaders/Lit.vert",
+            "../Shaders/Lit.frag",
+            "../Assets/Textures/test2.png",
+            {},
+            {},
+            {},
+            50.0f,
+            50.0f
+        )
     );
-
     addRootObject(std::make_unique<Plane>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(100.0f, 1.0f, 100.0f)
         ),
-        testTextureGray,
+        initzdMaterial,
         4
     ));
 
@@ -122,13 +128,17 @@ void RobotScene::init() {
         "../Shaders/Lit.frag",
         "../Assets/Textures/test.png"
     );
+    initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testTextureLit",
+        testTextureLit
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 2.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testTextureLit
+        initzdMaterial
     );
 
     EngineRender::Material testNormal = EngineRender::Material(
@@ -141,13 +151,17 @@ void RobotScene::init() {
         "../Assets/Textures/greenTileNormal.png",
         "../Assets/Textures/greenTileRoughness.png"
     );
+    initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testNormal",
+        testNormal
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 5.0f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testNormal
+        initzdMaterial
     );
 
     EngineRender::Material testNormalRoughness = EngineRender::Material(
@@ -160,13 +174,17 @@ void RobotScene::init() {
         "../Assets/Textures/iceNormal.png",
         "../Assets/Textures/iceRoughness.png"
     );
+    initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testNormalRoughness",
+        testNormalRoughness
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 7.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testNormalRoughness
+        initzdMaterial
     );
 
     EngineRender::Material testNormalMetalness = EngineRender::Material(
@@ -180,13 +198,17 @@ void RobotScene::init() {
         "../Assets/Textures/metalRoughness.png",
         "../Assets/Textures/metalMetalness.png"
     );
+    initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testNormalMetalness",
+        testNormalMetalness
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 10.0f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testNormalMetalness
+        initzdMaterial
     );
 
     EngineRender::Material testShader = EngineRender::Material(
@@ -196,13 +218,17 @@ void RobotScene::init() {
         "../Shaders/Basic.vert",
         "../Shaders/Bounce.frag"
     );
+    initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testShader",
+        testShader
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 12.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testShader
+        initzdMaterial
     );
 
     EngineRender::Material testTextureUnlit = EngineRender::Material(
@@ -213,15 +239,20 @@ void RobotScene::init() {
         "../Shaders/Textured.frag",
         "../Assets/Textures/test.png"
     );
+    initzdMaterial = MaterialRegistry::getInstance().getOrCreate(
+        "testTextureUnlit",
+        testTextureUnlit
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 15.0f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testTextureUnlit
+        initzdMaterial
     );
 
+    const EngineRender::Material* red = MaterialRegistry::getInstance().getOrCreate("Red", EngineRender::Material(EngineUtil::ColorRGB(255, 0, 0)));
     std::unique_ptr<PathedParent> robotPather = std::make_unique<PathedParent>(
         std::make_unique<Robot>(
             EngineMath::Transform(
@@ -229,11 +260,11 @@ void RobotScene::init() {
                 EngineMath::Quaternion::identity(),
                 EngineMath::Vector3(1.0f, 1.0f, 1.0f)
             ),
-            testNormalMetalness
+            nullptr
         ),
         std::vector<EngineMath::Vector3>(),
         5.0f,
-        EngineRender::Material(EngineUtil::ColorRGB(255, 0, 0))
+        red
     );
     robotPather_ = robotPather.get();
     addRootObject(std::move(robotPather));
@@ -241,18 +272,12 @@ void RobotScene::init() {
 
     addRootObject(std::make_unique<AxisDisplay>());
 
-    addRootObject(std::make_unique<CameraMan>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 3.5f, 5.0f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
-        )
-    ));
-
-    //addRootObject(std::make_unique<ObjMesh>(
-    //    EngineMath::Transform(),
-    //    testNormal,
-    //    "../Assets/Objs/tree.obj"
+    //addRootObject(std::make_unique<CameraMan>(
+    //    EngineMath::Transform(
+    //        EngineMath::Vector3(0.0f, 3.5f, 5.0f),
+    //        EngineMath::Quaternion::identity(),
+    //        EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    //    )
     //));
 
     addRootObject(std::make_unique<ArcballCamera>(EngineMath::Vector3(0.0f, 0.0f, 0.0f), 10.0f));
@@ -300,7 +325,7 @@ void RobotScene::deInit() {
     robotPather_ = nullptr;
 }
 
-void RobotScene::buildDemo(EngineMath::Transform transform, EngineRender::Material material) {
+void RobotScene::buildDemo(EngineMath::Transform transform, const EngineRender::Material* material) {
     addRootObject(std::make_unique<Edge>(
         transform,
         material

@@ -1,6 +1,6 @@
 #include "Edge.hpp"
 
-Edge::Edge(const EngineMath::Transform& localTransform, const EngineRender::Material& material)
+Edge::Edge(const EngineMath::Transform& localTransform, const EngineRender::Material* material)
 	: Primitive(localTransform, material) {}
 
 const void Edge::resolveMeshes() {
@@ -16,7 +16,7 @@ void Edge::draw() const {
 	if (drawAsSolid_) {
 		Renderer::getInstance().drawMesh(
 			*GPUMesh_,
-			material_,
+			*material_,
 			getWorldMatrix(),
 			Renderer::DrawMode::Edges
 		);
@@ -24,7 +24,7 @@ void Edge::draw() const {
 	else {
 		Renderer::getInstance().drawMesh(
 			*GPUMesh_,
-			edgeMaterial_,
+			*edgeMaterial_,
 			getWorldMatrix(),
 			Renderer::DrawMode::Edges
 		);

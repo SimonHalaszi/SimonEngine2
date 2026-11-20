@@ -6,7 +6,7 @@
 class Plane : public Primitive {
     public:
         Plane() : Plane(EngineMath::Transform{}) {}
-        Plane(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, int subdivisions = 1);
+        Plane(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr, int subdivisions = 1);
 
     private:
         int subdivisions_;

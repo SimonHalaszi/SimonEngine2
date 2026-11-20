@@ -31,6 +31,7 @@ void Scene::sceneDeInit() {
 
 	deInit();
 
+	MaterialRegistry::getInstance().clear();
 	MeshRegistry::getInstance().clear();
 	Renderer::getInstance().clear();
 	TextureRegistry::getInstance().clearRegistry();

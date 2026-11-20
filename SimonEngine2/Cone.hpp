@@ -6,7 +6,7 @@
 class Cone : public Primitive {
     public:
         Cone() : Cone(EngineMath::Transform{}) {}
-        Cone(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, int slices = 3);
+        Cone(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr, int slices = 3);
 
     private:
         int slices_;

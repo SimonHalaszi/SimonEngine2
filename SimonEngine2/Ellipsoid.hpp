@@ -6,7 +6,7 @@
 class Ellipsoid : public Primitive {
 	public:
 		Ellipsoid() : Ellipsoid(EngineMath::Transform{}) {}
-		Ellipsoid(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, int slices = 3, int stacks = 2);
+		Ellipsoid(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr, int slices = 3, int stacks = 2);
 
 	private:
 		int slices_;

@@ -5,6 +5,7 @@
 
 #include "Engine.hpp"
 #include "MeshRegistry.hpp"
+#include "MaterialRegistry.hpp"
 #include "Renderer.hpp"
 
 namespace {
@@ -33,15 +34,20 @@ namespace {
     }
 }
 
-PathedParent::PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath::Vector3> positions, float speed, const EngineRender::Material& pathMaterial)
-    : isMoving_(true), isPathDrawing_(false), drawPathAsSolid_(true), positions_(std::move(positions)), speed_(speed), pathMaterial_(pathMaterial) {
+PathedParent::PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath::Vector3> positions, float speed, const EngineRender::Material* pathMaterial)
+    : isMoving_(true), isPathDrawing_(false), drawPathAsSolid_(true), positions_(std::move(positions)), speed_(speed) {
+    if (pathMaterial == nullptr) {
+        pathMaterial = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+
+    pathMaterial_ = pathMaterial;
+    edgeMaterial_ = MaterialRegistry::getInstance().getOrCreate("Edge", EngineRender::Material());
     addChild(std::move(child));
     resetPosition();
 }
 
 void PathedParent::onStart() {
-    pathMaterial_.init();
-    edgeMaterial_.init();
+
 }
 
 void PathedParent::pushBackPosition(EngineMath::Vector3 position) {
@@ -188,9 +194,9 @@ void PathedParent::draw() const {
                 );
 
                 // To keep consistent behavior with primitives
-                EngineRender::Material activeMaterial = drawPathAsSolid_ ? pathMaterial_ : edgeMaterial_;
+                const EngineRender::Material* activeMaterial = drawPathAsSolid_ ? pathMaterial_ : edgeMaterial_;
 
-                Renderer::getInstance().drawMesh(*edgeMesh, activeMaterial, pathSpaceMatrix * segmentTransform.toMatrix(), Renderer::DrawMode::Edges);
+                Renderer::getInstance().drawMesh(*edgeMesh, *activeMaterial, pathSpaceMatrix * segmentTransform.toMatrix(), Renderer::DrawMode::Edges);
             }
         }
     }
@@ -212,9 +218,9 @@ void PathedParent::draw() const {
                     drawMode = Renderer::DrawMode::Edges;
                 }
 
-                EngineRender::Material activeMaterial = (drawMode == Renderer::DrawMode::Edges) ? edgeMaterial_ : pathMaterial_;
+                const EngineRender::Material* activeMaterial = (drawMode == Renderer::DrawMode::Edges) ? edgeMaterial_ : pathMaterial_;
 
-                Renderer::getInstance().drawMesh(*pointMesh, activeMaterial, pathSpaceMatrix * pointTransform.toMatrix(), drawMode);
+                Renderer::getInstance().drawMesh(*pointMesh, *activeMaterial, pathSpaceMatrix * pointTransform.toMatrix(), drawMode);
             }
         }
     }

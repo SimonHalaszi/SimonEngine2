@@ -10,7 +10,7 @@
 
 class PathedParent : public Object {
     public:
-        PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath::Vector3> positions, float speed, const EngineRender::Material& pathMaterial = {});
+        PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath::Vector3> positions, float speed, const EngineRender::Material* pathMaterial = nullptr);
 
         void pushBackPosition(EngineMath::Vector3 position);
         void setPositionsVector(std::vector<EngineMath::Vector3> positions);
@@ -33,8 +33,8 @@ class PathedParent : public Object {
         std::size_t segmentStartIndex_ = 0;
         float distanceAlongSegment_ = 0.0f;
 
-        EngineRender::Material pathMaterial_;
-        EngineRender::Material edgeMaterial_;
+        const EngineRender::Material* pathMaterial_;
+        const EngineRender::Material* edgeMaterial_;
 };
 
 #endif

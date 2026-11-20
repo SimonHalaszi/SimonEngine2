@@ -6,7 +6,7 @@
 class Edge : public Primitive {
     public:
         Edge() : Edge(EngineMath::Transform{}) {}
-        Edge(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {});
+        Edge(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr);
 
         void draw() const override;
 

@@ -32,7 +32,7 @@ class RobotScene : public Scene {
 		virtual void deInit() override final;
 
 	private:
-		void buildDemo(EngineMath::Transform transform, EngineRender::Material material);
+		void buildDemo(EngineMath::Transform transform, const EngineRender::Material* material);
 		void changePath();
 		Object* robotPather_;
 		int pathOption_;

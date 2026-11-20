@@ -1,6 +1,6 @@
 #include "RectangularPrism.hpp"
 
-RectangularPrism::RectangularPrism(const EngineMath::Transform& localTransform, const EngineRender::Material& material)
+RectangularPrism::RectangularPrism(const EngineMath::Transform& localTransform, const EngineRender::Material* material)
 	: Primitive(localTransform, material) {}
 
 const void RectangularPrism::resolveMeshes() {

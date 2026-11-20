@@ -6,7 +6,7 @@
 class ObjMesh : public Primitive {
     public:
         ObjMesh() : ObjMesh(EngineMath::Transform{}) {}
-        ObjMesh(const EngineMath::Transform& localTransform, const EngineRender::Material& material = {}, const std::string& dotObjfilePath = "../Assets/null.obj");
+        ObjMesh(const EngineMath::Transform& localTransform, const EngineRender::Material* material = nullptr, const std::string& dotObjfilePath = "../Assets/null.obj");
     
     private:
         std::string filepath_;

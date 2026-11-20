@@ -8,6 +8,8 @@
 #include "RectangularPrism.hpp"
 #include "Ellipsoid.hpp"
 
+#include "MaterialRegistry.hpp"
+
 namespace {
     constexpr float torsoWide = 1.0f;
     constexpr float torsoTall = 1.5f;
@@ -22,10 +24,14 @@ namespace {
     constexpr float headDiameter = torsoWide;
 }
 
-Robot::Robot(const EngineMath::Transform& localTransform, const EngineRender::Material& material) {
+Robot::Robot(const EngineMath::Transform& localTransform, const EngineRender::Material* material) {
+    if (material == nullptr) {
+        material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+
+    material_ = material;
     isAnimating_ = true;
     localTransform_ = localTransform;
-    material_ = material;
     rotationStep_ = 5.0f;
 }
 
