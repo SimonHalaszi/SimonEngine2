@@ -34,13 +34,14 @@ namespace {
 }
 
 PathedParent::PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath::Vector3> positions, float speed, const EngineRender::Material& pathMaterial)
-    : isMoving_(true), isPathDrawing_(true), positions_(std::move(positions)), speed_(speed), pathMaterial_(pathMaterial) {
+    : isMoving_(true), isPathDrawing_(false), drawPathAsSolid_(true), positions_(std::move(positions)), speed_(speed), pathMaterial_(pathMaterial) {
     addChild(std::move(child));
     resetPosition();
 }
 
 void PathedParent::onStart() {
     pathMaterial_.init();
+    edgeMaterial_.init();
 }
 
 void PathedParent::pushBackPosition(EngineMath::Vector3 position) {
@@ -74,6 +75,13 @@ void PathedParent::resetPosition() {
 }
 
 void PathedParent::update() {
+    // To keep consistent behavior with primitives
+    if (InputManager::getInstance().isPressed('1')) {
+        drawPathAsSolid_ = false;
+    }
+    if (InputManager::getInstance().isPressed('2')) {
+        drawPathAsSolid_ = true;
+    }
     if (InputManager::getInstance().isPressed('s')) {
         toggleMovement();
     }
@@ -156,6 +164,7 @@ void PathedParent::draw() const {
 
     const EngineMath::Matrix4 pathSpaceMatrix = parent_ ? parent_->getWorldTransform().toMatrix() : EngineMath::Matrix4::identity();
 
+    // Drawing edges betwwen each position pair
     if (positions_.size() >= 2) {
         const EngineRender::GPUMesh* edgeMesh = MeshRegistry::getInstance().getGPUEdge();
         if (edgeMesh) {
@@ -178,23 +187,35 @@ void PathedParent::draw() const {
                     EngineMath::Vector3(length, 1.0f, 1.0f)
                 );
 
-                Renderer::getInstance().drawMesh(*edgeMesh, pathMaterial_, pathSpaceMatrix * segmentTransform.toMatrix(), Renderer::DrawMode::Edges);
+                // To keep consistent behavior with primitives
+                EngineRender::Material activeMaterial = drawPathAsSolid_ ? pathMaterial_ : edgeMaterial_;
+
+                Renderer::getInstance().drawMesh(*edgeMesh, activeMaterial, pathSpaceMatrix * segmentTransform.toMatrix(), Renderer::DrawMode::Edges);
             }
         }
     }
 
-    const EngineRender::GPUMesh* pointMesh = MeshRegistry::getInstance().getGPUEllipsoid(12, 12);
-    if (!pointMesh) {
-        return;
-    }
+    // Drawing points for each position
+    if (positions_.size() >= 2) {
+        const EngineRender::GPUMesh* pointMesh = MeshRegistry::getInstance().getGPUEllipsoid(8, 8);
+        if (pointMesh) {
+            for (const EngineMath::Vector3& position : positions_) {
+                const EngineMath::Transform pointTransform(
+                    position,
+                    EngineMath::Quaternion::identity(),
+                    EngineMath::Vector3(pointMarkerDiameter, pointMarkerDiameter, pointMarkerDiameter)
+                );
 
-    for (const EngineMath::Vector3& position : positions_) {
-        const EngineMath::Transform pointTransform(
-            position,
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(pointMarkerDiameter, pointMarkerDiameter, pointMarkerDiameter)
-        );
+                // To keep consistent behavior with primitives
+                Renderer::DrawMode drawMode = Renderer::DrawMode::Solid;
+                if (!drawPathAsSolid_) {
+                    drawMode = Renderer::DrawMode::Edges;
+                }
 
-        Renderer::getInstance().drawMesh(*pointMesh, pathMaterial_, pathSpaceMatrix * pointTransform.toMatrix(), Renderer::DrawMode::Solid);
+                EngineRender::Material activeMaterial = (drawMode == Renderer::DrawMode::Edges) ? edgeMaterial_ : pathMaterial_;
+
+                Renderer::getInstance().drawMesh(*pointMesh, activeMaterial, pathSpaceMatrix * pointTransform.toMatrix(), drawMode);
+            }
+        }
     }
 }

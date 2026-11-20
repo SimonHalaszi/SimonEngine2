@@ -22,22 +22,14 @@ namespace {
     constexpr float headDiameter = torsoWide;
 }
 
-Robot::Robot(const EngineMath::Transform& localTransform, EngineUtil::ColorRGB color) {
+Robot::Robot(const EngineMath::Transform& localTransform, const EngineRender::Material& material) {
     isAnimating_ = true;
     localTransform_ = localTransform;
-    color_ = color;
+    material_ = material;
     rotationStep_ = 5.0f;
 }
 
 void Robot::onStart() {
-    EngineRender::Material material = EngineRender::Material(
-        color_,
-        0.5f,
-        0.0f,
-        "../Shaders/Lit.vert",
-        "../Shaders/Lit.frag"
-    );
-
     // Body
     addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(
@@ -45,7 +37,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(torsoWide, torsoTall, torsoThick)
         ),
-        material
+        material_
     ));
 
     // Left Arm (Limb)
@@ -58,7 +50,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            color_,
+            material_,
             EngineMath::Vector3(armWideThick, armTall, armWideThick)
         );
         leftArm_ = limb.get();
@@ -75,7 +67,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            color_,
+            material_,
             EngineMath::Vector3(armWideThick, armTall, armWideThick)
         );
         rightArm_ = limb.get();
@@ -92,7 +84,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            color_,
+            material_,
             EngineMath::Vector3(legWideThick, legTall, legWideThick)
         );
         leftLeg_ = limb.get();
@@ -109,7 +101,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            color_,
+            material_,
             EngineMath::Vector3(legWideThick, legTall, legWideThick)
         );
         rightLeg_ = limb.get();
@@ -123,28 +115,23 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(headDiameter, headDiameter, headDiameter)
         ),
-        material,
+        material_,
         12,
         12
     ));
 }
 
 void Robot::update() {
-    const Scene* scene = Engine::getInstance().getCurrentScene();
-    if (!scene) {
-        return;
-    }
-
     if (InputManager::getInstance().isPressed('a')) {
         toggleAnimation();
     }
 
     if (isAnimating_) {
-        constexpr int framesPerCycle = 12;
+        constexpr float cyclesPerSecond = 1.5f;
         const float maxSwing = EngineMath::degreesToRadians(45.0f);
         const float maxBend = EngineMath::degreesToRadians(45.0f);
 
-        const float phase = 2.0f * EngineMath::PI * (scene->getAnimationFrame() % framesPerCycle) / framesPerCycle;
+        const float phase = Engine::getInstance().getTime() * 2.0f * EngineMath::PI * cyclesPerSecond;
         const float swing = std::sin(phase);
 
         const float leftBend = maxBend * (swing > 0.0f ? swing : 0.0f);

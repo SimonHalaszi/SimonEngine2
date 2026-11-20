@@ -1,25 +1,13 @@
 #include "Limb.hpp"
 #include "RectangularPrism.hpp"
 
-Limb::Limb(
-    const EngineMath::Transform& localTransform,
-    EngineUtil::ColorRGB color,
-    const EngineMath::Vector3& size
-) {
+Limb::Limb(const EngineMath::Transform& localTransform, const EngineRender::Material& material, const EngineMath::Vector3& size) {
     localTransform_ = localTransform;
-    color_ = color;
+    material_ = material;
     size_ = size;
 }
 
 void Limb::onStart() {
-    EngineRender::Material material = EngineRender::Material(
-        color_,
-        0.5f,
-        0.0f,
-        "../Shaders/Lit.vert",
-        "../Shaders/Lit.frag"
-    );
-
     std::unique_ptr<Object> highJoint = std::make_unique<Object>();
     highJoint->setPosition(EngineMath::Vector3(0.0f, size_.y_ * 0.5f, 0.0f));
     highJoint_ = highJoint.get();
@@ -34,7 +22,7 @@ void Limb::onStart() {
             EngineMath::Quaternion::identity(),
             halfSize
         ),
-        material
+        material_
     );
     upperHalf_ = upperMesh.get();
     highJoint_->addChild(std::move(upperMesh));
@@ -50,7 +38,7 @@ void Limb::onStart() {
             EngineMath::Quaternion::identity(),
             halfSize
         ),
-        material
+        material_
     );
     lowerHalf_ = lowerMesh.get();
     middleJoint_->addChild(std::move(lowerMesh));

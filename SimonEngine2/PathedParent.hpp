@@ -24,13 +24,17 @@ class PathedParent : public Object {
         void draw() const override;
 
     private:
-        std::vector<EngineMath::Vector3> positions_;
-        float speed_ = 0.0f;
-        EngineRender::Material pathMaterial_;
-        std::size_t segmentStartIndex_ = 0;
-        float distanceAlongSegment_ = 0.0f;
         bool isMoving_;
         bool isPathDrawing_;
+        bool drawPathAsSolid_;
+
+        std::vector<EngineMath::Vector3> positions_;
+        float speed_ = 0.0f;
+        std::size_t segmentStartIndex_ = 0;
+        float distanceAlongSegment_ = 0.0f;
+
+        EngineRender::Material pathMaterial_;
+        EngineRender::Material edgeMaterial_;
 };
 
 #endif

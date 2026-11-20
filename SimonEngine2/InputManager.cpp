@@ -48,8 +48,12 @@ bool InputManager::isSpecialKeyReleased(int key)  const {
 void InputManager::mouseButtonDown(int button, int x, int y) {
     if (button >= 0 && button < int(mouseCurrent_.size())) {
         mouseCurrent_[button] = true;
+        mouseX_ = x;
+        mouseY_ = y;
+        mouseDeltaX_ = mouseDeltaY_ = 0;
     }
 }
+
 void InputManager::mouseButtonUp(int button, int x, int y) {
     if (button >= 0 && button < int(mouseCurrent_.size())) {
         mouseCurrent_[button] = false;
@@ -84,8 +88,8 @@ bool InputManager::isMouseButtonReleased(MouseButton button) const {
 }
 
 void InputManager::mouseMove(int x, int y) {
-    mouseDeltaX_ = x - mouseX_;
-    mouseDeltaY_ = y - mouseY_;
+    mouseDeltaX_ += x - mouseX_;
+    mouseDeltaY_ += y - mouseY_;
     mouseX_ = x;
     mouseY_ = y;
 }
@@ -120,12 +124,15 @@ void InputManager::update() {
 }
 
 void InputManager::clear() {
-    keyCurrent_.fill(false);        
+    mouseDeltaX_ = mouseDeltaY_ = 0;
+
+    keyCurrent_.fill(false);
     keyPrevious_.fill(false);
-    specialKeyCurrent_.fill(false); 
+    specialKeyCurrent_.fill(false);
     specialKeyPrevious_.fill(false);
-    mouseCurrent_.fill(false);      
+    mouseCurrent_.fill(false);
     mousePrevious_.fill(false);
+
     typedChars_.clear();
     scrollUpThisFrame_ = scrollDownThisFrame_ = false;
 }

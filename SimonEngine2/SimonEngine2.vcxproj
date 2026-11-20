@@ -146,6 +146,10 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)include\glad\;$(ProjectDir)include\KHR\;$(ProjectDir)include\FreeImage\;$(ProjectDir)include\GL\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Platform);$(ProjectDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -155,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArcballCamera.cpp" />
     <ClCompile Include="AxisDisplay.cpp" />
     <ClCompile Include="CameraMan.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -190,6 +195,7 @@
     <ClCompile Include="TextureRegistry.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArcballCamera.hpp" />
     <ClInclude Include="AxisDisplay.hpp" />
     <ClInclude Include="CameraMan.hpp" />
     <ClInclude Include="DirectionalLight.hpp" />

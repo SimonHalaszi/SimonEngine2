@@ -186,6 +186,9 @@
     <ClCompile Include="PathedParent.cpp">
       <Filter>Source Files\Objects\Custom</Filter>
     </ClCompile>
+    <ClCompile Include="ArcballCamera.cpp">
+      <Filter>Source Files\Objects\Custom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.hpp">
@@ -282,6 +285,9 @@
       <Filter>Header Files\Objects\Lights</Filter>
     </ClInclude>
     <ClInclude Include="PathedParent.hpp">
+      <Filter>Header Files\Objects\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcballCamera.hpp">
       <Filter>Header Files\Objects\Custom</Filter>
     </ClInclude>
   </ItemGroup>

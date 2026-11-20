@@ -9,6 +9,9 @@ CameraMan::CameraMan(const EngineMath::Transform& localTransform) {
  
 void CameraMan::onStart() {
 	Scene* scene = Engine::getInstance().getCurrentScene();
+	if (!scene) {
+		return;
+	}
 	scene->getCamera().setPerspective(90, 0.1, 100.0);
 	//scene->getCamera().setOrthographic(10.0, 0.1, 100.0);
 }

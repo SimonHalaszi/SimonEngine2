@@ -18,10 +18,11 @@
 
 class RobotScene : public Scene {
 	public:
-		RobotScene() : Scene(244, 244, 10) {}
+		RobotScene() : Scene(244, 244, 10), robotPather_(nullptr), pathOption_(0) {}
 
 		~RobotScene() {}
 
+	protected:
 		virtual void init() override final;
 
 		virtual void draw() const override final;
@@ -30,7 +31,11 @@ class RobotScene : public Scene {
 
 		virtual void deInit() override final;
 
+	private:
 		void buildDemo(EngineMath::Transform transform, EngineRender::Material material);
+		void changePath();
+		Object* robotPather_;
+		int pathOption_;
 };
 
 #endif

@@ -1,10 +1,12 @@
 #include "RobotScene.hpp"
 
-// Objects
+// Specific Objects
+#include "CameraMan.hpp"
+#include "ArcballCamera.hpp"
+
+#include "PathedParent.hpp"
 #include "Robot.hpp"
 #include "AxisDisplay.hpp"
-#include "CameraMan.hpp"
-#include "PathedParent.hpp"
 
 #include "Edge.hpp"
 #include "Cone.hpp"
@@ -18,6 +20,31 @@
 #include "PointLight.hpp"
 #include "SpotLight.hpp"
 
+namespace {
+    std::vector<EngineMath::Vector3> buildCirclePath(const EngineMath::Vector3& pos, int pointCount, float radius) {
+        std::vector<EngineMath::Vector3> positions;
+        positions.reserve(pointCount);
+
+        for (int i = 0; i < pointCount; ++i) {
+            const float angle = 2.0f * EngineMath::PI * i / pointCount;
+            positions.emplace_back(radius * std::cos(angle), pos.y_, radius * std::sin(angle));
+        }
+
+        return positions;
+    }
+
+    std::vector<EngineMath::Vector3> buildLinePath(const EngineMath::Vector3& pos1, const EngineMath::Vector3& pos2) {
+        std::vector<EngineMath::Vector3> positions;
+        positions.reserve(2);
+
+        positions.emplace_back(pos1);
+        positions.emplace_back(pos2);
+
+        return positions;
+    }
+
+}
+
 void RobotScene::init() {
     addRootObject(std::make_unique<DirectionalLight>(
         EngineMath::Transform(
@@ -29,38 +56,40 @@ void RobotScene::init() {
         2.0f
     ));
 
-    addRootObject(std::make_unique<PointLight>(
-        EngineMath::Transform(
-            EngineMath::Vector3(4.0f, 4.0f, -23.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    addRootObject(std::make_unique<PathedParent>(
+        std::make_unique<PointLight>(
+            EngineMath::Transform(
+                EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+                EngineMath::Quaternion::identity(),
+                EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+            ),
+            EngineUtil::ColorRGB(0, 255, 0),
+            5.0f,
+            11.0f
         ),
-        EngineUtil::ColorRGB(0, 255, 0),
+        buildLinePath(EngineMath::Vector3(-12.0f, 2.5f, -23.5f), EngineMath::Vector3(12.0f, 7.5f, -23.5f)),
         5.0f,
-        11.0f
+        EngineRender::Material(EngineUtil::ColorRGB(0, 255, 0))
     ));
 
-    addRootObject(std::make_unique<SpotLight>(
-        EngineMath::Transform(
-            EngineMath::Vector3(-4.0f, 6.5f, -21.5f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-45.0f)),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+    addRootObject(std::make_unique<PathedParent>(
+        std::make_unique<SpotLight>(
+            EngineMath::Transform(
+                EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+                EngineMath::Quaternion::identity(),
+                EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+            ),
+            EngineUtil::ColorRGB(0, 0, 255),
+            5.0f,
+            14.0f,
+            26.0f,
+            42.0f
         ),
-        EngineUtil::ColorRGB(0, 0, 255),
+        buildLinePath(EngineMath::Vector3(12.0f, 2.5f, -23.5f), EngineMath::Vector3(-12.0f, 7.5f, -23.5f)),
         5.0f,
-        14.0f,
-        26.0f,
-        42.0f
+        EngineRender::Material(EngineUtil::ColorRGB(0, 0, 255))
     ));
 
-    EngineRender::Material testTexture = EngineRender::Material(
-        EngineUtil::ColorRGB(255, 255, 255),
-        0.5f,
-        0.0f,
-        "../Shaders/Basic.vert",
-        "../Shaders/Textured.frag",
-        "../Assets/Textures/test.png"
-    );
     EngineRender::Material testTextureGray = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         0.5f,
@@ -74,6 +103,17 @@ void RobotScene::init() {
         50.0f,
         50.0f
     );
+
+    addRootObject(std::make_unique<Plane>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(100.0f, 1.0f, 100.0f)
+        ),
+        testTextureGray,
+        4
+    ));
+
     EngineRender::Material testTextureLit = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         0.5f,
@@ -82,6 +122,15 @@ void RobotScene::init() {
         "../Shaders/Lit.frag",
         "../Assets/Textures/test.png"
     );
+    buildDemo(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 2.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        testTextureLit
+    );
+
     EngineRender::Material testNormal = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         1.0f,
@@ -92,6 +141,15 @@ void RobotScene::init() {
         "../Assets/Textures/greenTileNormal.png",
         "../Assets/Textures/greenTileRoughness.png"
     );
+    buildDemo(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 5.0f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        testNormal
+    );
+
     EngineRender::Material testNormalRoughness = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         1.0f,
@@ -102,6 +160,15 @@ void RobotScene::init() {
         "../Assets/Textures/iceNormal.png",
         "../Assets/Textures/iceRoughness.png"
     );
+    buildDemo(
+        EngineMath::Transform(
+            EngineMath::Vector3(-9.0f, 7.5f, -25.5f),
+            EngineMath::Quaternion::identity(),
+            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
+        ),
+        testNormalRoughness
+    );
+
     EngineRender::Material testNormalMetalness = EngineRender::Material(
         EngineUtil::ColorRGB(255, 255, 255),
         1.0f,
@@ -113,49 +180,6 @@ void RobotScene::init() {
         "../Assets/Textures/metalRoughness.png",
         "../Assets/Textures/metalMetalness.png"
     );
-    
-    addRootObject(std::make_unique<Plane>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(100.0f, 1.0f, 100.0f)
-        ),
-        testTextureGray,
-        4
-    ));
-
-    EngineRender::Material bounceMaterial = EngineRender::Material(
-        EngineUtil::ColorRGB(100, 140, 220),
-        0.5f,
-        0.0f,
-        "../Shaders/Basic.vert",
-        "../Shaders/Bounce.frag"
-    );
-
-    buildDemo(
-        EngineMath::Transform(
-            EngineMath::Vector3(-9.0f, 2.5f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testTextureLit
-    );
-    buildDemo(
-        EngineMath::Transform(
-            EngineMath::Vector3(-9.0f, 5.0f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testNormal
-    );
-    buildDemo(
-        EngineMath::Transform(
-            EngineMath::Vector3(-9.0f, 7.5f, -25.5f),
-            EngineMath::Quaternion::identity(),
-            EngineMath::Vector3(2.0f, 2.0f, 2.0f)
-        ),
-        testNormalRoughness
-    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 10.0f, -25.5f),
@@ -164,13 +188,30 @@ void RobotScene::init() {
         ),
         testNormalMetalness
     );
+
+    EngineRender::Material testShader = EngineRender::Material(
+        EngineUtil::ColorRGB(100, 140, 220),
+        0.5f,
+        0.0f,
+        "../Shaders/Basic.vert",
+        "../Shaders/Bounce.frag"
+    );
     buildDemo(
         EngineMath::Transform(
             EngineMath::Vector3(-9.0f, 12.5f, -25.5f),
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        bounceMaterial
+        testShader
+    );
+
+    EngineRender::Material testTextureUnlit = EngineRender::Material(
+        EngineUtil::ColorRGB(255, 255, 255),
+        0.5f,
+        0.0f,
+        "../Shaders/Basic.vert",
+        "../Shaders/Textured.frag",
+        "../Assets/Textures/test.png"
     );
     buildDemo(
         EngineMath::Transform(
@@ -178,52 +219,25 @@ void RobotScene::init() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(2.0f, 2.0f, 2.0f)
         ),
-        testTexture
+        testTextureUnlit
     );
 
-
-    //// I wanted to learn the non srand, rand, time way
-    //std::random_device rd;
-    //std::mt19937 gen(rd());
-    //std::uniform_real_distribution<float> randomPosX(-25.0f, 25.0f);
-    //std::uniform_real_distribution<float> randomPosY(10.0f, 25.0f);
-    //std::uniform_real_distribution<float> randomRotation(0.0f, 360.0f);
-    //std::uniform_int_distribution<int> randomColor(0, 255);
-
-    //for (int i = 0; i < 25; ++i) {
-    //    addRootObject(std::make_unique<Robot>(
-    //        EngineMath::Transform(
-    //            EngineMath::Vector3(randomPosX(gen), 2.25f, randomPosY(gen)),
-    //            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(0.0f, 1.0f, 0.0f), EngineMath::degreesToRadians(randomRotation(gen))),
-    //            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
-    //        ),
-    //        EngineUtil::ColorRGB(randomColor(gen), randomColor(gen), randomColor(gen))
-    //    ));
-    //}
-
-    constexpr int pointCount = 16;
-    constexpr float radius = 5.0f;
-
-    std::vector<EngineMath::Vector3> positions;
-    positions.reserve(pointCount);
-
-    for (int i = 0; i < pointCount; ++i) {
-        const float angle = 2.0f * EngineMath::PI * i / pointCount;
-        positions.emplace_back(radius * std::cos(angle), 2.25f, radius * std::sin(angle));
-    }
-
-    addRootObject(std::make_unique<PathedParent>(
+    std::unique_ptr<PathedParent> robotPather = std::make_unique<PathedParent>(
         std::make_unique<Robot>(
             EngineMath::Transform(
                 EngineMath::Vector3(0.0f, 0.0f, 0.0f),
                 EngineMath::Quaternion::identity(),
                 EngineMath::Vector3(1.0f, 1.0f, 1.0f)
             ),
-            EngineUtil::ColorRGB(255, 255, 255)
+            testNormalMetalness
         ),
-        positions,
-        10.0f
-    ));
+        std::vector<EngineMath::Vector3>(),
+        5.0f,
+        EngineRender::Material(EngineUtil::ColorRGB(255, 0, 0))
+    );
+    robotPather_ = robotPather.get();
+    addRootObject(std::move(robotPather));
+    changePath();
 
     addRootObject(std::make_unique<AxisDisplay>());
 
@@ -235,18 +249,32 @@ void RobotScene::init() {
         )
     ));
 
-    std::cout << "Controls:\n";
-    std::cout << "1: Show primitive mesh as wires\n";
-    std::cout << "2: Show primitive mesh as solids\n";
-    std::cout << "3: Toggle axis display\n";
-    std::cout << "4/F4: Increase/Decrease angle of elbows\n";
-    std::cout << "5/F5: Increase/Decrease angle of shoulders\n";
-    std::cout << "6/F6: Increase/Decrease angle of hips\n";
-    std::cout << "7/F7: Increase/Decrease angle of knees\n";
-    std::cout << "Arrow Keys: Tank controls\n";
-    std::cout << "Space/LCtrl: Fly up/down\n";
-    std::cout << "0: Print FPS\n";
-    std::cout << "ESC: Quit\n";
+    //addRootObject(std::make_unique<ObjMesh>(
+    //    EngineMath::Transform(),
+    //    testNormal,
+    //    "../Assets/Objs/tree.obj"
+    //));
+
+    addRootObject(std::make_unique<ArcballCamera>(EngineMath::Vector3(0.0f, 0.0f, 0.0f), 10.0f));
+
+    std::cout << "\n"
+        << "Asset Credits:\n"
+        << "All material assets come from ambientCG\n";
+    
+    std::cout << "\n"
+        << "Controls:\n"
+        << "1: Show primitive mesh as wires\n"
+        << "2: Show primitive mesh as solids\n"
+        << "3: Toggle axis display\n"
+        << "4/F4: Increase/Decrease angle of elbows\n"
+        << "5/F5: Increase/Decrease angle of shoulders\n"
+        << "6/F6: Increase/Decrease angle of hips\n"
+        << "7/F7: Increase/Decrease angle of knees\n"
+        << "Arrow Keys: Tank controls\n"
+        << "Space/LCtrl: Fly up/down\n"
+        << "0: Print FPS\n"
+        << "ESC: Quit\n";
+
     std::cout << std::endl;
 }
 
@@ -259,6 +287,9 @@ void RobotScene::update() {
     if (InputManager::getInstance().isPressed('0')) {
         std::cout << "FPS: " << Engine::getInstance().getFPS() << std::endl;
     }
+    if (InputManager::getInstance().isPressed('p')) {
+        changePath();
+    }
 }
 
 void RobotScene::draw() const {
@@ -266,7 +297,7 @@ void RobotScene::draw() const {
 }
 
 void RobotScene::deInit() {
-
+    robotPather_ = nullptr;
 }
 
 void RobotScene::buildDemo(EngineMath::Transform transform, EngineRender::Material material) {
@@ -326,4 +357,21 @@ void RobotScene::buildDemo(EngineMath::Transform transform, EngineRender::Materi
         material,
         "../Assets/Objs/house.obj"
     ));
+}
+
+void RobotScene::changePath() {
+    PathedParent* obj = dynamic_cast<PathedParent*>(robotPather_);
+
+    constexpr int totalOptions = 2;
+    
+    if (obj) {
+        if (pathOption_ == 0) {
+            obj->setPositionsVector(buildCirclePath(EngineMath::Vector3(0.0f, 2.5f, 0.0f), 16, 5.0f));
+        }
+        if (pathOption_ == 1) {
+            obj->setPositionsVector(buildLinePath(EngineMath::Vector3(0.0f, 2.5f, 0.0f), EngineMath::Vector3(5.0f, 2.5f, 15.0f)));
+        }
+    }
+
+    pathOption_ = (pathOption_ + 1) % totalOptions;
 }
