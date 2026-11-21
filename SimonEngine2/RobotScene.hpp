@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <iostream>
+#include <array>
 
 // Scene Interface
 #include "Scene.hpp"

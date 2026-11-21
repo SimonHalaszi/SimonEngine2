@@ -7,6 +7,8 @@
 #include "WindowConstants.hpp"
 #include "Object.hpp"
 #include "Light.hpp"
+#include "CubeMap.hpp"
+#include "Skybox.hpp"
 #include "Camera.hpp"
 
 #include "MaterialRegistry.hpp"
@@ -61,6 +63,12 @@ class Scene {
 		void addLight(Light* light);
 		void removeLight(Light* light);
 
+		void addCubeMap(CubeMap* cubeMap);
+		void removeCubeMap(CubeMap* cubeMap);
+
+		void addSkybox(Skybox* skybox);
+		void removeSkybox(Skybox* skybox);
+
 	protected:
 		// Scene specific functionalities handled here. GameObjects are updated AUTOMATICALLY based on per GameObject logic
 		virtual void init() {} // Scene specific init (Stuff not attached to GameObjects)
@@ -74,8 +82,10 @@ class Scene {
 		std::vector<std::unique_ptr<Object>> rootObjects_;
 		std::vector<std::unique_ptr<Object>> pendingRootObjects_;
 		
-		// Non-owning vector to keep track of all light objects so that they can be handled first in rendering pass
+		// Non-owning pointers to keep track of light/environmental objects so that they can be handled first in rendering pass
 		std::vector<Light*> lightObjects_;
+		std::vector<CubeMap*> cubeMapObjects_;
+		Skybox* skybox_ = nullptr;
 
 		bool isDrawing_ = true, isUpdating_ = true, isUpdatingAnimations_ = true, pauseFlag_ = false;
 

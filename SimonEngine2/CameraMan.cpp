@@ -12,8 +12,8 @@ void CameraMan::onStart() {
 	if (!scene) {
 		return;
 	}
-	scene->getCamera().setPerspective(90, 0.1, 100.0);
-	//scene->getCamera().setOrthographic(10.0, 0.1, 100.0);
+	//scene->getCamera().setPerspective(90, 0.1, 100.0);
+	scene->getCamera().setOrthographic(10.0, 0.1, 100.0);
 }
 
 void CameraMan::update() {

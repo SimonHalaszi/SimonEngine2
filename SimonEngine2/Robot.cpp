@@ -24,12 +24,25 @@ namespace {
     constexpr float headDiameter = torsoWide;
 }
 
-Robot::Robot(const EngineMath::Transform& localTransform, const EngineRender::Material* material) {
-    if (material == nullptr) {
-        material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+Robot::Robot(const EngineMath::Transform& localTransform, 
+    const EngineRender::Material* skin,
+    const EngineRender::Material* shirt,
+    const EngineRender::Material* pants
+) {
+    if (skin == nullptr) {
+        skin = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+    if (shirt == nullptr) {
+        shirt = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+    if (pants == nullptr) {
+        pants = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
     }
 
-    material_ = material;
+    skin_ = skin;
+    shirt_ = shirt;
+    pants_ = pants;
+
     isAnimating_ = true;
     localTransform_ = localTransform;
     rotationStep_ = 5.0f;
@@ -43,7 +56,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(torsoWide, torsoTall, torsoThick)
         ),
-        material_
+        shirt_
     ));
 
     // Left Arm (Limb)
@@ -56,7 +69,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            material_,
+            shirt_,
             EngineMath::Vector3(armWideThick, armTall, armWideThick)
         );
         leftArm_ = limb.get();
@@ -73,7 +86,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            material_,
+            shirt_,
             EngineMath::Vector3(armWideThick, armTall, armWideThick)
         );
         rightArm_ = limb.get();
@@ -90,7 +103,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            material_,
+            pants_,
             EngineMath::Vector3(legWideThick, legTall, legWideThick)
         );
         leftLeg_ = limb.get();
@@ -107,7 +120,7 @@ void Robot::onStart() {
 
         std::unique_ptr<Limb> limb = std::make_unique<Limb>(
             t,
-            material_,
+            pants_,
             EngineMath::Vector3(legWideThick, legTall, legWideThick)
         );
         rightLeg_ = limb.get();
@@ -121,7 +134,7 @@ void Robot::onStart() {
             EngineMath::Quaternion::identity(),
             EngineMath::Vector3(headDiameter, headDiameter, headDiameter)
         ),
-        material_,
+        skin_,
         12,
         12
     ));

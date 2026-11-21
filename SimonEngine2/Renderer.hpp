@@ -34,7 +34,10 @@ class Renderer {
 		void endPass();
 
 		void drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode = DrawMode::Solid) const;
+		
 		void submitLight(const EngineRender::LightData& light);
+		void submitCubeMap(const EngineRender::CubeMapData& cubeMap);
+		void drawSkybox(GLuint textureID);
 
 		void clear();
 
@@ -83,6 +86,7 @@ class Renderer {
 			GLint normalTextureLocation_ = -1;
 			GLint roughnessTextureLocation_ = -1;
 			GLint metallicTextureLocation_ = -1;
+			GLint cubeMapLocation_ = -1;
 			GLint timeLocation_ = -1;
 			GLint resolutionLocation_ = -1;
 			GLint uvScaleLocation_ = -1;
@@ -90,6 +94,7 @@ class Renderer {
 			GLint hasNormalTextureLocation_ = -1;
 			GLint hasRoughnessTextureLocation_ = -1;
 			GLint hasMetallicTextureLocation_ = -1;
+			GLint hasCubeMapLocation_ = -1;
 			GLint roughnessLocation_ = -1;
 			GLint metallicLocation_ = -1;
 			GLint viewPositionLocation_ = -1;
@@ -104,7 +109,13 @@ class Renderer {
 			std::array<SpotLightLocations, maxSpotLights_> spotLightLocations_;
 		};
 
+		std::vector<EngineRender::LightData> lights_;
 		void uploadLights(const ShaderProgram& program) const;
+
+		std::vector<EngineRender::CubeMapData> cubeMaps_;
+		GLuint findNearestCubeMap(const EngineMath::Matrix4& model) const;
+
+		EngineMath::Matrix4 skyboxViewProjection_ = EngineMath::Matrix4::identity();
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
 		EngineMath::Vector3 viewPosition_;
@@ -118,8 +129,6 @@ class Renderer {
 
 		mutable std::map<std::pair<GLenum, GLenum>, GLuint> samplerRegistry_;
 		GLuint getOrCreateSampler(GLenum wrapS, GLenum wrapT) const;
-
-		std::vector<EngineRender::LightData> lights_;
 
 		~Renderer() {}
 

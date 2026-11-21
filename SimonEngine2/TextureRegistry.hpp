@@ -5,6 +5,8 @@
 #include <FreeImage/FreeImage.h>
 
 #include <unordered_map>
+#include <map>
+#include <array>
 #include <string>
 #include <iostream>
 
@@ -20,13 +22,10 @@ class TextureRegistry {
 		GLuint loadTexture(std::string filepath);
 		void unloadTexture(std::string filepath);
 
-		void clearRegistry() {
-			for (auto& pair : textureMap_) {
-				glDeleteTextures(1, &pair.second);
-			}
-			std::cout << "TextureRegistry::clearRegistry : Deleted all OpenGL textures. Cleared TextureRegistry" << std::endl;
-			textureMap_.clear();
-		}
+		// Face order: right (+X), left (-X), up (+Y), down (-Y), towards (+Z), aways (-Z).
+		GLuint loadCubeMap(const std::array<std::string, 6>& facePaths);
+
+		void clearRegistry();
 
 		GLuint getTextureID(std::string filepath) const;
 
@@ -38,14 +37,11 @@ class TextureRegistry {
 	private:
 		TextureRegistry() {}
 
-		~TextureRegistry() {
-			for (auto& pair : textureMap_) {
-				glDeleteTextures(1, &pair.second);
-			}
-		}
+		~TextureRegistry();
 
 		// Registry
 		std::unordered_map<std::string, GLuint> textureMap_;
+		std::map<std::array<std::string, 6>, GLuint> cubeMapMap_;
 };
 
 #endif

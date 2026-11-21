@@ -94,6 +94,12 @@
     <Filter Include="Source Files\Objects\Custom">
       <UniqueIdentifier>{173efc0c-faac-4f73-9b34-3532afc64014}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Objects\Environmental">
+      <UniqueIdentifier>{a252eaff-8d5d-4318-9c35-6a66d4dafbcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects\Environmental">
+      <UniqueIdentifier>{27b41105-3bf2-4902-b618-bd162828135a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -191,6 +197,12 @@
     </ClCompile>
     <ClCompile Include="MaterialRegistry.cpp">
       <Filter>Source Files\Registries</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMap.cpp">
+      <Filter>Source Files\Objects\Environmental</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Objects\Environmental</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +307,12 @@
     </ClInclude>
     <ClInclude Include="MaterialRegistry.hpp">
       <Filter>Header Files\Registries</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMap.hpp">
+      <Filter>Header Files\Objects\Environmental</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.hpp">
+      <Filter>Header Files\Objects\Environmental</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

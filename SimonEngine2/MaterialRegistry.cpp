@@ -20,6 +20,9 @@ const EngineRender::Material* MaterialRegistry::get(const std::string& key) cons
     if (found != materials_.end()) {
         return &found->second;
     }
+
+    std::cout << "MaterialRegistry::get: Failed to get " << key << std::endl;
+
     return nullptr;
 }
 

@@ -45,6 +45,8 @@ uniform sampler2D uRoughnessTexture;
 uniform bool uHasRoughnessTexture;
 uniform sampler2D uMetallicTexture;
 uniform bool uHasMetallicTexture;
+uniform samplerCube uCubeMap;
+uniform bool uHasCubeMap;
 uniform float uRoughness;
 uniform float uMetallic;
 uniform vec3 uViewPosition;
@@ -77,9 +79,12 @@ vec3 fresnelSchlick(float cosine, vec3 f0) {
 float distributionGGX(vec3 normal, vec3 halfway, float roughness) {
 	float alpha = roughness * roughness;
 	float alphaSquared = alpha * alpha;
-	float normalHalfway = max(dot(normal, halfway), 0.0);
-	float denominator = normalHalfway * normalHalfway * (alphaSquared - 1.0) + 1.0;
-	return alphaSquared / max(PI * denominator * denominator, 0.000001);
+	float normalHalfway = clamp(dot(normal, halfway), 0.0, 1.0);
+	vec3 normalCrossHalfway = cross(normal, halfway);
+	float sinSquared = dot(normalCrossHalfway, normalCrossHalfway);
+	float denominator = sinSquared + alphaSquared * normalHalfway * normalHalfway;
+
+	return alphaSquared / (PI * denominator * denominator);
 }
 
 float geometrySchlickGGX(float normalDirection, float roughness) {
@@ -137,6 +142,16 @@ void main() {
 
 	vec3 viewDirection = normalize(uViewPosition - vWorldPosition);
 	vec3 illumination = baseColor.rgb * 0.05 * (1.0 - metallic);
+
+	if (uHasCubeMap) {
+		vec3 reflectionDirection = reflect(-viewDirection, normal);
+		float maxMipLevel = floor(log2(float(textureSize(uCubeMap, 0).x)));
+		vec3 environment = textureLod(uCubeMap, reflectionDirection, roughness * maxMipLevel).rgb;
+		vec3 f0 = mix(vec3(0.04), baseColor.rgb, metallic);
+		vec3 fresnel = fresnelSchlick(max(dot(normal, viewDirection), 0.0), f0);
+
+		illumination += environment * fresnel;
+	}
 
 	for (int i = 0; i < uDirectionalLightCount; ++i) {
 		DirectionalLight light = uDirectionalLights[i];

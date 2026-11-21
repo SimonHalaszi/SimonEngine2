@@ -10,7 +10,11 @@
 class Robot : public Object {
 	public:
 		Robot() = default;
-		Robot(const EngineMath::Transform& localTransform, const EngineRender::Material* material);
+		Robot(const EngineMath::Transform& localTransform,
+			const EngineRender::Material* skin,
+			const EngineRender::Material* shirt,
+			const EngineRender::Material* pants
+		);
 		void toggleAnimation() { isAnimating_ = !isAnimating_; }
 
 	protected:
@@ -22,7 +26,9 @@ class Robot : public Object {
 		Limb* rightArm_ = nullptr;
 		Limb* leftLeg_ = nullptr;
 		Limb* rightLeg_ = nullptr;
-		const EngineRender::Material* material_ = nullptr;
+		const EngineRender::Material* skin_ = nullptr;
+		const EngineRender::Material* shirt_ = nullptr;
+		const EngineRender::Material* pants_ = nullptr;
 
 		bool isAnimating_;
 

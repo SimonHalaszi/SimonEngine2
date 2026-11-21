@@ -162,6 +162,7 @@
     <ClCompile Include="ArcballCamera.cpp" />
     <ClCompile Include="AxisDisplay.cpp" />
     <ClCompile Include="CameraMan.cpp" />
+    <ClCompile Include="CubeMap.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="EngineRender.cpp" />
     <ClCompile Include="EngineShader.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Ellipsoid.cpp" />
     <ClCompile Include="Edge.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="TextureRegistry.cpp" />
   </ItemGroup>
@@ -199,6 +201,7 @@
     <ClInclude Include="ArcballCamera.hpp" />
     <ClInclude Include="AxisDisplay.hpp" />
     <ClInclude Include="CameraMan.hpp" />
+    <ClInclude Include="CubeMap.hpp" />
     <ClInclude Include="DirectionalLight.hpp" />
     <ClInclude Include="EngineRender.hpp" />
     <ClInclude Include="EngineShader.hpp" />
@@ -226,6 +229,7 @@
     <ClInclude Include="Robot.hpp" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Ellipsoid.hpp" />
+    <ClInclude Include="Skybox.hpp" />
     <ClInclude Include="SpotLight.hpp" />
     <ClInclude Include="TextureRegistry.hpp" />
     <ClInclude Include="WindowConstants.hpp" />

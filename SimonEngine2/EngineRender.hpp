@@ -128,6 +128,11 @@ namespace EngineRender {
 		float innerConeCos_ = 1.0f;
 		float outerConeCos_ = 1.0f;
 	};
+
+	struct CubeMapData {
+		EngineMath::Vector3 position_;
+		GLuint textureID_ = 0;
+	};
 }
 
 #endif 

@@ -44,10 +44,20 @@ void Scene::sceneDraw() const {
 		}
 	}
 
+	for (CubeMap* cubeMap : cubeMapObjects_) {
+		if (cubeMap->isAlive()) {
+			cubeMap->submitCubeMapInfo();
+		}
+	}
+
 	draw();
 
 	for (auto& rootObject : rootObjects_) {
 		rootObject->rootDraw();
+	}
+
+	if (skybox_ && skybox_->isAlive() && skybox_->isDrawing()) {
+		Renderer::getInstance().drawSkybox(skybox_->getTextureID());
 	}
 }
 
@@ -105,5 +115,35 @@ void Scene::removeLight(Light* light) {
 			lightObjects_.erase(it);
 			return;
 		}
+	}
+}
+
+void Scene::addCubeMap(CubeMap* cubeMap) {
+	cubeMapObjects_.push_back(cubeMap);
+}
+
+void Scene::removeCubeMap(CubeMap* cubeMap) {
+	for (auto it = cubeMapObjects_.begin(); it != cubeMapObjects_.end(); ++it) {
+		if (*it == cubeMap) {
+			cubeMapObjects_.erase(it);
+			return;
+		}
+	}
+}
+
+void Scene::addSkybox(Skybox* skybox) {
+	if (!skybox) {
+		throw std::invalid_argument("Scene::addSkybox: skybox cannot be null");
+	}
+	if (skybox_ && skybox_ != skybox) {
+		throw std::runtime_error("Scene::addSkybox: scene already has a skybox");
+	}
+
+	skybox_ = skybox;
+}
+
+void Scene::removeSkybox(Skybox* skybox) {
+	if (skybox_ == skybox) {
+		skybox_ = nullptr;
 	}
 }

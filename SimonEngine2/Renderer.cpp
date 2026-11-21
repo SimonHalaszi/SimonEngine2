@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 #include "Camera.hpp"
+#include "MeshRegistry.hpp"
 
 void Renderer::loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath) {
 	if (programRegistry_.find(name) != programRegistry_.end()) {
@@ -31,6 +32,8 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 		program.roughnessLocation_ = glGetUniformLocation(program.id_, "uRoughness");
 		program.metallicLocation_ = glGetUniformLocation(program.id_, "uMetallic");
 		program.viewPositionLocation_ = glGetUniformLocation(program.id_, "uViewPosition");
+		program.cubeMapLocation_ = glGetUniformLocation(program.id_, "uCubeMap");
+		program.hasCubeMapLocation_ = glGetUniformLocation(program.id_, "uHasCubeMap");
 
 		program.directionalLightCountLocation_ = glGetUniformLocation(program.id_, "uDirectionalLightCount");
 		for (int i = 0; i < maxDirectionalLights_; ++i) {
@@ -95,6 +98,19 @@ bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int heig
 	const float aspect = static_cast<float>(width) / static_cast<float>(height);
 
 	viewProjection_ = camera.getViewProjectionMatrix(aspect);
+
+	EngineMath::Matrix4 skyboxView = camera.getViewMatrix();
+	skyboxView.m_[12] = 0.0f;
+	skyboxView.m_[13] = 0.0f;
+	skyboxView.m_[14] = 0.0f;
+
+	const EngineMath::Matrix4 skyboxProjection =
+		camera.getProjectionMode() == Camera::ProjectionMode::Ortho
+		? EngineMath::Matrix4::perspective(EngineMath::degreesToRadians(90.0f), aspect, 0.1f, 10.0f)
+		: camera.getProjectionMatrix(aspect);
+
+	skyboxViewProjection_ = skyboxProjection * skyboxView;
+
 	viewPosition_ = camera.getPosition();
 	passTime_ = time;
 	passResolutionX_ = static_cast<float>(width);
@@ -103,6 +119,7 @@ bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int heig
 	glViewport(x, y, width, height);
 
 	lights_.clear();
+	cubeMaps_.clear();
 	resetBindingCache();
 	passActive_ = true;
 	return true;
@@ -117,6 +134,10 @@ void Renderer::endPass() {
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	glBindSampler(4, 0);
 	glActiveTexture(GL_TEXTURE0);
 
 	resetBindingCache();
@@ -242,6 +263,20 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 		glBindTexture(GL_TEXTURE_2D, textures[unit]);
 		glBindSampler(unit, textures[unit] != 0 ? sampler : 0);
 	}
+
+	const GLuint cubeMap = findNearestCubeMap(model);
+
+	if (program.hasCubeMapLocation_ != -1) {
+		glUniform1i(program.hasCubeMapLocation_, cubeMap != 0 ? GL_TRUE : GL_FALSE);
+	}
+
+	if (program.cubeMapLocation_ != -1) {
+		glUniform1i(program.cubeMapLocation_, 4);
+	}
+
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap);
+	glBindSampler(4, 0);
 	glActiveTexture(GL_TEXTURE0);
 
 	if (mesh.vao_ != boundVAO_) {
@@ -256,6 +291,65 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 	}
 
 	glDrawElements(topology, indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+void Renderer::drawSkybox(GLuint textureID) {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::drawSkybox: no active render pass");
+	}
+	if (textureID == 0) {
+		throw std::invalid_argument("Renderer::drawSkybox: texture ID cannot be zero");
+	}
+
+	const std::string shaderKey = getOrLoadShader("../Shaders/Skybox.vert", "../Shaders/Skybox.frag");
+	const ShaderProgram& program = programRegistry_.at(shaderKey);
+	const EngineRender::GPUMesh* mesh = MeshRegistry::getInstance().getGPURectangularPrism();
+
+	if (!mesh || mesh->vao_ == 0 || mesh->faceIndexBuffer_ == 0 || mesh->faceIndexCount_ <= 0) {
+		throw std::runtime_error("Renderer::drawSkybox: failed to get cube mesh");
+	}
+
+	GLint previousDepthFunc = GL_LESS;
+	GLboolean previousDepthMask = GL_TRUE;
+	GLint previousCullFace = GL_BACK;
+	const GLboolean cullingWasEnabled = glIsEnabled(GL_CULL_FACE);
+	glGetIntegerv(GL_DEPTH_FUNC, &previousDepthFunc);
+	glGetBooleanv(GL_DEPTH_WRITEMASK, &previousDepthMask);
+	glGetIntegerv(GL_CULL_FACE_MODE, &previousCullFace);
+
+	glUseProgram(program.id_);
+	glUniformMatrix4fv(program.viewProjLocation_, 1, GL_FALSE, skyboxViewProjection_.data());
+
+	const EngineMath::Matrix4 model = EngineMath::Matrix4::scale({ 2.0f, 2.0f, 2.0f });
+	glUniformMatrix4fv(program.modelLocation_, 1, GL_FALSE, model.data());
+
+	if (program.cubeMapLocation_ != -1) {
+		glUniform1i(program.cubeMapLocation_, 4);
+	}
+
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glBindSampler(4, 0);
+
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glBindVertexArray(mesh->vao_);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->faceIndexBuffer_);
+	glDrawElements(GL_TRIANGLES, mesh->faceIndexCount_, GL_UNSIGNED_INT, nullptr);
+
+	glDepthFunc(static_cast<GLenum>(previousDepthFunc));
+	glDepthMask(previousDepthMask);
+	glCullFace(static_cast<GLenum>(previousCullFace));
+	if (!cullingWasEnabled) {
+		glDisable(GL_CULL_FACE);
+	}
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+	glActiveTexture(GL_TEXTURE0);
+	resetBindingCache();
 }
 
 std::string Renderer::getOrLoadShader(const std::string& vertPath, const std::string& fragPath) {
@@ -347,6 +441,14 @@ void Renderer::uploadLights(const ShaderProgram& program) const {
 	}
 }
 
+void Renderer::submitCubeMap(const EngineRender::CubeMapData& cubeMap) {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::submitCubeMap: no active render pass");
+	}
+
+	cubeMaps_.push_back(cubeMap);
+}
+
 GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
 	auto validWrap = [](GLenum wrap) {
 		return wrap == GL_REPEAT || wrap == GL_MIRRORED_REPEAT || wrap == GL_CLAMP_TO_EDGE;
@@ -425,4 +527,24 @@ void Renderer::submitLight(const EngineRender::LightData& light) {
 	}
 
 	lights_.push_back(light);
+}
+
+GLuint Renderer::findNearestCubeMap(const EngineMath::Matrix4& model) const {
+	const float* matrix = model.data();
+	const EngineMath::Vector3 position(matrix[12], matrix[13], matrix[14]);
+
+	GLuint nearestTexture = 0;
+	float nearestDistanceSquared = 0.0f;
+
+	for (const EngineRender::CubeMapData& cubeMap : cubeMaps_) {
+		const EngineMath::Vector3 offset = cubeMap.position_ - position;
+		const float distanceSquared = offset.lengthSquared();
+
+		if (nearestTexture == 0 || distanceSquared < nearestDistanceSquared) {
+			nearestTexture = cubeMap.textureID_;
+			nearestDistanceSquared = distanceSquared;
+		}
+	}
+
+	return nearestTexture;
 }
