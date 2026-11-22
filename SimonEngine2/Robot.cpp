@@ -29,16 +29,6 @@ Robot::Robot(const EngineMath::Transform& localTransform,
     const EngineRender::Material* shirt,
     const EngineRender::Material* pants
 ) {
-    if (skin == nullptr) {
-        skin = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
-    }
-    if (shirt == nullptr) {
-        shirt = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
-    }
-    if (pants == nullptr) {
-        pants = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
-    }
-
     skin_ = skin;
     shirt_ = shirt;
     pants_ = pants;
@@ -49,6 +39,16 @@ Robot::Robot(const EngineMath::Transform& localTransform,
 }
 
 void Robot::onStart() {
+    if (skin_ == nullptr) {
+        skin_ = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+    if (shirt_ == nullptr) {
+        shirt_ = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+    if (pants_ == nullptr) {
+        pants_ = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+
     // Body
     addChild(std::make_unique<RectangularPrism>(
         EngineMath::Transform(

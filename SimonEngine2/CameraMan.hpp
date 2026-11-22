@@ -8,9 +8,9 @@
 
 class CameraMan : public Object {
 	public:
-		CameraMan() = default;
 		CameraMan(const EngineMath::Transform& localTransform);
 
+	protected:
 		void onStart() override final;
 		void update() override final;
 

@@ -10,7 +10,7 @@
 
 namespace {
     constexpr float directionEpsilon = 1e-8f;
-    constexpr float pointMarkerDiameter = 0.2f;
+    constexpr float pointMarkerDiameter = 0.0625f;
 
     EngineMath::Quaternion rotationFromTo(const EngineMath::Vector3& from, const EngineMath::Vector3& to) {
         const EngineMath::Vector3 axis = from.cross(to);
@@ -36,9 +36,6 @@ namespace {
 
 PathedParent::PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath::Vector3> positions, float speed, const EngineRender::Material* pathMaterial)
     : isMoving_(true), isPathDrawing_(false), drawPathAsSolid_(true), positions_(std::move(positions)), speed_(speed) {
-    if (pathMaterial == nullptr) {
-        pathMaterial = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
-    }
 
     pathMaterial_ = pathMaterial;
     edgeMaterial_ = MaterialRegistry::getInstance().getOrCreate("Edge", EngineRender::Material());
@@ -47,7 +44,9 @@ PathedParent::PathedParent(std::unique_ptr<Object> child, std::vector<EngineMath
 }
 
 void PathedParent::onStart() {
-
+    if (pathMaterial_ == nullptr) {
+        pathMaterial_ = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
 }
 
 void PathedParent::pushBackPosition(EngineMath::Vector3 position) {

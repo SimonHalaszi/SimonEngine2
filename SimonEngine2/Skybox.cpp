@@ -2,6 +2,10 @@
 #include "Engine.hpp"
 
 void Skybox::onStart() {
+	if (textureID_ == 0) {
+		throw std::runtime_error("Skybox: texture ID cannot be zero");
+	}
+
 	Engine::getInstance().getCurrentScene()->addSkybox(this);
 }
 

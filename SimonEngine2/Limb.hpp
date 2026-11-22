@@ -8,7 +8,6 @@
 
 class Limb : public Object {
     public:
-        Limb() = default;
         Limb(
             const EngineMath::Transform& localTransform,
             const EngineRender::Material* material,
@@ -33,7 +32,7 @@ class Limb : public Object {
         Primitive* lowerHalf_ = nullptr;
 
         EngineMath::Vector3 size_ = { 1.0f, 1.0f, 1.0f };
-        const EngineRender::Material* material_;
+        const EngineRender::Material* material_ = nullptr;
 
         float highAngle_ = 0.0f;
         float middleAngle_ = 0.0f;

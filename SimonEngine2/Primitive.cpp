@@ -3,10 +3,6 @@
 #include "MaterialRegistry.hpp"
 
 Primitive::Primitive(const EngineMath::Transform& localTransform, const EngineRender::Material* material) {
-	if (material == nullptr) {
-		material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
-	}
-
 	material_ = material;
 	edgeMaterial_ = MaterialRegistry::getInstance().getOrCreate("Edge", EngineRender::Material());
 	localTransform_ = localTransform;
@@ -20,6 +16,10 @@ void Primitive::setMaterial(const EngineRender::Material* material) {
 }
 
 void Primitive::onStart() {
+	if (material_ == nullptr) {
+		material_ = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+	}
+
 	resolveMeshes();
 }
 

@@ -9,6 +9,7 @@ class AxisDisplay : public Object {
 	public:
 		AxisDisplay();
 
+	protected:
 		void onStart() override final;
 		void update() override final;
 };

@@ -4,16 +4,16 @@
 #include "MaterialRegistry.hpp"
 
 Limb::Limb(const EngineMath::Transform& localTransform, const EngineRender::Material* material, const EngineMath::Vector3& size) {
-    if (material == nullptr) {
-        material = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
-    }
-
     localTransform_ = localTransform;
     material_ = material;
     size_ = size;
 }
 
 void Limb::onStart() {
+    if (material_ == nullptr) {
+        material_ = MaterialRegistry::getInstance().getOrCreate("null", EngineRender::Material());
+    }
+
     std::unique_ptr<Object> highJoint = std::make_unique<Object>();
     highJoint->setPosition(EngineMath::Vector3(0.0f, size_.y_ * 0.5f, 0.0f));
     highJoint_ = highJoint.get();

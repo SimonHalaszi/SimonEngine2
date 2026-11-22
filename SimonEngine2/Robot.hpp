@@ -9,13 +9,11 @@
 
 class Robot : public Object {
 	public:
-		Robot() = default;
 		Robot(const EngineMath::Transform& localTransform,
 			const EngineRender::Material* skin,
 			const EngineRender::Material* shirt,
 			const EngineRender::Material* pants
 		);
-		void toggleAnimation() { isAnimating_ = !isAnimating_; }
 
 	protected:
 		void onStart() override final;
@@ -30,6 +28,7 @@ class Robot : public Object {
 		const EngineRender::Material* shirt_ = nullptr;
 		const EngineRender::Material* pants_ = nullptr;
 
+		void toggleAnimation() { isAnimating_ = !isAnimating_; }
 		bool isAnimating_;
 
 		float rotationStep_;

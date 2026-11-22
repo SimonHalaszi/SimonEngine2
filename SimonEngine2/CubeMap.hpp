@@ -9,16 +9,10 @@
 
 class CubeMap : public Object {
 	public:
-		CubeMap(const EngineMath::Transform& localTransform, GLuint textureID)
-			: textureID_(textureID) {
-			if (textureID_ == 0) {
-				throw std::invalid_argument("CubeMap: texture ID cannot be zero");
-			}
-
-			localTransform_ = localTransform;
-		}
+		CubeMap(const EngineMath::Transform& localTransform, GLuint textureID);
 
 		GLuint getTextureID() const { return textureID_; }
+
 		void submitCubeMapInfo() const;
 
 	protected:
