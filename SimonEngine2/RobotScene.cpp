@@ -334,21 +334,26 @@ void RobotScene::init() {
 
     std::cout << "\n"
         << "Asset Credits:\n"
-        << "All material assets come from ambientCG\n";
+            << "\tAll material assets come from ambientCG\n";
     
     std::cout << "\n"
         << "Controls:\n"
-        << "1: Show primitive mesh as wires\n"
-        << "2: Show primitive mesh as solids\n"
-        << "3: Toggle axis display\n"
-        << "4/F4: Increase/Decrease angle of elbows\n"
-        << "5/F5: Increase/Decrease angle of shoulders\n"
-        << "6/F6: Increase/Decrease angle of hips\n"
-        << "7/F7: Increase/Decrease angle of knees\n"
-        << "Arrow Keys: Tank controls\n"
-        << "Space/LCtrl: Fly up/down\n"
-        << "0: Print FPS\n"
-        << "ESC: Quit\n";
+            << "\tGeneral:\n"
+                << "\t\t1: Show primitive mesh as wires\n"
+                << "\t\t2: Show primitive mesh as solids\n"
+                << "\t\t3: Toggle axis display\n"
+                << "\t\t4: Show paths for pathed objects\n"
+                << "\t\tS: Toggle movement of pathed objects\n"
+                << "\t\tR: Reset pathed objects\n"
+                << "\t\tP: Cycle robots paths\n"
+                << "\t\tA: Toggle robot animation\n"
+                << "\t\t0: Print FPS\n"
+                << "\t\tESC: Quit\n"
+            << "\tCamera:\n"
+                << "\t\tArrow Keys: Move around\n"
+                << "\t\tLeft Click + Drag: Rotate around target\n"
+                << "\t\tRight Click + Drag: Zoom into target\n"
+                << "\t\tShift Click + Left Click + Drag: Shift over target\n";
 
     std::cout << std::endl;
 }
