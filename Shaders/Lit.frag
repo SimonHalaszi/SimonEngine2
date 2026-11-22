@@ -127,6 +127,10 @@ void main() {
 		normal = normalize(mat3(tangent, bitangent, normal) * tangentNormal);
 	}
 
+	if (!gl_FrontFacing) {
+		normal = -normal;
+	}
+
 	float roughness = uRoughness;
 	if (uHasRoughnessTexture) {
 		roughness *= texture(uRoughnessTexture, vTexCoord).r;

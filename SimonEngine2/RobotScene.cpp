@@ -49,12 +49,12 @@ namespace {
 
 void RobotScene::init() {
     std::array<std::string, 6> facePaths = {
-        "../Assets/Textures/CubeMaps/Overcast/px.png", // +X
-        "../Assets/Textures/CubeMaps/Overcast/nx.png", // -X
-        "../Assets/Textures/CubeMaps/Overcast/py.png", // +Y
-        "../Assets/Textures/CubeMaps/Overcast/ny.png", // -Y
-        "../Assets/Textures/CubeMaps/Overcast/pz.png", // +Z
-        "../Assets/Textures/CubeMaps/Overcast/nz.png"  // -Z
+        "../Assets/Textures/CubeMaps/Dawn/px.png", // +X
+        "../Assets/Textures/CubeMaps/Dawn/nx.png", // -X
+        "../Assets/Textures/CubeMaps/Dawn/py.png", // +Y
+        "../Assets/Textures/CubeMaps/Dawn/ny.png", // -Y
+        "../Assets/Textures/CubeMaps/Dawn/pz.png", // +Z
+        "../Assets/Textures/CubeMaps/Dawn/nz.png"  // -Z
     };
 
     GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(facePaths);
@@ -65,10 +65,10 @@ void RobotScene::init() {
     addRootObject(std::make_unique<DirectionalLight>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-60.0f)),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-40.0f)),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineUtil::ColorRGB(200, 200, 200),
+        EngineUtil::ColorRGB(220, 180, 200),
         5.0f
     ));
 
