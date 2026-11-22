@@ -19,7 +19,7 @@
 
 class RobotScene : public Scene {
 	public:
-		RobotScene() : Scene(244, 244, 10), robotPather_(nullptr), pathOption_(0) {}
+		RobotScene() : Scene(244, 244), robotPather_(nullptr), pathOption_(0) {}
 
 		~RobotScene() {}
 

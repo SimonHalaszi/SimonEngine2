@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <vector>
 #include <array>
+#include <cstring>
 
 #include "EngineMath.hpp"
 #include "EngineUtil.hpp"
@@ -33,11 +34,12 @@ class Renderer {
 
 		void endPass();
 
-		void drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode = DrawMode::Solid) const;
+		void submitMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode = DrawMode::Solid);
+		void drawScene();
 		
 		void submitLight(const EngineRender::LightData& light);
 		void submitCubeMap(const EngineRender::CubeMapData& cubeMap);
-		void drawSkybox(GLuint textureID);
+		void submitSkybox(GLuint textureID);
 
 		void clear();
 
@@ -47,6 +49,17 @@ class Renderer {
 		Renderer& operator=(Renderer&&) = delete;
 	private:
 		Renderer() = default;
+
+		void drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode = DrawMode::Solid) const;
+
+		struct DrawCommand {
+			const EngineRender::GPUMesh* mesh_;
+			const EngineRender::Material* material_;
+			EngineMath::Matrix4 model_;
+			DrawMode mode_;
+		};
+
+		std::vector<DrawCommand> drawQueue_;
 
 		static constexpr int maxDirectionalLights_ = 2;
 
@@ -116,6 +129,8 @@ class Renderer {
 		GLuint findNearestCubeMap(const EngineMath::Matrix4& model) const;
 
 		EngineMath::Matrix4 skyboxViewProjection_ = EngineMath::Matrix4::identity();
+		void drawSkybox(GLuint textureID);
+		GLuint skyboxTexture_ = 0;
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
 		EngineMath::Vector3 viewPosition_;

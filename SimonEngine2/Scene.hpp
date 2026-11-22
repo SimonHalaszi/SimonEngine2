@@ -20,42 +20,38 @@
 
 class Scene {
 	public:
-		Scene(int updatesPerSecond = 20, int framesPerSeconds = 244, int animationUpdatesPerSecond = 10) : 
-			updatesPerSecond_(updatesPerSecond),
-			framesPerSeconds_(framesPerSeconds),
-			animationUpdatesPerSecond_(animationUpdatesPerSecond) 
-		{}
+		static constexpr int uncappedFrameRate = -1;
+
+		Scene(int updatesPerSecond = 20, int framesPerSecond = 244)
+			: updatesPerSecond_(updatesPerSecond), framesPerSeconds_(framesPerSecond) {
+			if (updatesPerSecond_ <= 0 ||
+				(framesPerSeconds_ <= 0 && framesPerSeconds_ != uncappedFrameRate)) {
+				throw std::invalid_argument("Scene update rate must be positive and frame rate must be positive or uncapped");
+			}
+		}
 
 		virtual ~Scene() {}
 
 		void addRootObject(std::unique_ptr<Object> gameObject);
+		
 		void sceneInit();
 
 		void sceneDeInit();
 
-		void sceneDraw() const;
+		void sceneSubmit() const;
 
 		void sceneUpdate();
 
 		int getUpdateSpeed() const { return updatesPerSecond_; }
 		int getFrameSpeed() const { return framesPerSeconds_; }
-		int getAnimationUpdateSpeed() const { return animationUpdatesPerSecond_; }
 
 		void willDraw(bool willDraw) { isDrawing_ = willDraw; }
 		void willUpdate(bool willUpdate) { isUpdating_ = willUpdate; }
-		void willUpdateAnimations(bool willUpdateAnimations) { isUpdatingAnimations_ = willUpdateAnimations; }
 		void setPauseFlag(bool pauseFlag) { pauseFlag_ = pauseFlag; }
 
 		bool isDrawing() const { return isDrawing_; }
 		bool isUpdating() const { return isUpdating_; }
-		bool isUpdatingAnimations() const { return isUpdatingAnimations_; }
 		bool isPauseFlagged() const { return pauseFlag_; }
-
-		void incrementAnimationFrame() { ++animationFrame_; }
-		int getAnimationFrame() const { return animationFrame_; }
-
-		void incrementUpdateFrame() { ++updateFrame_; }
-		int getUpdateFrame() const { return updateFrame_; }
 
 		Camera& getCamera() { return camera_; }
 		const Camera& getCamera() const { return camera_; }
@@ -87,12 +83,10 @@ class Scene {
 		std::vector<CubeMap*> cubeMapObjects_;
 		Skybox* skybox_ = nullptr;
 
-		bool isDrawing_ = true, isUpdating_ = true, isUpdatingAnimations_ = true, pauseFlag_ = false;
+		bool isDrawing_ = true, isUpdating_ = true, pauseFlag_ = false;
 
 		// Update Tick Speeds
-		int updatesPerSecond_, framesPerSeconds_, animationUpdatesPerSecond_;
-		int animationFrame_ = 0;
-		int updateFrame_ = 0;
+		int updatesPerSecond_, framesPerSeconds_;
 
 		bool isCurrentlyUpdating_ = false;
 
@@ -100,4 +94,4 @@ class Scene {
 		void processPendingRootObjects();
 };
 
-#endif // !GAME_HPP
+#endif

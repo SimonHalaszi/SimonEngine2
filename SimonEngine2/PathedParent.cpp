@@ -169,7 +169,7 @@ void PathedParent::draw() const {
 
     const EngineMath::Matrix4 pathSpaceMatrix = parent_ ? parent_->getWorldTransform().toMatrix() : EngineMath::Matrix4::identity();
 
-    // Drawing edges betwwen each position pair
+    // Drawing edges between each position pair
     if (positions_.size() >= 2) {
         const EngineRender::GPUMesh* edgeMesh = MeshRegistry::getInstance().getGPUEdge();
         if (edgeMesh) {
@@ -195,7 +195,7 @@ void PathedParent::draw() const {
                 // To keep consistent behavior with primitives
                 const EngineRender::Material* activeMaterial = drawPathAsSolid_ ? pathMaterial_ : edgeMaterial_;
 
-                Renderer::getInstance().drawMesh(*edgeMesh, *activeMaterial, pathSpaceMatrix * segmentTransform.toMatrix(), Renderer::DrawMode::Edges);
+                Renderer::getInstance().submitMesh(*edgeMesh, *activeMaterial, pathSpaceMatrix * segmentTransform.toMatrix(), Renderer::DrawMode::Edges);
             }
         }
     }
@@ -219,7 +219,7 @@ void PathedParent::draw() const {
 
                 const EngineRender::Material* activeMaterial = (drawMode == Renderer::DrawMode::Edges) ? edgeMaterial_ : pathMaterial_;
 
-                Renderer::getInstance().drawMesh(*pointMesh, *activeMaterial, pathSpaceMatrix * pointTransform.toMatrix(), drawMode);
+                Renderer::getInstance().submitMesh(*pointMesh, *activeMaterial, pathSpaceMatrix * pointTransform.toMatrix(), drawMode);
             }
         }
     }

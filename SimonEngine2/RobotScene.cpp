@@ -48,13 +48,14 @@ namespace {
 }
 
 void RobotScene::init() {
+    std::string skyBoxName = "Overcast";
     std::array<std::string, 6> facePaths = {
-        "../Assets/Textures/CubeMaps/Dawn/px.png", // +X
-        "../Assets/Textures/CubeMaps/Dawn/nx.png", // -X
-        "../Assets/Textures/CubeMaps/Dawn/py.png", // +Y
-        "../Assets/Textures/CubeMaps/Dawn/ny.png", // -Y
-        "../Assets/Textures/CubeMaps/Dawn/pz.png", // +Z
-        "../Assets/Textures/CubeMaps/Dawn/nz.png"  // -Z
+        "../Assets/Textures/CubeMaps/" + skyBoxName + "/px.png", // +X
+        "../Assets/Textures/CubeMaps/" + skyBoxName + "/nx.png", // -X
+        "../Assets/Textures/CubeMaps/" + skyBoxName + "/py.png", // +Y
+        "../Assets/Textures/CubeMaps/" + skyBoxName + "/ny.png", // -Y
+        "../Assets/Textures/CubeMaps/" + skyBoxName + "/pz.png", // +Z
+        "../Assets/Textures/CubeMaps/" + skyBoxName + "/nz.png"  // -Z
     };
 
     GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(facePaths);
@@ -62,13 +63,15 @@ void RobotScene::init() {
     addRootObject(std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID));
     addRootObject(std::make_unique<Skybox>(cubeMapID));
 
+    // EngineMath::degreesToRadians(-60.0f), EngineUtil::ColorRGB(200, 200, 200) for Overcast
+    // EngineMath::degreesToRadians(-40.0f), EngineUtil::ColorRGB(220, 180, 200) for Dawn
     addRootObject(std::make_unique<DirectionalLight>(
         EngineMath::Transform(
             EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-40.0f)),
+            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-60.0f)),
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
-        EngineUtil::ColorRGB(220, 180, 200),
+        EngineUtil::ColorRGB(200, 200, 200),
         5.0f
     ));
 
@@ -333,27 +336,27 @@ void RobotScene::init() {
     addRootObject(std::make_unique<ArcballCamera>(EngineMath::Vector3(0.0f, 0.0f, 0.0f), 10.0f));
 
     std::cout << "\n"
-        << "Asset Credits:\n"
-            << "\tAll material assets come from ambientCG\n";
+    << "Asset Credits:\n"
+        << "\tAll material assets come from ambientCG\n";
     
     std::cout << "\n"
-        << "Controls:\n"
-            << "\tGeneral:\n"
-                << "\t\t1: Show primitive mesh as wires\n"
-                << "\t\t2: Show primitive mesh as solids\n"
-                << "\t\t3: Toggle axis display\n"
-                << "\t\t4: Show paths for pathed objects\n"
-                << "\t\tS: Toggle movement of pathed objects\n"
-                << "\t\tR: Reset pathed objects\n"
-                << "\t\tP: Cycle robots paths\n"
-                << "\t\tA: Toggle robot animation\n"
-                << "\t\t0: Print FPS\n"
-                << "\t\tESC: Quit\n"
-            << "\tCamera:\n"
-                << "\t\tArrow Keys: Move around\n"
-                << "\t\tLeft Click + Drag: Rotate around target\n"
-                << "\t\tRight Click + Drag: Zoom into target\n"
-                << "\t\tShift Click + Left Click + Drag: Shift over target\n";
+    << "Controls:\n"
+        << "\tGeneral:\n"
+            << "\t\t1: Show primitive mesh as wires\n"
+            << "\t\t2: Show primitive mesh as solids\n"
+            << "\t\t3: Toggle axis display\n"
+            << "\t\t4: Show paths for pathed objects\n"
+            << "\t\tS: Toggle movement of pathed objects\n"
+            << "\t\tR: Reset pathed objects\n"
+            << "\t\tP: Cycle robots paths\n"
+            << "\t\tA: Toggle robot animation\n"
+            << "\t\t0: Print FPS\n"
+            << "\t\tESC: Quit\n"
+        << "\tCamera:\n"
+            << "\t\tArrow Keys: Move around\n"
+            << "\t\tLeft Click + Drag: Rotate around target\n"
+            << "\t\tRight Click + Drag: Zoom into target\n"
+            << "\t\tShift Click + Left Click + Drag: Shift over target\n";
 
     std::cout << std::endl;
 }

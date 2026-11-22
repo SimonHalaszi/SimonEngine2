@@ -7,6 +7,8 @@
 #include <memory>
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 
 #include "Scene.hpp"
 #include "InputManager.hpp"
@@ -32,9 +34,7 @@ class Engine {
 		void safeExit();
 
 		// Public only so buffer functions can call them
-		void frameTimer(int v);
-		void updateTimer(int v);
-		void animationTimer(int v);
+		void schedulerTimer(int v);
 
 		float getDeltaTime() const { return deltaTime_; }
 		float getFPS() const { return fps_; }
@@ -48,7 +48,7 @@ class Engine {
 		Engine& operator=(Engine&&) = delete;
 
 	private:
-		void applyPendingScene();
+		bool applyPendingScene();
 
 		// init functions
 		void createWindow();
@@ -56,6 +56,8 @@ class Engine {
 		void printGraphicsInfo() const;
 		void registerInputFuncs();
 		void registerTimeFuncs();
+
+		void configureFrameScheduling();
 
 		Engine() : currentScene_(nullptr), pendingScene_(nullptr) {}
 
@@ -68,8 +70,8 @@ class Engine {
 		bool hasStartTime_ = false;
 		float time_ = 0.0f;
 
-		std::chrono::steady_clock::time_point lastUpdateTime_{};
-		bool hasPreviousUpdate_ = false;
+		std::chrono::steady_clock::time_point nextUpdateTime_{};
+		std::chrono::steady_clock::time_point nextFrameTime_{};
 		float deltaTime_ = 0.0f;
 
 		std::chrono::steady_clock::time_point fpsMeasurementStart_ = std::chrono::steady_clock::now();

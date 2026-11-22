@@ -455,6 +455,140 @@ namespace {
 		return resolvedIndex >= 0 && resolvedIndex < positionCount;
 	}
 
+	struct ObjFaceVertex {
+		int positionIndex_;
+		int textureIndex_;
+		int normalIndex_;
+	};
+
+	struct ObjPoint2D {
+		double x_;
+		double y_;
+	};
+
+	double cross2D(const ObjPoint2D& a, const ObjPoint2D& b, const ObjPoint2D& c) {
+		return (b.x_ - a.x_) * (c.y_ - a.y_) - (b.y_ - a.y_) * (c.x_ - a.x_);
+	}
+
+	bool pointInTriangle2D(const ObjPoint2D& a, const ObjPoint2D& b, const ObjPoint2D& c, const ObjPoint2D& point, double winding, double epsilon) {
+		return cross2D(a, b, point) * winding >= -epsilon &&
+			cross2D(b, c, point) * winding >= -epsilon &&
+			cross2D(c, a, point) * winding >= -epsilon;
+	}
+
+	std::vector<ObjFaceVertex> triangulateObjPolygon(const std::vector<ObjFaceVertex>& polygon, const std::vector<EngineUtil::Vertex>& positions) {
+		double normalX = 0.0;
+		double normalY = 0.0;
+		double normalZ = 0.0;
+
+		for (std::size_t i = 0; i < polygon.size(); ++i) {
+			const EngineUtil::Vertex& current = positions[polygon[i].positionIndex_];
+			const EngineUtil::Vertex& next = positions[polygon[(i + 1) % polygon.size()].positionIndex_];
+
+			normalX += static_cast<double>(current.y_ - next.y_) * (current.z_ + next.z_);
+			normalY += static_cast<double>(current.z_ - next.z_) * (current.x_ + next.x_);
+			normalZ += static_cast<double>(current.x_ - next.x_) * (current.y_ + next.y_);
+		}
+
+		const double absNormalX = std::abs(normalX);
+		const double absNormalY = std::abs(normalY);
+		const double absNormalZ = std::abs(normalZ);
+		const int droppedAxis = absNormalX > absNormalY && absNormalX > absNormalZ ? 0 : absNormalY > absNormalZ ? 1 : 2;
+
+		std::vector<ObjPoint2D> projected;
+		projected.reserve(polygon.size());
+
+		for (const ObjFaceVertex& corner : polygon) {
+			const EngineUtil::Vertex& position = positions[corner.positionIndex_];
+			if (droppedAxis == 0) {
+				projected.push_back({ position.y_, position.z_ });
+			}
+			else if (droppedAxis == 1) {
+				projected.push_back({ position.x_, position.z_ });
+			}
+			else {
+				projected.push_back({ position.x_, position.y_ });
+			}
+		}
+
+		double signedArea = 0.0;
+		for (std::size_t i = 0; i < projected.size(); ++i) {
+			const ObjPoint2D& current = projected[i];
+			const ObjPoint2D& next = projected[(i + 1) % projected.size()];
+			signedArea += current.x_ * next.y_ - next.x_ * current.y_;
+		}
+
+		const double epsilon = std::max(std::abs(signedArea) * 1e-12, 1e-20);
+		const double winding = signedArea > 0.0 ? 1.0 : -1.0;
+		bool isConcave = false;
+		for (std::size_t i = 0; i < projected.size(); ++i) {
+			const ObjPoint2D& previous = projected[(i + projected.size() - 1) % projected.size()];
+			const ObjPoint2D& current = projected[i];
+			const ObjPoint2D& next = projected[(i + 1) % projected.size()];
+
+			if (cross2D(previous, current, next) * winding < -epsilon) {
+				isConcave = true;
+				break;
+			}
+		}
+
+		std::vector<ObjFaceVertex> triangles;
+		triangles.reserve((polygon.size() - 2) * 3);
+
+		if (!isConcave) {
+			for (std::size_t i = 1; i + 1 < polygon.size(); ++i) {
+				triangles.push_back(polygon[0]);
+				triangles.push_back(polygon[i]);
+				triangles.push_back(polygon[i + 1]);
+			}
+			return triangles;
+		}
+
+		std::vector<std::size_t> remaining(polygon.size());
+		for (std::size_t i = 0; i < remaining.size(); ++i) {
+			remaining[i] = i;
+		}
+
+		while (remaining.size() > 3) {
+			for (std::size_t i = 0; i < remaining.size(); ++i) {
+				const std::size_t previous = remaining[(i + remaining.size() - 1) % remaining.size()];
+				const std::size_t current = remaining[i];
+				const std::size_t next = remaining[(i + 1) % remaining.size()];
+
+				if (cross2D(projected[previous], projected[current], projected[next]) * winding <= epsilon) {
+					continue;
+				}
+
+				bool containsVertex = false;
+				for (const std::size_t candidate : remaining) {
+					if (candidate == previous || candidate == current || candidate == next) {
+						continue;
+					}
+
+					if (pointInTriangle2D(projected[previous], projected[current], projected[next], projected[candidate], winding, epsilon)) {
+						containsVertex = true;
+						break;
+					}
+				}
+
+				if (containsVertex) {
+					continue;
+				}
+
+				triangles.push_back(polygon[previous]);
+				triangles.push_back(polygon[current]);
+				triangles.push_back(polygon[next]);
+				remaining.erase(remaining.begin() + i);
+				break;
+			}
+		}
+
+		for (const std::size_t index : remaining) {
+			triangles.push_back(polygon[index]);
+		}
+		return triangles;
+	}
+
 	EngineUtil::Mesh buildDotObj(const std::string& filepath) {
 		std::ifstream file(filepath);
 
@@ -465,12 +599,6 @@ namespace {
 		struct ObjTextureCoord {
 			float u_;
 			float v_;
-		};
-
-		struct ObjFaceVertex {
-			int positionIndex_;
-			int textureIndex_;
-			int normalIndex_;
 		};
 
 		EngineUtil::Mesh mesh;
@@ -613,11 +741,8 @@ namespace {
 				addEdgeUnique(mesh, uniqueEdges, first, second);
 			}
 
-			for (std::size_t i = 1; i + 1 < polygon.size(); ++i) {
-				faceCorners.push_back(polygon[0]);
-				faceCorners.push_back(polygon[i]);
-				faceCorners.push_back(polygon[i + 1]);
-			}
+			const std::vector<ObjFaceVertex> triangles = triangulateObjPolygon(polygon, positions);
+			faceCorners.insert(faceCorners.end(), triangles.begin(), triangles.end());
 		}
 
 		if (positions.empty()) {

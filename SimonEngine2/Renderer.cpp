@@ -126,6 +126,9 @@ bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int heig
 }
 
 void Renderer::endPass() {
+	drawQueue_.clear();
+	skyboxTexture_ = 0;
+
 	glBindVertexArray(0);
 	glUseProgram(0);
 
@@ -291,6 +294,42 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 	}
 
 	glDrawElements(topology, indexCount, GL_UNSIGNED_INT, nullptr);
+}
+
+void Renderer::submitMesh(const EngineRender::GPUMesh& mesh, const EngineRender::Material& material, const EngineMath::Matrix4& model, DrawMode mode) {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::submitMesh: no active render pass");
+	}
+
+	drawQueue_.push_back({ &mesh, &material, model, mode });
+}
+
+void Renderer::drawScene() {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::drawScene: no active render pass");
+	}
+
+	for (const DrawCommand& command : drawQueue_) {
+		drawMesh(*command.mesh_, *command.material_, command.model_, command.mode_);
+	}
+
+	if (skyboxTexture_ != 0) {
+		drawSkybox(skyboxTexture_);
+	}
+}
+
+void Renderer::submitSkybox(GLuint textureID) {
+	if (!passActive_) {
+		throw std::logic_error("Renderer::submitSkybox: no active render pass");
+	}
+	if (textureID == 0) {
+		throw std::invalid_argument("Renderer::submitSkybox: texture ID cannot be zero");
+	}
+	if (skyboxTexture_ != 0) {
+		throw std::logic_error("Renderer::submitSkybox: a skybox is already submitted");
+	}
+
+	skyboxTexture_ = textureID;
 }
 
 void Renderer::drawSkybox(GLuint textureID) {
@@ -464,6 +503,23 @@ GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
 		return it->second;
 	}
 
+	GLint extensionCount = 0;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &extensionCount);
+
+	bool supportsAnisotropy = false;
+	for (GLint i = 0; i < extensionCount; ++i) {
+		const char* extension = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, static_cast<GLuint>(i)));
+		if (!extension) {
+			throw std::runtime_error("Renderer::getOrCreateSampler: failed to query extension");
+		}
+
+		if (std::strcmp(extension, "GL_EXT_texture_filter_anisotropic") == 0 ||
+			std::strcmp(extension, "GL_ARB_texture_filter_anisotropic") == 0) {
+			supportsAnisotropy = true;
+			break;
+		}
+	}
+
 	GLuint sampler = 0;
 	glGenSamplers(1, &sampler);
 
@@ -476,12 +532,7 @@ GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
 	glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	const bool supportsAnisotropy =
-		glutExtensionSupported("GL_EXT_texture_filter_anisotropic") ||
-		glutExtensionSupported("GL_ARB_texture_filter_anisotropic");
-
 	if (supportsAnisotropy) {
-		// These extension constants are absent from the bundled GLAD header.
 		constexpr GLenum textureMaxAnisotropy = 0x84FE;
 		constexpr GLenum maxTextureMaxAnisotropy = 0x84FF;
 
@@ -504,6 +555,9 @@ GLuint Renderer::getOrCreateSampler(GLenum wrapS, GLenum wrapT) const {
 }
 
 void Renderer::clear() {
+	drawQueue_.clear();
+	skyboxTexture_ = 0;
+
 	glUseProgram(0);
 	glBindSampler(0, 0);
 

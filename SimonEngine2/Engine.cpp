@@ -1,23 +1,52 @@
 #include "Engine.hpp"
 
-// Function wrappers needed because OpenGL expects a certain function signature for these
-void ENGINEanimationTimer(int v) {
-	Engine::getInstance().animationTimer(v);
-}
-void ENGINEupdateTimer(int v) {
-	Engine::getInstance().updateTimer(v);
-}
-void ENGINEframeTimer(int v) {
-	Engine::getInstance().frameTimer(v);
+namespace {
+	std::chrono::steady_clock::duration timerPeriod(int rate) {
+		const auto period = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+			std::chrono::duration<double>(1.0 / rate)
+		);
+		return std::max(period, std::chrono::steady_clock::duration{ 1 });
+	}
+
+	unsigned int timerDelayUntil(std::chrono::steady_clock::time_point deadline) {
+		const auto remaining = deadline - std::chrono::steady_clock::now();
+		if (remaining <= std::chrono::steady_clock::duration::zero()) {
+			return 0;
+		}
+
+		const double milliseconds =
+			std::chrono::duration<double, std::milli>(remaining).count();
+		return static_cast<unsigned int>(std::max(1.0, std::ceil(milliseconds)));
+	}
+
+	void ENGINEuncappedIdle() {
+		glutPostRedisplay();
+	}
+
+	void ENGINEschedulerTimer(int v) {
+		Engine::getInstance().schedulerTimer(v);
+	}
 }
 
 void Engine::changeScene(std::unique_ptr<Scene> newScene) {
 	pendingScene_ = std::move(newScene);
 }
 
-void Engine::applyPendingScene() {
+void Engine::configureFrameScheduling() {
+	const bool uncappedRendering = currentScene_ &&
+		currentScene_->getFrameSpeed() == Scene::uncappedFrameRate;
+
+	if (uncappedRendering) {
+		glutIdleFunc(ENGINEuncappedIdle);
+	}
+	else {
+		glutIdleFunc(nullptr);
+	}
+}
+
+bool Engine::applyPendingScene() {
 	if (!pendingScene_) {
-		return;
+		return false;
 	}
 
 	if (currentScene_) {
@@ -30,32 +59,74 @@ void Engine::applyPendingScene() {
 	if (currentScene_) {
 		currentScene_->sceneInit();
 	}
+
+	configureFrameScheduling();
+	return true;
 }
 
-void Engine::updateTimer(int v) {
-	applyPendingScene();
+void Engine::schedulerTimer(int v) {
+	const auto now = std::chrono::steady_clock::now();
 
-	const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-
-	if (hasPreviousUpdate_) {
-		deltaTime_ = std::chrono::duration<float>(now - lastUpdateTime_).count();
-	}
-	else {
-		deltaTime_ = 0.0f;
-		hasPreviousUpdate_ = true;
+	if (applyPendingScene()) {
+		const int updateRate = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
+		nextUpdateTime_ = now + timerPeriod(updateRate);
+		nextFrameTime_ = now;
 	}
 
-	lastUpdateTime_ = now;
+	const int updateRate = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
+	const auto updatePeriod = timerPeriod(updateRate);
 
-	int updatesPerSecond = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
+	int updatesRun = 0;
+	constexpr int maxCatchUpUpdates = 5;
 
-	if (currentScene_ && currentScene_->isUpdating()) {
-		currentScene_->sceneUpdate();
+	while (updatesRun < maxCatchUpUpdates) {
+		const auto updateNow = std::chrono::steady_clock::now();
+		if (updateNow < nextUpdateTime_) {
+			break;
+		}
+
+		refreshTime();
+		deltaTime_ = std::chrono::duration<float>(updatePeriod).count();
+
+		if (currentScene_ && currentScene_->isUpdating()) {
+			currentScene_->sceneUpdate();
+		}
+		InputManager::getInstance().update();
+
+		nextUpdateTime_ += updatePeriod;
+		++updatesRun;
+
+		if (applyPendingScene()) {
+			const auto sceneChangeTime = std::chrono::steady_clock::now();
+			const int newUpdateRate = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
+			nextUpdateTime_ = sceneChangeTime + timerPeriod(newUpdateRate);
+			nextFrameTime_ = sceneChangeTime;
+			break;
+		}
 	}
 
-	InputManager::getInstance().update();
+	const auto scheduleTime = std::chrono::steady_clock::now();
+	if (updatesRun == maxCatchUpUpdates && scheduleTime >= nextUpdateTime_) {
+		nextUpdateTime_ = scheduleTime + updatePeriod;
+	}
 
-	glutTimerFunc(int(1000 / updatesPerSecond), ENGINEupdateTimer, v);
+	const bool uncappedRendering = currentScene_ && currentScene_->getFrameSpeed() == Scene::uncappedFrameRate;
+
+	if (!uncappedRendering) {
+		const int frameRate = currentScene_ ? currentScene_->getFrameSpeed() : 1;
+		const auto framePeriod = timerPeriod(frameRate);
+
+		if (scheduleTime >= nextFrameTime_) {
+			glutPostRedisplay();
+
+			const auto missedPeriods = (scheduleTime - nextFrameTime_) / framePeriod + 1;
+			nextFrameTime_ += framePeriod * missedPeriods;
+		}
+	}
+
+	const auto nextDeadline = uncappedRendering ? nextUpdateTime_ : std::min(nextUpdateTime_, nextFrameTime_);
+
+	glutTimerFunc(timerDelayUntil(nextDeadline), ENGINEschedulerTimer, v);
 }
 
 void Engine::recordDrawnFrame() {
@@ -71,15 +142,6 @@ void Engine::recordDrawnFrame() {
 		framesDrawn_ = 0;
 		fpsMeasurementStart_ = now;
 	}
-}
-
-void Engine::frameTimer(int v) {
-	glutPostRedisplay();
-	int frameUpdatesPerSecond = 1;
-	if (currentScene_) {
-		frameUpdatesPerSecond = currentScene_->getFrameSpeed();
-	}
-	glutTimerFunc(int(1000 / frameUpdatesPerSecond), ENGINEframeTimer, v); // Updates
 }
 
 void GAMEdraw() {
@@ -110,7 +172,8 @@ void GAMEdraw() {
 			engine.getTime()
 		)) {
 			try {
-				scene->sceneDraw();
+				scene->sceneSubmit();
+				renderer.drawScene();
 			}
 			catch (...) {
 				renderer.endPass();
@@ -125,17 +188,6 @@ void GAMEdraw() {
 	glutSwapBuffers();
 
 	engine.recordDrawnFrame();
-}
-
-void Engine::animationTimer(int v) {
-	int animationUpdatesPerSecond = 1;
-	if (currentScene_) {
-		animationUpdatesPerSecond = currentScene_->getAnimationUpdateSpeed();
-		if (currentScene_->isUpdatingAnimations()) {
-			currentScene_->incrementAnimationFrame();
-		}
-	}
-	glutTimerFunc(int(1000 / animationUpdatesPerSecond), ENGINEanimationTimer, v); // Creates a frame delay that is counted in miliseconds
 }
 
 void Engine::createWindow() {
@@ -161,6 +213,11 @@ void Engine::initOpenGL() {
 		throw std::runtime_error("Failed to initialize GLAD");
 	}
 
+	GLenum startupError;
+	while ((startupError = glGetError()) != GL_NO_ERROR) {
+		std::cout << "OpenGL error after window creation: " << startupError << std::endl;
+	}
+
 	glutSwapInterval(0);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -182,6 +239,7 @@ void Engine::printGraphicsInfo() const {
 	std::cout << "GL_RENDERER : " << glStr(GL_RENDERER) << "\n";
 	std::cout << "GL_VERSION  : " << glStr(GL_VERSION) << "\n";
 	std::cout << "GLSL_VERSION: " << glStr(GL_SHADING_LANGUAGE_VERSION) << "\n";
+	std::cout << "FreeGLUT    : " << glutGet(GLUT_VERSION) << "\n";
 
 	GLint major = 0;
 	GLint minor = 0;
@@ -205,15 +263,32 @@ void Engine::printGraphicsInfo() const {
 }
 
 void Engine::registerInputFuncs() {
-	glutSpecialFunc(INPUTMANAGERprocSpecialKeys);
-	glutSpecialUpFunc(INPUTMANAGERprocSpecialKeysUp);
-
 	glutKeyboardFunc(INPUTMANAGERprocKeys);
 	glutKeyboardUpFunc(INPUTMANAGERprocKeysUp);
-
+	glutSpecialFunc(INPUTMANAGERprocSpecialKeys);
+	glutSpecialUpFunc(INPUTMANAGERprocSpecialKeysUp);
 	glutMouseFunc(INPUTMANAGERprocMouse);
 	glutMotionFunc(INPUTMANAGERmouseMove);
 	glutPassiveMotionFunc(INPUTMANAGERpassiveMouseMove);
+}
+
+void Engine::registerTimeFuncs() {
+	deltaTime_ = 0.0f;
+
+	fpsMeasurementStart_ = std::chrono::steady_clock::now();
+	framesDrawn_ = 0;
+	fps_ = 0.0f;
+
+	refreshTime();
+
+	const auto now = std::chrono::steady_clock::now();
+	const int updateRate = currentScene_ ? currentScene_->getUpdateSpeed() : 1;
+	nextUpdateTime_ = now + timerPeriod(updateRate);
+	nextFrameTime_ = now;
+
+	configureFrameScheduling();
+
+	glutTimerFunc(0, ENGINEschedulerTimer, 0);
 }
 
 void Engine::refreshTime() {
@@ -225,21 +300,6 @@ void Engine::refreshTime() {
 	}
 
 	time_ = std::chrono::duration<float>(now - startTime_).count();
-}
-
-void Engine::registerTimeFuncs() {
-	hasPreviousUpdate_ = false;
-	deltaTime_ = 0.0f;
-
-	fpsMeasurementStart_ = std::chrono::steady_clock::now();
-	framesDrawn_ = 0;
-	fps_ = 0.0f;
-
-	refreshTime();
-
-	glutTimerFunc(0, ENGINEanimationTimer, 0);
-	glutTimerFunc(0, ENGINEupdateTimer, 0);
-	glutTimerFunc(0, ENGINEframeTimer, 0);
 }
 
 #include "RobotScene.hpp"

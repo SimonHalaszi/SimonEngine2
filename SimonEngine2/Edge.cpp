@@ -14,7 +14,7 @@ void Edge::draw() const {
 	}
 
 	if (drawAsSolid_) {
-		Renderer::getInstance().drawMesh(
+		Renderer::getInstance().submitMesh(
 			*GPUMesh_,
 			*material_,
 			getWorldMatrix(),
@@ -22,7 +22,7 @@ void Edge::draw() const {
 		);
 	}
 	else {
-		Renderer::getInstance().drawMesh(
+		Renderer::getInstance().submitMesh(
 			*GPUMesh_,
 			*edgeMaterial_,
 			getWorldMatrix(),

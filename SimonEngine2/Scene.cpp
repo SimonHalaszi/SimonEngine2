@@ -31,13 +31,13 @@ void Scene::sceneDeInit() {
 
 	deInit();
 
+	Renderer::getInstance().clear();
 	MaterialRegistry::getInstance().clear();
 	MeshRegistry::getInstance().clear();
-	Renderer::getInstance().clear();
 	TextureRegistry::getInstance().clearRegistry();
 }
 
-void Scene::sceneDraw() const {
+void Scene::sceneSubmit() const {
 	for (Light* light : lightObjects_) {
 		if (light->isAlive()) {
 			light->submitLightInfo();
@@ -57,7 +57,7 @@ void Scene::sceneDraw() const {
 	}
 
 	if (skybox_ && skybox_->isAlive() && skybox_->isDrawing()) {
-		Renderer::getInstance().drawSkybox(skybox_->getTextureID());
+		Renderer::getInstance().submitSkybox(skybox_->getTextureID());
 	}
 }
 

@@ -29,7 +29,7 @@ void Primitive::draw() const {
 	}
 
 	if (drawAsSolid_) {
-		Renderer::getInstance().drawMesh(
+		Renderer::getInstance().submitMesh(
 			*GPUMesh_,
 			*material_,
 			getWorldMatrix(),
@@ -37,7 +37,7 @@ void Primitive::draw() const {
 		);
 	}
 	else {
-		Renderer::getInstance().drawMesh(
+		Renderer::getInstance().submitMesh(
 			*GPUMesh_,
 			*edgeMaterial_,
 			getWorldMatrix(),
