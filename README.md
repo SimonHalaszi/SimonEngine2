@@ -35,6 +35,8 @@ A lightweight 3D game engine built with C++20, OpenGL, FreeGLUT, GLAD, and FreeI
 - `SimonEngine2/` — engine and example-scene source, Visual Studio project, and bundled dependencies
 - `SimonEngine2/include/`, `SimonEngine2/lib/` — third-party headers and libraries
 
-## Screenshot as of commit
+## Screenshot as of commit 48
+<img width="1919" height="990" alt="image" src="https://github.com/user-attachments/assets/05252fe9-6f43-4854-a56f-f894a45f656f" />
+
 
 
