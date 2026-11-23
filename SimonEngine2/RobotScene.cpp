@@ -449,7 +449,7 @@ void RobotScene::changePath() {
     
     if (obj) {
         if (pathOption_ == 0) {
-            obj->setPositionsVector(buildCirclePath(EngineMath::Vector3(0.0f, 2.5f, 0.0f), 16, 5.0f));
+            obj->setPositionsVector(buildCirclePath(EngineMath::Vector3(0.0f, 2.5f, 0.0f), 32, 5.0f));
         }
         if (pathOption_ == 1) {
             obj->setPositionsVector(buildLinePath(EngineMath::Vector3(0.0f, 2.5f, 0.0f), EngineMath::Vector3(5.0f, 2.5f, 15.0f)));
