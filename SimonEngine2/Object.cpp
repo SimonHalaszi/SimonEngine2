@@ -18,7 +18,7 @@ void Object::rootOnStart() {
 
 // Runs once per update of the Scene
 void Object::rootUpdate() {
-	if (!isUpdating_) {
+	if (!isUpdating_ || !isActive_) {
 		return;
 	}
 	
@@ -53,7 +53,7 @@ void Object::rootUpdate() {
 
 // Runs once per frame update of the Scene
 void Object::rootDraw() {
-	if (!isDrawing_) {
+	if (!isDrawing_ || !isActive_) {
 		return;
 	}
 

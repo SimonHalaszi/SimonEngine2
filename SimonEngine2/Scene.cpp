@@ -39,13 +39,13 @@ void Scene::sceneDeInit() {
 
 void Scene::sceneSubmit() const {
 	for (Light* light : lightObjects_) {
-		if (light->isAlive()) {
+		if (light->isAlive() && light->isActive()) {
 			light->submitLightInfo();
 		}
 	}
 
 	for (CubeMap* cubeMap : cubeMapObjects_) {
-		if (cubeMap->isAlive()) {
+		if (cubeMap->isAlive() && cubeMap->isActive()) {
 			cubeMap->submitCubeMapInfo();
 		}
 	}
@@ -56,7 +56,7 @@ void Scene::sceneSubmit() const {
 		rootObject->rootDraw();
 	}
 
-	if (skybox_ && skybox_->isAlive() && skybox_->isDrawing()) {
+	if (skybox_ && skybox_->isActive() && skybox_->isDrawing()) {
 		Renderer::getInstance().submitSkybox(skybox_->getTextureID());
 	}
 }

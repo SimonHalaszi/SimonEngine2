@@ -2,6 +2,10 @@
 #include "Renderer.hpp"
 
 void PointLight::submitLightInfo() const {
+	if (!isActive_) {
+		return;
+	}
+
 	EngineRender::LightData data;
 	data.type_ = EngineRender::LightType::Point;
 	data.color_ = color_;

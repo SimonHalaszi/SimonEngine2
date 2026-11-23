@@ -19,7 +19,7 @@
 
 class RobotScene : public Scene {
 	public:
-		RobotScene() : Scene(244, 244), robotPather_(nullptr), pathOption_(0) {}
+		RobotScene() : Scene(244, 244), robotPather_(nullptr), cubemap_(nullptr), pathOption_(0) {}
 
 		~RobotScene() {}
 
@@ -36,6 +36,7 @@ class RobotScene : public Scene {
 		void buildDemo(EngineMath::Transform transform, const EngineRender::Material* material);
 		void changePath();
 		Object* robotPather_;
+		Object* cubemap_;
 		int pathOption_;
 };
 

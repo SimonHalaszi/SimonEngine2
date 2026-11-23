@@ -1,6 +1,10 @@
 #include "DirectionalLight.hpp"
 
 void DirectionalLight::submitLightInfo() const {
+	if (!isActive_) {
+		return;
+	}
+
 	EngineRender::LightData data;
 	data.type_ = EngineRender::LightType::Directional;
 	data.color_ = color_;

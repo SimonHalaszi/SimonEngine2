@@ -60,7 +60,10 @@ void RobotScene::init() {
 
     GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(facePaths);
 
-    addRootObject(std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID));
+    std::unique_ptr<Object> cubemap = std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID);
+    cubemap_ = cubemap.get();
+    addRootObject(std::move(cubemap));
+   
     addRootObject(std::make_unique<Skybox>(cubeMapID));
 
     // EngineMath::degreesToRadians(-60.0f), EngineUtil::ColorRGB(200, 200, 200) for Overcast
@@ -337,7 +340,8 @@ void RobotScene::init() {
 
     std::cout << "\n"
     << "Asset Credits:\n"
-        << "\tAll material assets come from ambientCG\n";
+        << "\tAll material assets come from ambientCG\n"
+        << "\tAll cubemap assets come from ambientCG\n";
     
     std::cout << "\n"
     << "Controls:\n"
@@ -346,6 +350,8 @@ void RobotScene::init() {
             << "\t\t2: Show primitive mesh as solids\n"
             << "\t\t3: Toggle axis display\n"
             << "\t\t4: Show paths for pathed objects\n"
+            << "\t\tQ: Toggle skybox\n"
+            << "\t\tW: Toggle cubemap\n"
             << "\t\tS: Toggle movement of pathed objects\n"
             << "\t\tR: Reset pathed objects\n"
             << "\t\tP: Cycle robots paths\n"
@@ -372,6 +378,12 @@ void RobotScene::update() {
     }
     if (InputManager::getInstance().isPressed('p')) {
         changePath();
+    }
+    if (InputManager::getInstance().isPressed('q')) {
+        skybox_->toggleActive();
+    }
+    if (InputManager::getInstance().isPressed('w')) {
+        cubemap_->toggleActive();
     }
 }
 

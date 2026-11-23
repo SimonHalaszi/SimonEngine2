@@ -20,6 +20,10 @@ void CubeMap::onDestruction() {
 }
 
 void CubeMap::submitCubeMapInfo() const {
+	if (!isActive_) {
+		return;
+	}
+
 	EngineRender::CubeMapData data;
 	data.position_ = getWorldTransform().position_;
 	data.textureID_ = textureID_;

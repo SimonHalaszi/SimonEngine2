@@ -13,7 +13,6 @@ class Object {
 		Object() = default;
 		virtual ~Object() = default;
 
-		// Users really shouldnt override rootOnStart/Destruction unless they know what they are doing
 		void rootOnStart(); // Runs when attached to scene
 		void rootUpdate(); // Runs once per update of the Scene
 		void rootDraw(); // Runs once per frame update of the Scene
@@ -47,8 +46,10 @@ class Object {
 
 		bool isDrawing() const { return isDrawing_; }
 		bool isUpdating() const { return isUpdating_; }
+		bool isActive() const { return isActive_; }
 		void toggleDrawing() { isDrawing_ = !isDrawing_; }
 		void toggleUpdating() { isUpdating_ = !isUpdating_; }
+		void toggleActive() { isActive_ = !isActive_; }
 
 	protected:
 		virtual void onStart() {} // Runs when attached to scene
@@ -69,8 +70,10 @@ class Object {
 		std::vector<std::unique_ptr<Object>> children_ = {};
 
 		bool hasStarted_ = false;
-		bool isDrawing_ = true;
-		bool isUpdating_ = true;
+		bool isDrawing_ = true; // Flag to do drawing logic
+		bool isUpdating_ = true; // Flag to do updating logic
+		bool isActive_ = true; // Flag to do either logic (Semantically different because isAlive = false will eventually destroy the object)
+		// Also for certain object hierarchies with special rendering properties isActive_ will be used to specifically skip those as well
 
 	private:
 		std::unique_ptr<Object> extractChild(Object* child);

@@ -30,6 +30,10 @@ SpotLight::SpotLight(
 }
 
 void SpotLight::submitLightInfo() const {
+	if (!isActive_) {
+		return;
+	}
+
 	const auto& worldTransform = getWorldTransform();
 
 	EngineRender::LightData data;
