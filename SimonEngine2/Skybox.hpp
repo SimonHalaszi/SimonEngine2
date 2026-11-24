@@ -13,6 +13,8 @@ class Skybox : public Object {
 
 		GLuint getTextureID() const { return textureID_; }
 
+		void submitSkyboxInfo() const;
+
 	protected:
 		void onStart() override;
 		void onDestruction() override;

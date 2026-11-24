@@ -12,3 +12,11 @@ void Skybox::onStart() {
 void Skybox::onDestruction() {
 	Engine::getInstance().getCurrentScene()->removeSkybox(this);
 }
+
+void Skybox::submitSkyboxInfo() const {
+	if (!isActive_) {
+		return;
+	}
+
+	Renderer::getInstance().submitSkybox(textureID_);
+}

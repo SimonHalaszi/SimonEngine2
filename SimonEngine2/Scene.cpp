@@ -56,8 +56,10 @@ void Scene::sceneSubmit() const {
 		rootObject->rootDraw();
 	}
 
-	if (skybox_ && skybox_->isActive() && skybox_->isDrawing()) {
-		Renderer::getInstance().submitSkybox(skybox_->getTextureID());
+	if (skybox_) {
+		if (skybox_->isAlive() && skybox_->isActive()) {
+			skybox_->submitSkyboxInfo();
+		}
 	}
 }
 
