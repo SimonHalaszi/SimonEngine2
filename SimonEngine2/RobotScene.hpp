@@ -35,6 +35,11 @@ class RobotScene : public Scene {
 	private:
 		void buildDemo(EngineMath::Transform transform, const EngineRender::Material* material);
 		void changePath();
+
+		void setUpNightEnvironment();
+		void setUpBaseEnvironment();
+		void setUpCloudyEnvironment();
+
 		Object* robotPather_;
 		Object* cubemap_;
 		int pathOption_;

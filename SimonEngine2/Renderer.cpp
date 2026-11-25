@@ -34,6 +34,8 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 		program.viewPositionLocation_ = glGetUniformLocation(program.id_, "uViewPosition");
 		program.cubeMapLocation_ = glGetUniformLocation(program.id_, "uCubeMap");
 		program.hasCubeMapLocation_ = glGetUniformLocation(program.id_, "uHasCubeMap");
+		program.ambientColorLocation_ = glGetUniformLocation(program.id_, "uAmbientColor");
+		program.ambientIntensityLocation_ = glGetUniformLocation(program.id_, "uAmbientIntensity");
 
 		program.directionalLightCountLocation_ = glGetUniformLocation(program.id_, "uDirectionalLightCount");
 		for (int i = 0; i < maxDirectionalLights_; ++i) {
@@ -85,8 +87,11 @@ void Renderer::loadShader(const std::string& name, const std::string& vertPath, 
 		throw;
 	}
 }
-
-bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int height, float time) {
+bool Renderer::beginPass(
+	const Camera& camera, 
+	int x, int y, int width, int height, float time, 
+	const EngineUtil::ColorRGB& ambientColor, float ambientIntensity
+) {
 	if (passActive_) {
 		throw std::logic_error("Renderer::beginPass: a pass is already active");
 	}
@@ -115,6 +120,8 @@ bool Renderer::beginPass(const Camera& camera, int x, int y, int width, int heig
 	passTime_ = time;
 	passResolutionX_ = static_cast<float>(width);
 	passResolutionY_ = static_cast<float>(height);
+	ambientColor_ = ambientColor;
+	ambientIntensity_ = ambientIntensity;
 
 	glViewport(x, y, width, height);
 
@@ -192,6 +199,14 @@ void Renderer::drawMesh(const EngineRender::GPUMesh& mesh, const EngineRender::M
 
 		if (program.resolutionLocation_ != -1) {
 			glUniform2f(program.resolutionLocation_, passResolutionX_, passResolutionY_);
+		}
+
+		if (program.ambientColorLocation_ != -1) {
+			glUniform3f(program.ambientColorLocation_, ambientColor_.r_, ambientColor_.g_, ambientColor_.b_);
+		}
+
+		if (program.ambientIntensityLocation_ != -1) {
+			glUniform1f(program.ambientIntensityLocation_, ambientIntensity_);
 		}
 
 		uploadLights(program);

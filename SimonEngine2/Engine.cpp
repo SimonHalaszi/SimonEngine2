@@ -167,9 +167,9 @@ void GAMEdraw() {
 
 		if (renderer.beginPass(
 			scene->getCamera(),
-			0, 0,
-			width, height,
-			engine.getTime()
+			0, 0, width, height,
+			engine.getTime(),
+			scene->getAmbientColor(), scene->getAmbientIntensity()
 		)) {
 			try {
 				scene->sceneSubmit();

@@ -16,6 +16,8 @@
 #include "TextureRegistry.hpp"
 #include "Renderer.hpp"
 
+#include "EngineUtil.hpp"
+
 // Scene Class
 
 class Scene {
@@ -65,6 +67,12 @@ class Scene {
 		void addSkybox(Skybox* skybox);
 		void removeSkybox(Skybox* skybox);
 
+		void setAmbientColor(const EngineUtil::ColorRGB& color) { ambientColor_ = color; }
+		void setAmbientIntensity(float intensity) { ambientIntensity_ = intensity; }
+
+		const EngineUtil::ColorRGB& getAmbientColor() const { return ambientColor_; }
+		float getAmbientIntensity() const { return ambientIntensity_; }
+
 	protected:
 		// Scene specific functionalities handled here. GameObjects are updated AUTOMATICALLY based on per GameObject logic
 		virtual void init() {} // Scene specific init (Stuff not attached to GameObjects)
@@ -82,6 +90,10 @@ class Scene {
 		std::vector<Light*> lightObjects_;
 		std::vector<CubeMap*> cubeMapObjects_;
 		Skybox* skybox_ = nullptr;
+
+		// Environmental settings
+		EngineUtil::ColorRGB ambientColor_ = EngineUtil::ColorRGB(255, 255, 255);
+		float ambientIntensity_ = 0.05f;
 
 		bool isDrawing_ = true, isUpdating_ = true, pauseFlag_ = false;
 

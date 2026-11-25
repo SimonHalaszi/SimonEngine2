@@ -50,6 +50,8 @@ uniform bool uHasCubeMap;
 uniform float uRoughness;
 uniform float uMetallic;
 uniform vec3 uViewPosition;
+uniform vec3 uAmbientColor;
+uniform float uAmbientIntensity;
 
 in vec2 vTexCoord;
 in vec3 vNormal;
@@ -145,7 +147,7 @@ void main() {
 	metallic = clamp(metallic, 0.0, 1.0);
 
 	vec3 viewDirection = normalize(uViewPosition - vWorldPosition);
-	vec3 illumination = baseColor.rgb * 0.05 * (1.0 - metallic);
+	vec3 illumination = baseColor.rgb * uAmbientColor * uAmbientIntensity * (1.0 - metallic);
 
 	if (uHasCubeMap) {
 		vec3 reflectionDirection = reflect(-viewDirection, normal);

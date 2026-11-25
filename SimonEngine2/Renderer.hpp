@@ -26,10 +26,11 @@ class Renderer {
 		void loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath);
 		std::string getOrLoadShader(const std::string& vertPath, const std::string& fragPath);
 		
-		bool beginPass(const class Camera& camera,
-			int x, int y,
-			int width, int height,
-			float time
+		bool beginPass(
+			const class Camera& camera, 
+			int x, int y, int width, int height, 
+			float time, 
+			const EngineUtil::ColorRGB& ambientColor, float ambientIntensity
 		);
 
 		void endPass();
@@ -111,6 +112,8 @@ class Renderer {
 			GLint roughnessLocation_ = -1;
 			GLint metallicLocation_ = -1;
 			GLint viewPositionLocation_ = -1;
+			GLint ambientColorLocation_ = -1;
+			GLint ambientIntensityLocation_ = -1;
 
 			GLint directionalLightCountLocation_ = -1;
 			std::array<DirectionalLightLocations, maxDirectionalLights_> directionalLightLocations_;
@@ -131,6 +134,9 @@ class Renderer {
 		EngineMath::Matrix4 skyboxViewProjection_ = EngineMath::Matrix4::identity();
 		void drawSkybox(GLuint textureID);
 		GLuint skyboxTexture_ = 0;
+
+		EngineUtil::ColorRGB ambientColor_ = EngineUtil::ColorRGB(255, 255, 255);
+		float ambientIntensity_ = 0.05f;
 
 		EngineMath::Matrix4 viewProjection_ = EngineMath::Matrix4::identity();
 		EngineMath::Vector3 viewPosition_;

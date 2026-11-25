@@ -44,39 +44,13 @@ namespace {
 
         return positions;
     }
-
 }
 
 void RobotScene::init() {
-    std::string skyBoxName = "Overcast";
-    std::array<std::string, 6> facePaths = {
-        "../Assets/Textures/CubeMaps/" + skyBoxName + "/px.png", // +X
-        "../Assets/Textures/CubeMaps/" + skyBoxName + "/nx.png", // -X
-        "../Assets/Textures/CubeMaps/" + skyBoxName + "/py.png", // +Y
-        "../Assets/Textures/CubeMaps/" + skyBoxName + "/ny.png", // -Y
-        "../Assets/Textures/CubeMaps/" + skyBoxName + "/pz.png", // +Z
-        "../Assets/Textures/CubeMaps/" + skyBoxName + "/nz.png"  // -Z
-    };
+    //setUpNightEnvironment();
+    //setUpBaseEnvironment();
+    setUpCloudyEnvironment();
 
-    GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(facePaths);
-
-    std::unique_ptr<Object> cubemap = std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID);
-    cubemap_ = cubemap.get();
-    addRootObject(std::move(cubemap));
-   
-    addRootObject(std::make_unique<Skybox>(cubeMapID));
-
-    // EngineMath::degreesToRadians(-60.0f), EngineUtil::ColorRGB(200, 200, 200) for Overcast
-    // EngineMath::degreesToRadians(-40.0f), EngineUtil::ColorRGB(220, 180, 200) for Dawn
-    addRootObject(std::make_unique<DirectionalLight>(
-        EngineMath::Transform(
-            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
-            EngineMath::Quaternion::fromAxisAngle(EngineMath::Vector3(1.0f, 0.0f, 0.0f), EngineMath::degreesToRadians(-60.0f)),
-            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
-        ),
-        EngineUtil::ColorRGB(200, 200, 200),
-        5.0f
-    ));
 
     MaterialRegistry::getInstance().getOrCreate("green", EngineRender::Material(EngineUtil::ColorRGB(0, 255, 0)));
     addRootObject(std::make_unique<PathedParent>(
@@ -469,4 +443,69 @@ void RobotScene::changePath() {
     }
 
     pathOption_ = (pathOption_ + 1) % totalOptions;
+}
+
+void RobotScene::setUpNightEnvironment() {
+    std::string skyBoxName = "../Assets/Textures/CubeMaps/Night/CubeMap.exr";
+
+    GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(skyBoxName, 0.0f, 0.1f);
+
+    std::unique_ptr<Object> cubemap = std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID);
+    cubemap_ = cubemap.get();
+    addRootObject(std::move(cubemap));
+
+    addRootObject(std::make_unique<Skybox>(cubeMapID));
+
+    setAmbientColor(EngineUtil::ColorRGB(15, 15, 15));
+    setAmbientIntensity(2.0f);
+}
+
+void RobotScene::setUpBaseEnvironment() {
+    std::string skyBoxName = "../Assets/Textures/CubeMaps/Base/CubeMap.exr";
+
+    GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(skyBoxName, 270.0f, 0.6f);
+
+    std::unique_ptr<Object> cubemap = std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID);
+    cubemap_ = cubemap.get();
+    addRootObject(std::move(cubemap));
+
+    addRootObject(std::make_unique<Skybox>(cubeMapID));
+
+    setAmbientColor(EngineUtil::ColorRGB(150, 167, 180));
+    setAmbientIntensity(0.05f);
+
+    addRootObject(std::make_unique<DirectionalLight>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Quaternion::fromXYZ(EngineMath::degreesToRadians(-20.0f), 0.0f, 0.0f),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        ),
+        EngineUtil::ColorRGB(150, 167, 180),
+        4.0f
+    ));
+}
+
+void RobotScene::setUpCloudyEnvironment() {
+    std::string skyBoxName = "../Assets/Textures/CubeMaps/Cloudy/CubeMap.exr";
+
+    GLuint cubeMapID = TextureRegistry::getInstance().loadCubeMap(skyBoxName, 270.0f);
+
+    std::unique_ptr<Object> cubemap = std::make_unique<CubeMap>(EngineMath::Transform(), cubeMapID);
+    cubemap_ = cubemap.get();
+    addRootObject(std::move(cubemap));
+
+    addRootObject(std::make_unique<Skybox>(cubeMapID));
+
+    setAmbientColor(EngineUtil::ColorRGB(170, 160, 150));
+    setAmbientIntensity(0.05f);
+
+    addRootObject(std::make_unique<DirectionalLight>(
+        EngineMath::Transform(
+            EngineMath::Vector3(0.0f, 0.0f, 0.0f),
+            EngineMath::Quaternion::fromXYZ(EngineMath::degreesToRadians(-20.0f), 0.0f, 0.0f),
+            EngineMath::Vector3(1.0f, 1.0f, 1.0f)
+        ),
+        EngineUtil::ColorRGB(200, 200, 200),
+        4.0f
+    ));
 }
