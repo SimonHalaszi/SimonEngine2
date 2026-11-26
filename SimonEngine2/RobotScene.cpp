@@ -48,8 +48,8 @@ namespace {
 
 void RobotScene::init() {
     //setUpNightEnvironment();
-    //setUpBaseEnvironment();
-    setUpCloudyEnvironment();
+    setUpBaseEnvironment();
+    //setUpCloudyEnvironment();
 
 
     MaterialRegistry::getInstance().getOrCreate("green", EngineRender::Material(EngineUtil::ColorRGB(0, 255, 0)));
@@ -472,7 +472,7 @@ void RobotScene::setUpBaseEnvironment() {
     addRootObject(std::make_unique<Skybox>(cubeMapID));
 
     setAmbientColor(EngineUtil::ColorRGB(150, 167, 180));
-    setAmbientIntensity(0.05f);
+    setAmbientIntensity(0.25f);
 
     addRootObject(std::make_unique<DirectionalLight>(
         EngineMath::Transform(
@@ -481,7 +481,7 @@ void RobotScene::setUpBaseEnvironment() {
             EngineMath::Vector3(1.0f, 1.0f, 1.0f)
         ),
         EngineUtil::ColorRGB(150, 167, 180),
-        4.0f
+        2.0f
     ));
 }
 

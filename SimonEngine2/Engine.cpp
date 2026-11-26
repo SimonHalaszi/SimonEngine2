@@ -26,6 +26,52 @@ namespace {
 	void ENGINEschedulerTimer(int v) {
 		Engine::getInstance().schedulerTimer(v);
 	}
+
+	void GAMEdraw() {
+		Engine& engine = Engine::getInstance();
+		engine.refreshTime();
+		const Scene* scene = engine.getCurrentScene();
+
+		if (scene == nullptr) {
+			return;
+		}
+
+		const int width = glutGet(GLUT_WINDOW_WIDTH);
+		const int height = glutGet(GLUT_WINDOW_HEIGHT);
+
+		if (width <= 0 || height <= 0) {
+			return;
+		}
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		if (scene->isDrawing()) {
+			Renderer& renderer = Renderer::getInstance();
+
+			if (renderer.beginPass(
+				scene->getCamera(),
+				0, 0, width, height,
+				engine.getTime(),
+				scene->getAmbientColor(), scene->getAmbientIntensity()
+			)) {
+				try {
+					scene->sceneSubmit();
+					renderer.drawScene();
+				}
+				catch (...) {
+					renderer.endPass();
+					throw;
+				}
+
+				renderer.endPass();
+			}
+		}
+
+		glFlush();
+		glutSwapBuffers();
+
+		engine.recordDrawnFrame();
+	}
 }
 
 void Engine::changeScene(std::unique_ptr<Scene> newScene) {
@@ -142,52 +188,6 @@ void Engine::recordDrawnFrame() {
 		framesDrawn_ = 0;
 		fpsMeasurementStart_ = now;
 	}
-}
-
-void GAMEdraw() {
-	Engine& engine = Engine::getInstance();
-	engine.refreshTime();
-	const Scene* scene = engine.getCurrentScene();
-
-	if (scene == nullptr) {
-		return;
-	}
-
-	const int width = glutGet(GLUT_WINDOW_WIDTH);
-	const int height = glutGet(GLUT_WINDOW_HEIGHT);
-
-	if (width <= 0 || height <= 0) {
-		return;
-	}
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	if (scene->isDrawing()) {
-		Renderer& renderer = Renderer::getInstance();
-
-		if (renderer.beginPass(
-			scene->getCamera(),
-			0, 0, width, height,
-			engine.getTime(),
-			scene->getAmbientColor(), scene->getAmbientIntensity()
-		)) {
-			try {
-				scene->sceneSubmit();
-				renderer.drawScene();
-			}
-			catch (...) {
-				renderer.endPass();
-				throw;
-			}
-
-			renderer.endPass();
-		}
-	}
-
-	glFlush();
-	glutSwapBuffers();
-
-	engine.recordDrawnFrame();
 }
 
 void Engine::createWindow() {
@@ -311,6 +311,8 @@ void Engine::init() {
 	registerInputFuncs();
 
 	if (!currentScene_) {
+		std::cout << "Engine::init : Please wait while start up scene loads assets\n" << std::endl;
+
 		currentScene_ = std::make_unique<RobotScene>();
 	}
 

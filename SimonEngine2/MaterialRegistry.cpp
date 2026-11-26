@@ -12,6 +12,9 @@ const EngineRender::Material* MaterialRegistry::getOrCreate(const std::string& k
     initialized.init();
 
     const auto inserted = materials_.emplace(key, std::move(initialized));
+
+    std::cout << "MaterialRegistry::getOrCreate : Material created with key " << key << std::endl;
+
     return &inserted.first->second;
 }
 

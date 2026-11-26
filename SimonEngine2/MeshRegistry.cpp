@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <unordered_set>
 #include <vector>
+#include <iostream>
 
 #include "EngineMath.hpp"
 
@@ -831,6 +832,9 @@ const EngineUtil::Mesh* MeshRegistry::getEdge() {
 	}
 
 	auto inserted = registry_.insert({ key, buildEdge() });
+
+	std::cout << "MeshRegistry::getEdge : Edge created with key " << key << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -843,6 +847,9 @@ const EngineUtil::Mesh* MeshRegistry::getRectangularPrism() {
 	}
 
 	auto inserted = registry_.insert({ key, buildRectangularPrism() });
+
+	std::cout << "MeshRegistry::getRectangularPrism : Rectangular Prism created with key " << key << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -859,6 +866,9 @@ const EngineUtil::Mesh* MeshRegistry::getPlane(int subdivisions) {
 	}
 
 	auto inserted = registry_.insert({ key, buildPlane(subdivisions) });
+
+	std::cout << "MeshRegistry::getPlane : Plane created with key " << key << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -875,6 +885,9 @@ const EngineUtil::Mesh* MeshRegistry::getCone(int slices) {
 	}
 
 	auto inserted = registry_.insert({ key, buildCone(slices) });
+
+	std::cout << "MeshRegistry::getCone : Cone created with key " << key << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -891,6 +904,9 @@ const EngineUtil::Mesh* MeshRegistry::getCylinder(int slices) {
 	}
 
 	auto inserted = registry_.insert({ key, buildCylinder(slices) });
+
+	std::cout << "MeshRegistry::getCylinder : Cylinder created with key " << key << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -910,6 +926,9 @@ const EngineUtil::Mesh* MeshRegistry::getEllipsoid(int slices, int stacks) {
 	}
 
 	auto inserted = registry_.insert({ key, buildEllipsoid(slices, stacks) });
+
+	std::cout << "MeshRegistry::getEllipsoid : Ellipsoid created with key " << key << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -926,6 +945,9 @@ const EngineUtil::Mesh* MeshRegistry::getDotObj(const std::string& filepath) {
 	}
 
 	auto inserted = registry_.insert({ key, buildDotObj(filepath) });
+
+	std::cout << "MeshRegistry::getDotObj : Obj mesh created with from file path " << filepath << std::endl;
+
 	return &inserted.first->second;
 }
 
@@ -948,6 +970,9 @@ const EngineRender::GPUMesh* MeshRegistry::getOrCreateGPUMesh(const std::string&
 
 	EngineRender::GPUMesh* rawPtr = gpuMesh.get();
 	GPURegistry_.emplace(key, std::move(gpuMesh));
+
+	std::cout << "MeshRegistry::getOrCreateGPUMesh : Created GPU mesh with key " << key << std::endl;
+
 	return rawPtr;
 }
 

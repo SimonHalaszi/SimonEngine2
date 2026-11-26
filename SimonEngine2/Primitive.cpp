@@ -4,7 +4,7 @@
 
 Primitive::Primitive(const EngineMath::Transform& localTransform, const EngineRender::Material* material) {
 	material_ = material;
-	edgeMaterial_ = MaterialRegistry::getInstance().getOrCreate("Edge", EngineRender::Material());
+	edgeMaterial_ = MaterialRegistry::getInstance().getOrCreate("edge", EngineRender::Material());
 	localTransform_ = localTransform;
 }
 
