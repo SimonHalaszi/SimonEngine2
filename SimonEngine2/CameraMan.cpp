@@ -1,12 +1,14 @@
 #include "CameraMan.hpp"
 
+#include "Engine.hpp"
+#include "GraphicsAPI.hpp"
+#include "InputManager.hpp"
+
 CameraMan::CameraMan(const EngineMath::Transform& localTransform) {
 	localTransform_ = localTransform;
 	speed_ = 5.0f;
 }
 
-#include "Engine.hpp"
- 
 void CameraMan::onStart() {
 	Scene* scene = Engine::getInstance().getCurrentScene();
 	if (!scene) {

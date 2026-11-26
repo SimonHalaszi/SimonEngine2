@@ -1,5 +1,7 @@
 #include "ObjMesh.hpp"
 
+#include "MeshRegistry.hpp"
+
 ObjMesh::ObjMesh(const EngineMath::Transform& localTransform, const EngineRender::Material* material, const std::string& dotObjfilePath)
 	: Primitive(localTransform, material), filepath_(dotObjfilePath) {}
 

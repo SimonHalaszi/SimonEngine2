@@ -1,6 +1,13 @@
 #include "Renderer.hpp"
-#include "Camera.hpp"
+
+#include <cstring>
+#include <stdexcept>
+
+#include "EngineShader.hpp"
+
 #include "MeshRegistry.hpp"
+
+#include "Camera.hpp"
 
 void Renderer::loadShader(const std::string& name, const std::string& vertPath, const std::string& fragPath) {
 	if (programRegistry_.find(name) != programRegistry_.end()) {

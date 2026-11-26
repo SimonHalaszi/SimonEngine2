@@ -1,4 +1,5 @@
 #include "PointLight.hpp"
+
 #include "Renderer.hpp"
 
 void PointLight::submitLightInfo() const {

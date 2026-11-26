@@ -1,7 +1,14 @@
 #include "Limb.hpp"
-#include "RectangularPrism.hpp"
+
+#include <memory>
+#include <utility>
+
+#include "EngineMath.hpp"
 
 #include "MaterialRegistry.hpp"
+
+#include "Primitive.hpp"
+#include "RectangularPrism.hpp"
 
 Limb::Limb(const EngineMath::Transform& localTransform, const EngineRender::Material* material, const EngineMath::Vector3& size) {
     localTransform_ = localTransform;

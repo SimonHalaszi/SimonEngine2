@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <memory>
 #include <vector>
+#include <FreeImage/FreeImage.h>
 
 // Changed to load one texture at a time given a string filepath, adds to registry, also returns id
 // Also fixed to support the alpha channel, and handle the RGBA to BGRA conversion that FreeImage doesnt do by default

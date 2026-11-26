@@ -1,7 +1,6 @@
 #ifndef INPUT_MANAGER_HPP
 #define INPUT_MANAGER_HPP
 
-#include "GraphicsAPI.hpp"
 #include <array>
 #include <string>
 

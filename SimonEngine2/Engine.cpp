@@ -1,5 +1,21 @@
 #include "Engine.hpp"
 
+#include <algorithm>
+#include <chrono>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <utility>
+
+#include "GraphicsAPI.hpp"
+#include "InputManager.hpp"
+#include "Renderer.hpp"
+#include "WindowConstants.hpp"
+
+#include "RobotScene.hpp"
+
 namespace {
 	std::chrono::steady_clock::duration timerPeriod(int rate) {
 		const auto period = std::chrono::duration_cast<std::chrono::steady_clock::duration>(
@@ -301,8 +317,6 @@ void Engine::refreshTime() {
 
 	time_ = std::chrono::duration<float>(now - startTime_).count();
 }
-
-#include "RobotScene.hpp"
 
 void Engine::init() {
 	createWindow();

@@ -1,5 +1,7 @@
 #include "DirectionalLight.hpp"
 
+#include "Renderer.hpp"
+
 void DirectionalLight::submitLightInfo() const {
 	if (!isActive_) {
 		return;

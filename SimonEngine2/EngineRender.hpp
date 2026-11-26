@@ -1,13 +1,10 @@
 #ifndef ENGINE_RENDER_HPP
 #define ENGINE_RENDER_HPP
 
-#include <stdexcept>
 #include <string>
-#include <limits>
-#include <cstddef>
 
-#include "EngineUtil.hpp"
 #include "EngineMath.hpp"
+#include "EngineUtil.hpp"
 #include "GraphicsAPI.hpp"
 
 namespace EngineRender {

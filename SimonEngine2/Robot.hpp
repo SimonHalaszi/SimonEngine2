@@ -1,11 +1,12 @@
 #ifndef ROBOT_HPP
 #define ROBOT_HPP
 
-#include "Object.hpp"
 #include "EngineMath.hpp"
-#include "EngineUtil.hpp"
+#include "EngineRender.hpp"
 
-#include "Limb.hpp"
+#include "Object.hpp"
+
+class Limb;
 
 class Robot : public Object {
 	public:

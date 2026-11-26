@@ -1,12 +1,11 @@
 #ifndef LIGHT_HPP
 #define LIGHT_HPP
 
-#include "Object.hpp"
-#include "Renderer.hpp"
-
 #include "EngineMath.hpp"
 #include "EngineRender.hpp"
 #include "EngineUtil.hpp"
+
+#include "Object.hpp"
 
 
 class Light : public Object {

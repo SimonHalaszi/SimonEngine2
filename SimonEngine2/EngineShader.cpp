@@ -1,5 +1,12 @@
 #include "EngineShader.hpp"
 
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+
+#include "GraphicsAPI.hpp"
+
 namespace {
 	std::string readFile(const std::string& path) {
 		std::ifstream file(path);

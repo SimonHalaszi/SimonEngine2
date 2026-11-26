@@ -1,11 +1,9 @@
 #ifndef CUBE_MAP_HPP
 #define CUBE_MAP_HPP
 
-#include <array>
-#include <string>
+#include "GraphicsAPI.hpp"
 
 #include "Object.hpp"
-#include "GraphicsAPI.hpp"
 
 class CubeMap : public Object {
 	public:

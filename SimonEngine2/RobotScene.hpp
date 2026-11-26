@@ -1,21 +1,10 @@
 #ifndef ROBOT_SCENE_HPP
 #define ROBOT_SCENE_HPP
 
-// Needed C++ Includes
-#include <string>
-#include <memory>
-#include <iostream>
-#include <array>
+#include "EngineMath.hpp"
+#include "EngineRender.hpp"
 
-// Scene Interface
 #include "Scene.hpp"
-
-// Other SimonEngine includes
-#include "InputManager.hpp"
-#include "EngineUtil.hpp"
-
-// Scene Specific C++
-#include <random>
 
 class RobotScene : public Scene {
 	public:

@@ -1,25 +1,34 @@
 #include "RobotScene.hpp"
 
+#include <cmath>
+#include <iostream>
+#include <memory>
+#include <utility>
+#include <vector>
+
+#include "Engine.hpp"
+#include "InputManager.hpp"
+
+#include "MaterialRegistry.hpp"
+#include "TextureRegistry.hpp"
+
 // Specific Objects
-#include "CameraMan.hpp"
 #include "ArcballCamera.hpp"
-
-#include "PathedParent.hpp"
-#include "Robot.hpp"
 #include "AxisDisplay.hpp"
-
-#include "Edge.hpp"
+#include "CameraMan.hpp"
 #include "Cone.hpp"
-#include "Cylinder.hpp"
-#include "Ellipsoid.hpp"
-#include "Plane.hpp"
-#include "RectangularPrism.hpp"
-#include "ObjMesh.hpp"
-
-#include "DirectionalLight.hpp"
-#include "PointLight.hpp"
-#include "SpotLight.hpp"
 #include "CubeMap.hpp"
+#include "Cylinder.hpp"
+#include "DirectionalLight.hpp"
+#include "Edge.hpp"
+#include "Ellipsoid.hpp"
+#include "ObjMesh.hpp"
+#include "PathedParent.hpp"
+#include "Plane.hpp"
+#include "PointLight.hpp"
+#include "RectangularPrism.hpp"
+#include "Robot.hpp"
+#include "SpotLight.hpp"
 #include "Skybox.hpp"
 
 namespace {
@@ -340,8 +349,6 @@ void RobotScene::init() {
 
     std::cout << std::endl;
 }
-
-#include "Engine.hpp"
 
 void RobotScene::update() {
     if (InputManager::getInstance().isPressed(27)) {

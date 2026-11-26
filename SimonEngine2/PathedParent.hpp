@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "EngineRender.hpp"
+
 #include "Object.hpp"
 
 class PathedParent : public Object {

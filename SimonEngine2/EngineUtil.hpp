@@ -3,8 +3,8 @@
 
 // My little util library!
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace EngineUtil {
 	class ColorRGB {

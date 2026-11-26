@@ -1,15 +1,12 @@
 #ifndef TEXTURE_REGISTRY_HPP
 #define TEXTURE_REGISTRY_HPP
 
-#include "GraphicsAPI.hpp"
-#include <FreeImage/FreeImage.h>
-
-#include <unordered_map>
 #include <map>
-#include <array>
 #include <string>
-#include <iostream>
 #include <tuple>
+#include <unordered_map>
+
+#include "GraphicsAPI.hpp"
 
 // Registry for textures
 

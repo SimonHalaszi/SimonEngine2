@@ -1,21 +1,10 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "GraphicsAPI.hpp"
-
 #include <chrono>
 #include <memory>
-#include <stdexcept>
-#include <iostream>
-#include <algorithm>
-#include <cmath>
 
 #include "Scene.hpp"
-#include "InputManager.hpp"
-#include "EngineShader.hpp"
-#include "Renderer.hpp"
-
-#include "WindowConstants.hpp"
 
 // Engine Class
 class Engine {

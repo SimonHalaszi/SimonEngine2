@@ -1,11 +1,9 @@
 #ifndef SKYBOX_HPP
 #define SKYBOX_HPP
 
-#include <array>
-#include <string>
+#include "GraphicsAPI.hpp"
 
 #include "Object.hpp"
-#include "GraphicsAPI.hpp"
 
 class Skybox : public Object {
 	public:

@@ -1,6 +1,8 @@
 #include "InputManager.hpp"
-#include <iostream>
+
 #include <cctype>
+
+#include "GraphicsAPI.hpp"
 
 void InputManager::keyDown(unsigned char key) { keyCurrent_[key] = true; }
 void InputManager::keyUp(unsigned char key) { keyCurrent_[key] = false; }

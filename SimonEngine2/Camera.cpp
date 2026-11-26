@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+
 #include <algorithm>
 
 namespace {

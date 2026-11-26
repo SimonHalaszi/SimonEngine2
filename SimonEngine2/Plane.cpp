@@ -1,5 +1,7 @@
 #include "Plane.hpp"
 
+#include "MeshRegistry.hpp"
+
 Plane::Plane(const EngineMath::Transform& localTransform, const EngineRender::Material* material, int subdivisions)
 	: Primitive(localTransform, material), subdivisions_(subdivisions) {}
 

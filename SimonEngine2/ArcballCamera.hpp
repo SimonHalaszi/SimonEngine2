@@ -1,6 +1,8 @@
 #ifndef ARCBALL_CAMERA_HPP
 #define ARCBALL_CAMERA_HPP
 
+#include "EngineMath.hpp"
+
 #include "Object.hpp"
 
 class ArcballCamera : public Object {

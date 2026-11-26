@@ -1,5 +1,6 @@
-#include "Engine.hpp"
 #include <iostream>
+
+#include "Engine.hpp"
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);

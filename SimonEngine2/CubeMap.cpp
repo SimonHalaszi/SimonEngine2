@@ -1,5 +1,10 @@
 #include "CubeMap.hpp"
+
+#include <stdexcept>
+
 #include "Engine.hpp"
+#include "Renderer.hpp"
+
 #include "TextureRegistry.hpp"
 
 CubeMap::CubeMap(const EngineMath::Transform& localTransform, GLuint textureID)

@@ -1,8 +1,8 @@
 #ifndef ENGINE_MATH_HPP
 #define ENGINE_MATH_HPP
 
-#include <cmath>
 #include <array>
+#include <cmath>
 #include <stdexcept>
 
 // My little 3D math library!

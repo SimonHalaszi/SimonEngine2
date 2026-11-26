@@ -1,5 +1,9 @@
 #include "Edge.hpp"
 
+#include "Renderer.hpp"
+
+#include "MeshRegistry.hpp"
+
 Edge::Edge(const EngineMath::Transform& localTransform, const EngineRender::Material* material)
 	: Primitive(localTransform, material) {}
 

@@ -1,18 +1,16 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
+#include <array>
+#include <map>
 #include <string>
 #include <unordered_map>
-#include <map>
-#include <stdexcept>
 #include <vector>
-#include <array>
-#include <cstring>
 
 #include "EngineMath.hpp"
-#include "EngineUtil.hpp"
-#include "EngineShader.hpp"
 #include "EngineRender.hpp"
+#include "EngineUtil.hpp"
+#include "GraphicsAPI.hpp"
 
 class Renderer {
 	public:

@@ -1,8 +1,18 @@
 #include "AxisDisplay.hpp"
 
+#include <iterator>
+#include <memory>
+
 #include "Engine.hpp"
-#include "Edge.hpp"
+#include "EngineMath.hpp"
+#include "EngineRender.hpp"
+#include "EngineUtil.hpp"
+#include "InputManager.hpp"
+
+#include "MaterialRegistry.hpp"
+
 #include "Cone.hpp"
+#include "Edge.hpp"
 
 AxisDisplay::AxisDisplay() {
     localTransform_ = EngineMath::Transform(

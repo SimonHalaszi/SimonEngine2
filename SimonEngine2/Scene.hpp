@@ -1,22 +1,17 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
-#include <string>
 #include <memory>
+#include <stdexcept>
+#include <vector>
 
-#include "WindowConstants.hpp"
+#include "EngineUtil.hpp"
+
 #include "Object.hpp"
 #include "Light.hpp"
 #include "CubeMap.hpp"
 #include "Skybox.hpp"
 #include "Camera.hpp"
-
-#include "MaterialRegistry.hpp"
-#include "MeshRegistry.hpp"
-#include "TextureRegistry.hpp"
-#include "Renderer.hpp"
-
-#include "EngineUtil.hpp"
 
 // Scene Class
 

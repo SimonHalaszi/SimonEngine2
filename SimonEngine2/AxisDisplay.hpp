@@ -2,8 +2,6 @@
 #define AXIS_DISPLAY_HPP
 
 #include "Object.hpp"
-#include "EngineMath.hpp"
-#include "EngineUtil.hpp"
 
 class AxisDisplay : public Object {
 	public:

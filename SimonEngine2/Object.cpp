@@ -1,5 +1,8 @@
 #include "Object.hpp"
 
+#include <stdexcept>
+#include <utility>
+
 // Runs when attached to scene
 void Object::rootOnStart() {
 	if (hasStarted_) {

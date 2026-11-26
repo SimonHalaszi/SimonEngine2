@@ -1,10 +1,9 @@
 #ifndef CAMERA_MAN_HPP
 #define CAMERA_MAN_HPP
 
-#include "Object.hpp"
 #include "EngineMath.hpp"
-#include "EngineUtil.hpp"
-#include "InputManager.hpp"
+
+#include "Object.hpp"
 
 class CameraMan : public Object {
 	public:

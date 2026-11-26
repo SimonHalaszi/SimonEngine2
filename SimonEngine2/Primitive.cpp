@@ -1,5 +1,8 @@
 #include "Primitive.hpp"
 
+#include "InputManager.hpp"
+#include "Renderer.hpp"
+
 #include "MaterialRegistry.hpp"
 
 Primitive::Primitive(const EngineMath::Transform& localTransform, const EngineRender::Material* material) {

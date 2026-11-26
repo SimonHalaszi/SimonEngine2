@@ -1,16 +1,11 @@
 #ifndef PRIMITIVE_HPP
 #define PRIMITIVE_HPP
 
-#include "Object.hpp"
-#include "InputManager.hpp"
-#include "Renderer.hpp"
-
 #include "EngineMath.hpp"
 #include "EngineRender.hpp"
 #include "EngineUtil.hpp"
 
-#include "MeshRegistry.hpp"
-#include "TextureRegistry.hpp"
+#include "Object.hpp"
 
 class Primitive : public Object {
 	public:

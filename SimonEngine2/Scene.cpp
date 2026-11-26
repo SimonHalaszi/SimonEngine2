@@ -1,5 +1,14 @@
 #include "Scene.hpp"
 
+#include <stdexcept>
+#include <utility>
+
+#include "Renderer.hpp"
+
+#include "MaterialRegistry.hpp"
+#include "MeshRegistry.hpp"
+#include "TextureRegistry.hpp"
+
 void Scene::addRootObject(std::unique_ptr<Object> object) {
 	if (!object) {
 		throw std::invalid_argument("Scene::addRootObject: object cannot be null");

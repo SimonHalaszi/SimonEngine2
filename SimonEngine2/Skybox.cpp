@@ -1,5 +1,9 @@
 #include "Skybox.hpp"
+
+#include <stdexcept>
+
 #include "Engine.hpp"
+#include "Renderer.hpp"
 
 void Skybox::onStart() {
 	if (textureID_ == 0) {

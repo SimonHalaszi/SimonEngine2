@@ -1,5 +1,6 @@
 #include "MaterialRegistry.hpp"
 
+#include <iostream>
 #include <utility>
 
 const EngineRender::Material* MaterialRegistry::getOrCreate(const std::string& key, const EngineRender::Material& material) {

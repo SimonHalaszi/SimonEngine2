@@ -1,5 +1,17 @@
 #include "EngineRender.hpp"
 
+#include <cmath>
+#include <cstddef>
+#include <limits>
+#include <stdexcept>
+#include <vector>
+
+#include "EngineMath.hpp"
+#include "EngineUtil.hpp"
+#include "Renderer.hpp"
+
+#include "TextureRegistry.hpp"
+
 namespace {
 	EngineMath::Vector3 getPosition(const EngineUtil::Vertex& vertex) {
 		return { vertex.x_, vertex.y_, vertex.z_ };
@@ -190,9 +202,6 @@ void EngineRender::upload(const EngineUtil::Mesh& CPUMesh, GPUMesh& outGPUMesh) 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-
-#include "Renderer.hpp"
-#include "TextureRegistry.hpp"
 
 void EngineRender::Material::init() {
 	shader_ = Renderer::getInstance().getOrLoadShader(vertPath_, fragPath_);

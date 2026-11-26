@@ -1,5 +1,7 @@
 #include "Cylinder.hpp"
 
+#include "MeshRegistry.hpp"
+
 Cylinder::Cylinder(const EngineMath::Transform& localTransform, const EngineRender::Material* material, int slices)
 	: Primitive(localTransform, material), slices_(slices) {}
 

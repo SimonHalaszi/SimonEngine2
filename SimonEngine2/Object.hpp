@@ -1,10 +1,9 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include <vector>
 #include <memory>
-#include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "EngineMath.hpp"
 

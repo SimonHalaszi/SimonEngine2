@@ -4,9 +4,11 @@
 #include <utility>
 
 #include "Engine.hpp"
-#include "MeshRegistry.hpp"
-#include "MaterialRegistry.hpp"
+#include "InputManager.hpp"
 #include "Renderer.hpp"
+
+#include "MaterialRegistry.hpp"
+#include "MeshRegistry.hpp"
 
 namespace {
     constexpr float directionEpsilon = 1e-8f;

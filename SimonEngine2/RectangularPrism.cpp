@@ -1,5 +1,7 @@
 #include "RectangularPrism.hpp"
 
+#include "MeshRegistry.hpp"
+
 RectangularPrism::RectangularPrism(const EngineMath::Transform& localTransform, const EngineRender::Material* material)
 	: Primitive(localTransform, material) {}
 

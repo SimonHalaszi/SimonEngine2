@@ -1,6 +1,8 @@
 #ifndef OBJ_MESH_HPP
 #define OBJ_MESH_HPP
 
+#include <string>
+
 #include "Primitive.hpp"
 
 class ObjMesh : public Primitive {

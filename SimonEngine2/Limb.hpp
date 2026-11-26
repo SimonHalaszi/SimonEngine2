@@ -1,10 +1,12 @@
 #ifndef LIMB_HPP
 #define LIMB_HPP
 
-#include "Object.hpp"
 #include "EngineMath.hpp"
-#include "EngineUtil.hpp"
-#include "Primitive.hpp"
+#include "EngineRender.hpp"
+
+#include "Object.hpp"
+
+class Primitive;
 
 class Limb : public Object {
     public:

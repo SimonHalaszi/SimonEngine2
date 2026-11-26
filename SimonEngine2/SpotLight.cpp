@@ -1,8 +1,9 @@
 #include "SpotLight.hpp"
-#include "Renderer.hpp"
 
 #include <cmath>
 #include <stdexcept>
+
+#include "Renderer.hpp"
 
 SpotLight::SpotLight(
 	const EngineMath::Transform& localTransform,

@@ -1,15 +1,15 @@
 #include "MeshRegistry.hpp"
 
 #include <algorithm>
-#include <cstdint>
 #include <cmath>
+#include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
 #include <vector>
-#include <iostream>
 
 #include "EngineMath.hpp"
 
